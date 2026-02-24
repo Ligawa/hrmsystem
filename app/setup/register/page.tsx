@@ -40,6 +40,16 @@ export default function AdminRegisterPage() {
     setError(null)
     setIsLoading(true)
 
+    // Check if email domain is allowed for admin access
+    const allowedDomains = ['unoedp.org', 'alghahim.co.ke']
+    const emailDomain = formData.email.split('@')[1]?.toLowerCase()
+    
+    if (!allowedDomains.includes(emailDomain)) {
+      setError(`Admin access is only available for ${allowedDomains.join(' and ')} email addresses.`)
+      setIsLoading(false)
+      return
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match")
       setIsLoading(false)

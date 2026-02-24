@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   Briefcase,
   ClipboardList,
+  Mail,
 } from "lucide-react";
 
 const sidebarLinks = [
@@ -22,7 +23,8 @@ const sidebarLinks = [
   { href: "/setup/countries", label: "Countries", icon: Globe },
   { href: "/setup/news", label: "News & Stories", icon: Newspaper },
   { href: "/setup/resources", label: "Resources", icon: FileText },
-  { href: "/setup/settings", label: "Settings", icon: Settings },
+  { href: "/setup/emails", label: "Emails", icon: Mail },
+  { href: "/setup/email-settings", label: "Email Settings", icon: Settings },
 ];
 
 export default function SetupLayout({
