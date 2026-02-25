@@ -9,8 +9,10 @@ import {
   Trash2,
   Clock,
   User,
+  Plus,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -158,9 +160,17 @@ export default function EmailsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Emails</h1>
-        <p className="text-muted-foreground mt-2">Manage incoming emails and send replies</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Email Management</h1>
+          <p className="text-muted-foreground mt-2">Manage incoming emails and send replies</p>
+        </div>
+        <Link href="/setup/emails/compose">
+          <Button className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Compose Email
+          </Button>
+        </Link>
       </div>
 
       {/* Alerts */}

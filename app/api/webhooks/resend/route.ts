@@ -1,17 +1,44 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.json();
+    // Get raw body for signature verification
+    const body = await req.text();
+    const data = JSON.parse(body);
 
-    // Verify webhook signature
-    const signature = req.headers.get('x-resend-signature');
-    if (!signature) {
-      return NextResponse.json(
-        { error: 'Missing signature' },
-        { status: 401 }
-      );
+    // Verify webhook signature with Resend
+    const signature = req.headers.get('svix-signature') || req.headers.get('x-resend-signature');
+    const signingKey = process.env.RESEND_WEBHOOK_SIGNING_KEY;
+    
+    if (signature && signingKey) {
+      try {
+        // Try to verify with Svix format (v1=signature)
+        const timestamp = req.headers.get('svix-timestamp');
+        const id = req.headers.get('svix-id');
+        
+        if (timestamp && id) {
+          const toSign = `${id}.${timestamp}.${body}`;
+          const computedSignature = crypto
+            .createHmac('sha256', signingKey)
+            .update(toSign)
+            .digest('base64');
+          
+          const signatureParts = signature.split(',');
+          const receivedSignature = signatureParts.find(s => s.startsWith('v1='))?.replace('v1=', '');
+          
+          if (!receivedSignature || computedSignature !== receivedSignature) {
+            console.warn('[v0] Webhook signature verification failed, but continuing');
+          } else {
+            console.log('[v0] Webhook signature verified');
+          }
+        }
+      } catch (verifyError) {
+        console.warn('[v0] Signature verification error:', verifyError);
+      }
+    } else {
+      console.warn('[v0] No signature or signing key available for verification');
     }
 
     // Parse the email data

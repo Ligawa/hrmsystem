@@ -8,12 +8,14 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { 
       to, 
+      cc,
       subject, 
       body: emailBody, 
       htmlBody,
       inboxId,
       applicantName,
       jobTitle,
+      fromName = 'UNEDF Team',
       type = 'general'
     } = body;
 
@@ -152,21 +154,39 @@ United Nations Economic Development Foundation
       `;
     }
 
+    // Handle admin_compose type (custom from name)
+    if (type === 'admin_compose') {
+      htmlContent = htmlBody || `<p>${emailBody}</p>`;
+      textContent = emailBody;
+    }
+
+    // Build from address with custom name
+    const fromAddress = fromName && fromName !== 'noreply' 
+      ? `${fromName} <noreply@unoedp.org>`
+      : 'noreply@unoedp.org';
+
     // Send email via Resend
-    console.log('[v0] Sending email to:', to);
+    console.log('[v0] Sending email to:', to, 'from:', fromAddress);
+    const emailPayload: any = {
+      from: fromAddress,
+      to: to,
+      subject: subject,
+      html: htmlContent,
+      text: textContent,
+    };
+
+    // Add CC if provided
+    if (cc) {
+      emailPayload.cc = cc;
+    }
+
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        from: 'noreply@unoedp.org',
-        to: to,
-        subject: subject,
-        html: htmlContent,
-        text: textContent,
-      }),
+      body: JSON.stringify(emailPayload),
     });
 
     if (!response.ok) {
