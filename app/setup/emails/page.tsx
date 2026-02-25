@@ -50,23 +50,61 @@ export default function EmailsPage() {
     const fetchEmails = async () => {
       try {
         setIsLoading(true);
-        const { data, error } = await supabase
-          .from('email_inbox')
-          .select('*')
-          .order('received_at', { ascending: false });
+        setError(null);
 
-        if (error) throw error;
-        setEmails(data || []);
+        // Try API endpoint first (syncs with Resend)
+        const response = await fetch('/api/emails/list');
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('[v0] Fetched emails from API:', result.count, 'emails');
+
+        if (result.emails && Array.isArray(result.emails)) {
+          setEmails(result.emails);
+        } else {
+          // Fallback to direct database query
+          console.log('[v0] Falling back to direct database query');
+          const { data, error } = await supabase
+            .from('email_inbox')
+            .select('*')
+            .order('received_at', { ascending: false });
+
+          if (error) throw error;
+          setEmails(data || []);
+        }
       } catch (err) {
         console.error('[v0] Error fetching emails:', err);
-        setError('Failed to load emails');
+        setError(`Failed to load emails: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        
+        // Try direct database fallback
+        try {
+          const { data } = await supabase
+            .from('email_inbox')
+            .select('*')
+            .order('received_at', { ascending: false });
+          
+          if (data && data.length > 0) {
+            console.log('[v0] Loaded from database fallback:', data.length);
+            setEmails(data);
+            setError(null);
+          }
+        } catch (fallbackErr) {
+          console.error('[v0] Fallback also failed:', fallbackErr);
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchEmails();
-  }, []);
+    
+    // Refresh emails every 30 seconds
+    const interval = setInterval(fetchEmails, 30000);
+    return () => clearInterval(interval);
+  }, [supabase]);
 
   const handleSelectEmail = async (email: Email) => {
     setSelectedEmail(email);
@@ -165,12 +203,19 @@ export default function EmailsPage() {
           <h1 className="text-2xl font-bold">Email Management</h1>
           <p className="text-muted-foreground mt-2">Manage incoming emails and send replies</p>
         </div>
-        <Link href="/setup/emails/compose">
-          <Button className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Compose Email
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/setup/emails/debug">
+            <Button variant="outline" size="sm">
+              Debug
+            </Button>
+          </Link>
+          <Link href="/setup/emails/compose">
+            <Button className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Compose Email
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Alerts */}
