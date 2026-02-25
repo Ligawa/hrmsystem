@@ -14,14 +14,14 @@ export default async function SetupDashboard() {
       supabase.from("resources").select("*", { count: "exact", head: true }),
       supabase.from("subscriptions").select("*", { count: "exact", head: true }),
       supabase.from("jobs").select("*", { count: "exact", head: true }),
-      supabase.from("applications").select("*", { count: "exact", head: true }),
+      supabase.from("job_applications").select("*", { count: "exact", head: true }),
     ]);
 
   // Count new applications
   const { count: newApplicationsCount } = await supabase
-    .from("applications")
+    .from("job_applications")
     .select("*", { count: "exact", head: true })
-    .eq("status", "new");
+    .eq("status", "pending");
 
   const stats = [
     {

@@ -74,7 +74,7 @@ export default function ApplicationDetailPage() {
     async function fetchApplication() {
       const supabase = createClient();
       const { data, error } = await supabase
-        .from("applications")
+        .from("job_applications")
         .select(
           `
           *,
@@ -107,7 +107,7 @@ export default function ApplicationDetailPage() {
     const supabase = createClient();
 
     const { error } = await supabase
-      .from("applications")
+      .from("job_applications")
       .update({
         status,
         admin_notes: adminNotes,

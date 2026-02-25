@@ -29,20 +29,127 @@ export async function POST(req: NextRequest) {
     let textContent = emailBody || subject;
 
     if (type === 'application_confirmation') {
+      const deadline = new Date();
+      deadline.setDate(deadline.getDate() + 3);
+      const deadlineStr = deadline.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      
       htmlContent = `
+        <!DOCTYPE html>
         <html>
-          <body style="font-family: Arial, sans-serif; color: #333;">
-            <h2>Thank You for Your Application</h2>
-            <p>Dear ${applicantName},</p>
-            <p>We have received your application for the <strong>${jobTitle}</strong> position at UNEDF.</p>
-            <p>Your application has been submitted successfully and is now under review.</p>
-            <p>We will be in touch within 5-7 business days if we would like to move forward with your application.</p>
-            <p>Thank you for your interest in joining our team!</p>
-            <p>Best regards,<br/>The UNEDF Team</p>
+          <head>
+            <meta charset="UTF-8">
+            <style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { border-bottom: 3px solid #1e40af; padding-bottom: 20px; margin-bottom: 30px; }
+              .logo { font-size: 24px; font-weight: bold; color: #1e40af; margin-bottom: 5px; }
+              .subheader { font-size: 12px; color: #666; }
+              .content { margin-bottom: 30px; }
+              .section { margin-bottom: 25px; }
+              .section-title { font-size: 16px; font-weight: 600; color: #1e40af; margin-bottom: 12px; border-left: 3px solid #1e40af; padding-left: 12px; }
+              .highlight-box { background-color: #f0f4ff; border-left: 4px solid #1e40af; padding: 15px; margin: 20px 0; }
+              .deadline { background-color: #fef3c7; border-left: 4px solid #d97706; padding: 15px; margin: 20px 0; }
+              .requirement { margin-left: 20px; margin-bottom: 10px; }
+              .requirement-item { margin-bottom: 8px; padding-left: 10px; border-left: 2px solid #d1d5db; }
+              .footer { background-color: #f9fafb; padding: 20px; border-top: 1px solid #e5e7eb; margin-top: 30px; font-size: 12px; color: #666; }
+              a { color: #1e40af; text-decoration: none; }
+              a:hover { text-decoration: underline; }
+              .contact-info { background-color: #f3f4f6; padding: 15px; border-radius: 4px; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <div class="logo">UNEDF</div>
+                <div class="subheader">United Nations Economic Development Foundation</div>
+              </div>
+
+              <div class="content">
+                <p>Dear ${applicantName},</p>
+
+                <div class="highlight-box">
+                  <strong>Application Received</strong><br/>
+                  Thank you for your interest in the <strong>${jobTitle}</strong> position. We have successfully received your application and sincerely appreciate your interest in joining our team.
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Next Steps</div>
+                  <p>Due to the high volume of applications we receive, we are unable to schedule individual meetings with every applicant. However, we value your interest and would like to hear more about you through the following process:</p>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Required Video Interview</div>
+                  <p>Please record a brief video interview answering role-specific questions. You may submit your video using either:</p>
+                  <div class="requirement">
+                    <div class="requirement-item"><strong>Option 1:</strong> <a href="https://loom.com" target="_blank">Loom.com</a> (Recommended - easy screen recording and upload)</div>
+                    <div class="requirement-item"><strong>Option 2:</strong> <a href="https://drive.google.com" target="_blank">Google Drive</a> (Upload video file directly)</div>
+                  </div>
+                  <p style="margin-top: 15px;">Once you've recorded your interview, please reply to this email with the link or attachment.</p>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Required Documents</div>
+                  <p>Please prepare and submit the following documents:</p>
+                  <div class="requirement">
+                    <div class="requirement-item">✓ Valid government-issued ID (Passport, National ID, or Driver's License)</div>
+                    <div class="requirement-item">✓ Educational certificates/qualifications relevant to the position</div>
+                    <div class="requirement-item">✓ Any additional certifications or credentials</div>
+                  </div>
+                  <p style="margin-top: 15px;">You may submit these documents by:</p>
+                  <div class="requirement">
+                    <div class="requirement-item">• Replying to this email with the documents attached</div>
+                    <div class="requirement-item">• Uploading to <a href="https://drive.google.com" target="_blank">Google Drive</a> and sharing the link</div>
+                  </div>
+                </div>
+
+                <div class="deadline">
+                  <strong>Important: Submission Deadline</strong><br/>
+                  Please submit your video interview and required documents by <strong>${deadlineStr}</strong> (3 days from your application submission).<br/>
+                  <span style="font-size: 13px; color: #92400e;">Applications and documents received after this deadline may not be considered.</span>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Questions?</div>
+                  <p>If you have any questions about the application process or need assistance, please don't hesitate to reach out to us at <a href="mailto:careers@unoedp.org">careers@unoedp.org</a>.</p>
+                </div>
+
+                <p>Thank you again for your interest in the ${jobTitle} position. We look forward to learning more about you.</p>
+
+                <p>Best regards,<br/>
+                <strong>UNEDF Recruitment Team</strong><br/>
+                United Nations Economic Development Foundation</p>
+              </div>
+
+              <div class="footer">
+                <p><strong>UNEDF | Careers</strong></p>
+                <p>This is an automated message. Please do not reply with attachments to this address. Use the reply function or submit documents through Google Drive.</p>
+                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} United Nations Economic Development Foundation. All rights reserved.</p>
+              </div>
+            </div>
           </body>
         </html>
       `;
-      textContent = `Thank you for your application for the ${jobTitle} position. We have received your submission and will be in touch soon.`;
+      
+      textContent = `
+Application Confirmation for ${jobTitle} Position
+
+Dear ${applicantName},
+
+Thank you for your interest in the ${jobTitle} position at UNEDF. We have successfully received your application.
+
+NEXT STEPS:
+1. Record a video interview answering role-specific questions (use Loom.com or Google Drive)
+2. Submit your government-issued ID and educational certificates
+3. Reply to this email or submit documents through Google Drive
+
+SUBMISSION DEADLINE: ${deadlineStr} (3 days from today)
+
+For assistance, contact: careers@unoedp.org
+
+Best regards,
+UNEDF Recruitment Team
+United Nations Economic Development Foundation
+      `;
     }
 
     // Send email via Resend
