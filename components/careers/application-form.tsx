@@ -70,6 +70,30 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
         throw new Error(insertError.message);
       }
 
+      // Send automated confirmation email to applicant
+      try {
+        const emailResponse = await fetch("/api/emails/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: formData.email,
+            subject: `Application Confirmation - ${jobTitle} Position`,
+            applicantName: formData.full_name,
+            jobTitle: jobTitle,
+            type: "application_confirmation",
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          console.error("[v0] Failed to send confirmation email");
+        }
+      } catch (emailError) {
+        console.error("[v0] Error sending email:", emailError);
+        // Don't throw - application was already saved
+      }
+
       setSuccess(true);
     } catch (err) {
       setError(

@@ -27,7 +27,7 @@ export default async function ApplicationsPage() {
   const supabase = await createClient();
 
   const { data: applications } = await supabase
-    .from("applications")
+    .from("job_applications")
     .select(
       `
       *,
