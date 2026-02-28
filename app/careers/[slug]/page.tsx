@@ -66,93 +66,115 @@ export default async function JobDetailPage({ params }: Props) {
   const isExpired = job.closing_date && new Date(job.closing_date) < new Date();
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Header */}
-      <div className="bg-primary py-12 text-primary-foreground">
-        <div className="container mx-auto px-4">
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-16 text-primary-foreground relative overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,.05)_25%,rgba(255,255,255,.05)_50%,transparent_50%,transparent_75%,rgba(255,255,255,.05)_75%,rgba(255,255,255,.05))] bg-[length:40px_40px]" />
+        <div className="container mx-auto px-4 relative">
           <Link
             href="/careers"
-            className="mb-4 inline-flex items-center gap-2 text-sm text-white/80 hover:text-white"
+            className="mb-6 inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to all jobs
           </Link>
-          <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-3xl font-bold md:text-4xl">{job.title}</h1>
-                <Badge className={typeColors[job.type]}>
+          <div className="flex flex-wrap items-start justify-between gap-6">
+            <div className="flex-1">
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <h1 className="text-4xl md:text-5xl font-bold">{job.title}</h1>
+                <Badge className={`${typeColors[job.type]} capitalize`}>
                   {job.type.replace("-", " ")}
                 </Badge>
               </div>
               {job.department && (
-                <p className="mt-2 text-lg text-white/90">{job.department}</p>
+                <p className="text-xl text-white/80 font-medium mb-6">{job.department}</p>
               )}
-              <div className="mt-4 flex flex-wrap gap-4 text-white/80">
-                <span className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  {job.location}
-                </span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/10 rounded-lg">
+                    <MapPin className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-white/60">Location</p>
+                    <p className="font-semibold">{job.location}</p>
+                  </div>
+                </div>
                 {job.level && (
-                  <span className="flex items-center gap-2 capitalize">
-                    <Briefcase className="h-5 w-5" />
-                    {job.level} level
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/10 rounded-lg">
+                      <Briefcase className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/60">Level</p>
+                      <p className="font-semibold capitalize">{job.level}</p>
+                    </div>
+                  </div>
                 )}
                 {job.salary_range && (
-                  <span className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5" />
-                    {job.salary_range}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/10 rounded-lg">
+                      <DollarSign className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/60">Salary</p>
+                      <p className="font-semibold">{job.salary_range}</p>
+                    </div>
+                  </div>
+                )}
+                {job.closing_date && (
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/10 rounded-lg">
+                      <Clock className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/60">Deadline</p>
+                      <p className="font-semibold">
+                        {new Date(job.closing_date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
-            {job.closing_date && (
-              <div className="rounded-lg bg-white/10 px-4 py-2">
-                <p className="text-sm text-white/80">Application Deadline</p>
-                <p className="font-semibold">
-                  {new Date(job.closing_date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid gap-8 lg:grid-cols-3">
+      <div className="container mx-auto px-4 py-16 lg:py-20">
+        <div className="grid gap-10 lg:grid-cols-3">
           {/* Main Content */}
           <div className="space-y-8 lg:col-span-2">
             {/* Description */}
-            <Card>
-              <CardHeader>
-                <CardTitle>About This Role</CardTitle>
+            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl">About This Role</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="whitespace-pre-wrap leading-relaxed text-muted-foreground">
+                <p className="whitespace-pre-wrap leading-relaxed text-muted-foreground text-base">
                   {job.description}
                 </p>
               </CardContent>
             </Card>
 
             {/* Responsibilities */}
-            {job.responsibilities && job.responsibilities.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Key Responsibilities</CardTitle>
+            {Array.isArray(job.responsibilities) && job.responsibilities.length > 0 && (
+              <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl">Key Responsibilities</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {job.responsibilities.map(
                       (resp: string, index: number) => (
-                        <li key={index} className="flex gap-3">
-                          <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                          <span className="text-muted-foreground">{resp}</span>
+                        <li key={index} className="flex gap-4">
+                          <div className="p-1 bg-primary/10 rounded-lg h-fit">
+                            <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+                          </div>
+                          <span className="text-muted-foreground font-medium">{resp}</span>
                         </li>
                       )
                     )}
@@ -162,17 +184,19 @@ export default async function JobDetailPage({ params }: Props) {
             )}
 
             {/* Requirements */}
-            {job.requirements && job.requirements.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Requirements</CardTitle>
+            {Array.isArray(job.requirements) && job.requirements.length > 0 && (
+              <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl">Requirements</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {job.requirements.map((req: string, index: number) => (
-                      <li key={index} className="flex gap-3">
-                        <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
-                        <span className="text-muted-foreground">{req}</span>
+                      <li key={index} className="flex gap-4">
+                        <div className="p-1 bg-blue-100 rounded-lg h-fit">
+                          <CheckCircle className="h-5 w-5 text-blue-600 shrink-0" />
+                        </div>
+                        <span className="text-muted-foreground font-medium">{req}</span>
                       </li>
                     ))}
                   </ul>
@@ -181,17 +205,19 @@ export default async function JobDetailPage({ params }: Props) {
             )}
 
             {/* Benefits */}
-            {job.benefits && job.benefits.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>What We Offer</CardTitle>
+            {Array.isArray(job.benefits) && job.benefits.length > 0 && (
+              <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl">What We Offer</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="grid gap-3 sm:grid-cols-2">
+                  <ul className="grid gap-4 sm:grid-cols-2">
                     {job.benefits.map((benefit: string, index: number) => (
-                      <li key={index} className="flex gap-3">
-                        <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
-                        <span className="text-muted-foreground">{benefit}</span>
+                      <li key={index} className="flex gap-4">
+                        <div className="p-1 bg-green-100 rounded-lg h-fit">
+                          <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
+                        </div>
+                        <span className="text-muted-foreground font-medium">{benefit}</span>
                       </li>
                     ))}
                   </ul>
