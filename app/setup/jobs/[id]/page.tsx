@@ -39,11 +39,12 @@ interface Job {
   featured: boolean;
 }
 
-export default function EditJobPage({ params }: { params: { id: string } }) {
+export default function EditJobPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [jobId, setJobId] = useState<string | null>(null);
   const [job, setJob] = useState<Job | null>(null);
   const [formData, setFormData] = useState({
     title: "",
@@ -62,65 +63,94 @@ export default function EditJobPage({ params }: { params: { id: string } }) {
   });
 
   useEffect(() => {
-    async function fetchJob() {
+    async function initializeJob() {
       try {
-        console.log("[v0] Fetching job with id:", params.id);
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from("jobs")
-          .select("*")
-          .eq("id", params.id)
-          .single();
-
-        if (error) {
-          console.error("[v0] Error fetching job:", error);
-          setError("Failed to load job: " + error.message);
+        // Handle both Promise and direct params (Next.js 15+ compatibility)
+        let resolvedParams = params;
+        if (params instanceof Promise) {
+          resolvedParams = await params;
+        }
+        
+        const id = (resolvedParams as { id: string }).id;
+        console.log("[v0] Resolved job id:", id);
+        
+        if (!id) {
+          console.warn("[v0] No job id available");
+          setError("Invalid job ID");
           setLoading(false);
           return;
         }
-
-        if (!data) {
-          console.warn("[v0] No job data found for id:", params.id);
-          setError("Job not found");
-          setLoading(false);
-          return;
-        }
-
-        console.log("[v0] Job fetched successfully:", data);
-
-        setJob(data);
-        setFormData({
-          title: data.title || "",
-          location: data.location || "",
-          type: data.type || "full-time",
-          department: data.department || "",
-          level: data.level || "mid",
-          salary_range: data.salary_range || "",
-          description: data.description || "",
-          requirements: Array.isArray(data.requirements) ? data.requirements.join("\n") : "",
-          responsibilities: Array.isArray(data.responsibilities) ? data.responsibilities.join("\n") : "",
-          benefits: Array.isArray(data.benefits) ? data.benefits.join("\n") : "",
-          closing_date: data.closing_date?.split("T")[0] || "",
-          is_active: data.is_active !== false,
-          featured: data.featured !== false,
-        });
-        setLoading(false);
+        
+        setJobId(id);
+        await fetchJob(id);
       } catch (err) {
-        console.error("[v0] Unexpected error fetching job:", err);
-        router.push("/setup/jobs");
+        console.error("[v0] Error during initialization:", err);
+        setError("Failed to initialize");
+        setLoading(false);
       }
     }
-    
-    if (params?.id) {
-      fetchJob();
-    } else {
-      console.warn("[v0] No params.id available");
-      router.push("/setup/jobs");
+
+    initializeJob();
+  }, [params]);
+
+  async function fetchJob(id: string) {
+    try {
+      console.log("[v0] Fetching job with id:", id);
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("[v0] Error fetching job:", error);
+        setError("Failed to load job: " + error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (!data) {
+        console.warn("[v0] No job data found for id:", id);
+        setError("Job not found");
+        setLoading(false);
+        return;
+      }
+
+      console.log("[v0] Job fetched successfully:", data);
+
+      setJob(data);
+      setFormData({
+        title: data.title || "",
+        location: data.location || "",
+        type: data.type || "full-time",
+        department: data.department || "",
+        level: data.level || "mid",
+        salary_range: data.salary_range || "",
+        description: data.description || "",
+        requirements: Array.isArray(data.requirements) ? data.requirements.join("\n") : "",
+        responsibilities: Array.isArray(data.responsibilities) ? data.responsibilities.join("\n") : "",
+        benefits: Array.isArray(data.benefits) ? data.benefits.join("\n") : "",
+        closing_date: data.closing_date?.split("T")[0] || "",
+        is_active: data.is_active !== false,
+        featured: data.featured !== false,
+      });
+      setLoading(false);
+    } catch (err) {
+      console.error("[v0] Unexpected error fetching job:", err);
+      setError("An unexpected error occurred");
+      setLoading(false);
     }
-  }, [params.id, router]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!jobId) {
+      setError("Job ID not available");
+      return;
+    }
+
     setSaving(true);
 
     const supabase = createClient();
@@ -152,7 +182,7 @@ export default function EditJobPage({ params }: { params: { id: string } }) {
         featured: formData.featured,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id);
+      .eq("id", jobId);
 
     if (error) {
       alert("Error updating job: " + error.message);
