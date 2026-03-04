@@ -81,13 +81,20 @@ export async function POST(req: NextRequest) {
                 </div>
 
                 <div class="section">
-                  <div class="section-title">Required Video Interview</div>
-                  <p>Please record a brief video (3-5 minutes) introducing yourself and explaining why you're interested in this position and how your skills match the role requirements. You may submit your video using either:</p>
+                  <div class="section-title">Video Interview & Key Questions</div>
+                  <p>Please record a brief video (3-5 minutes) answering the following questions. You may submit your video using:</p>
                   <div class="requirement">
                     <div class="requirement-item"><strong>Option 1:</strong> <a href="https://loom.com" target="_blank">Loom.com</a> (Recommended - easy recording and upload)</div>
                     <div class="requirement-item"><strong>Option 2:</strong> <a href="https://drive.google.com" target="_blank">Google Drive</a> (Upload video file directly)</div>
                   </div>
-                  <p style="margin-top: 15px;"><strong>How to submit:</strong> Visit the application portal using the link below to upload your video and documents in one place.</p>
+                  
+                  <p style="margin-top: 20px; font-weight: 600; color: #1e40af;">Please address the following in your video:</p>
+                  <div class="requirement">
+                    <div class="requirement-item"><strong>1. Current Role & Position:</strong> What is your current position/role? If you're not currently employed, tell us about your most recent position and what you've been doing.</div>
+                    <div class="requirement-item"><strong>2. Availability for Deployment:</strong> When would you be available to start working with UNEDF if selected? Are there any constraints or notice periods?</div>
+                    <div class="requirement-item"><strong>3. Relevant Experience:</strong> Briefly describe your past roles and how they've prepared you for the ${jobTitle} position. What key skills and experience do you bring?</div>
+                  </div>
+                  <p style="margin-top: 15px; font-style: italic; color: #666;">These questions help us understand your background and fit for the role.</p>
                 </div>
 
                 <div class="section">
@@ -106,12 +113,19 @@ export async function POST(req: NextRequest) {
                 </div>
 
                 <div class="section">
-                  <div class="section-title">Submit Your Application Materials</div>
-                  <p>Please use the secure application portal to submit your video and documents:</p>
-                  <p style="margin: 15px 0; text-align: center;">
-                    <a href="https://www.unoedp.org/apply/${applicationId || '#'}" style="background-color: #1e40af; color: white; padding: 12px 30px; border-radius: 4px; text-decoration: none; display: inline-block; font-weight: 600;">Access Application Portal</a>
-                  </p>
-                  <p>The portal allows you to submit your video interview and required documents securely.</p>
+                  <div class="section-title">How to Submit Your Video & Documents</div>
+                  <p>Once you've recorded your video answering the questions above, please submit as follows:</p>
+                  <div class="requirement">
+                    <div class="requirement-item"><strong>Video:</strong> Share your Loom link or upload your video to Google Drive and share the link in your reply</div>
+                    <div class="requirement-item"><strong>ID Document:</strong> Scan or photograph your government-issued ID (Passport, National ID, or Driver's License) and include it</div>
+                    <div class="requirement-item"><strong>Educational Certificates:</strong> Include scans of your educational qualifications and any relevant certifications</div>
+                  </div>
+                  <p style="margin-top: 15px;"><strong>Reply to this email with:</strong></p>
+                  <div style="background-color: #f0f4ff; border-left: 3px solid #1e40af; padding: 12px; margin: 10px 0;">
+                    - Your video interview link<br/>
+                    - Your documents (attached or Google Drive links)<br/>
+                    - Brief introduction if not covered in video
+                  </div>
                 </div>
 
                 <div class="deadline">
@@ -149,14 +163,28 @@ Dear ${applicantName},
 
 Thank you for your interest in the ${jobTitle} position at UNEDF. We have successfully received your application.
 
-NEXT STEPS:
-1. Record a video interview answering role-specific questions (use Loom.com or Google Drive)
-2. Submit your government-issued ID and educational certificates
-3. Reply to this email or submit documents through Google Drive
+PLEASE ANSWER THESE QUESTIONS IN A VIDEO (3-5 minutes):
+
+1. CURRENT ROLE & POSITION
+   What is your current position/role? If not currently employed, tell us about your most recent position.
+
+2. AVAILABILITY FOR DEPLOYMENT
+   When would you be available to start working with UNEDF if selected? Any constraints or notice periods?
+
+3. RELEVANT EXPERIENCE
+   Briefly describe your past roles and how they prepared you for the ${jobTitle} position.
+
+HOW TO SUBMIT:
+- Record a video on Loom.com or Google Drive answering the above questions
+- Attach or share links to:
+  * Your video
+  * Valid government-issued ID
+  * Educational certificates and certifications
+- Reply to this email with all materials
 
 SUBMISSION DEADLINE: ${deadlineStr} (3 days from today)
 
-For assistance, contact: careers@unoedp.org
+Questions? Contact: careers@unoedp.org
 
 Best regards,
 UNEDF Recruitment Team
