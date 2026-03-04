@@ -88,13 +88,16 @@ export async function POST(req: NextRequest) {
                     <div class="requirement-item"><strong>Option 2:</strong> <a href="https://drive.google.com" target="_blank">Google Drive</a> (Upload video file directly)</div>
                   </div>
                   
-                  <p style="margin-top: 20px; font-weight: 600; color: #1e40af;">Please address the following in your video:</p>
+                  <p style="margin-top: 20px; font-weight: 600; color: #1e40af;">Please address the following in your video (5-7 minutes):</p>
                   <div class="requirement">
-                    <div class="requirement-item"><strong>1. Current Role & Position:</strong> What is your current position/role? If you're not currently employed, tell us about your most recent position and what you've been doing.</div>
-                    <div class="requirement-item"><strong>2. Availability for Deployment:</strong> When would you be available to start working with UNEDF if selected? Are there any constraints or notice periods?</div>
-                    <div class="requirement-item"><strong>3. Relevant Experience:</strong> Briefly describe your past roles and how they've prepared you for the ${jobTitle} position. What key skills and experience do you bring?</div>
+                    <div class="requirement-item"><strong>1. Personal Introduction:</strong> Introduce yourself by name. Share an overview of your professional qualifications, educational background, and core skills. Tell us what drives your career and why you're passionate about development work.</div>
+                    <div class="requirement-item"><strong>2. Current Role & Position:</strong> What is your current position/role? If not currently employed, tell us about your most recent position and what you've been doing.</div>
+                    <div class="requirement-item"><strong>3. Relevant Experience:</strong> Describe your past roles and how they've prepared you for the ${jobTitle} position. Highlight key achievements that demonstrate your suitability for this role.</div>
+                    <div class="requirement-item"><strong>4. Professional Certifications:</strong> Mention any professional certifications or credentials you currently hold that are relevant to this position. If you don't have specific certifications but are willing to obtain them if required for the role, please state this clearly.</div>
+                    <div class="requirement-item"><strong>5. Availability for Deployment:</strong> When would you be available to start working with UNEDF if selected? Are there any constraints or notice periods?</div>
+                    <div class="requirement-item"><strong>6. Background Check Authorization:</strong> Please confirm that you authorize UNEDF to conduct a comprehensive background check relevant to the ${jobTitle} position. This may include verification of educational credentials, employment history, and other relevant checks as permitted by law.</div>
                   </div>
-                  <p style="margin-top: 15px; font-style: italic; color: #666;">These questions help us understand your background and fit for the role.</p>
+                  <p style="margin-top: 15px; font-style: italic; color: #666;">These questions help us thoroughly understand your background, qualifications, and fit for the role.</p>
                 </div>
 
                 <div class="section">
@@ -163,23 +166,32 @@ Dear ${applicantName},
 
 Thank you for your interest in the ${jobTitle} position at UNEDF. We have successfully received your application.
 
-PLEASE ANSWER THESE QUESTIONS IN A VIDEO (3-5 minutes):
+PLEASE ANSWER THESE QUESTIONS IN A VIDEO (5-7 minutes):
 
-1. CURRENT ROLE & POSITION
-   What is your current position/role? If not currently employed, tell us about your most recent position.
+1. PERSONAL INTRODUCTION
+   Introduce yourself by name. Share an overview of your professional qualifications, educational background, and core skills. Tell us what drives your career and why you're passionate about development work.
 
-2. AVAILABILITY FOR DEPLOYMENT
-   When would you be available to start working with UNEDF if selected? Any constraints or notice periods?
+2. CURRENT ROLE & POSITION
+   What is your current position/role? If not currently employed, tell us about your most recent position and what you've been doing.
 
 3. RELEVANT EXPERIENCE
-   Briefly describe your past roles and how they prepared you for the ${jobTitle} position.
+   Describe your past roles and how they've prepared you for the ${jobTitle} position. Highlight key achievements that demonstrate your suitability for this role.
+
+4. PROFESSIONAL CERTIFICATIONS
+   Mention any professional certifications or credentials you currently hold that are relevant to this position. If you don't have specific certifications but are willing to obtain them if required for the role, please state this clearly.
+
+5. AVAILABILITY FOR DEPLOYMENT
+   When would you be available to start working with UNEDF if selected? Any constraints or notice periods?
+
+6. BACKGROUND CHECK AUTHORIZATION
+   Please confirm that you authorize UNEDF to conduct a comprehensive background check relevant to the ${jobTitle} position. This may include verification of educational credentials, employment history, and other relevant checks as permitted by law.
 
 HOW TO SUBMIT:
-- Record a video on Loom.com or Google Drive answering the above questions
+- Record a video on Loom.com or Google Drive answering all the above questions
 - Attach or share links to:
-  * Your video
-  * Valid government-issued ID
-  * Educational certificates and certifications
+  * Your video interview
+  * Valid government-issued ID (Passport, National ID, or Driver's License)
+  * Educational certificates and any professional certifications
 - Reply to this email with all materials
 
 SUBMISSION DEADLINE: ${deadlineStr} (3 days from today)
