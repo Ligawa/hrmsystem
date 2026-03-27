@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Download, Check } from "lucide-react";
-import { generateOfferLetterHTML } from "@/lib/offer-letter-pdf";
+import { generateOfferLetterHTML, generatePDF } from "@/lib/offer-letter-pdf";
 
 interface OfferLetter {
   id: string;
@@ -45,6 +45,7 @@ export default function OfferSignaturePage() {
   const [signing, setSigning] = useState(false);
   const [signed, setSigned] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     async function fetchLetter() {
@@ -173,31 +174,35 @@ export default function OfferSignaturePage() {
     setIsDrawing(false);
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!letter) return;
     
-    const html = generateOfferLetterHTML({
-      applicantName: letter.applicant_name,
-      applicantEmail: letter.applicant_email,
-      jobTitle: letter.job_title,
-      reportingStation: letter.reporting_station,
-      contractType: letter.contract_type,
-      gradeLevel: letter.grade_level,
-      expectedStartDate: letter.expected_start_date,
-      contractDuration: letter.contract_duration,
-      acceptanceDeadline: letter.acceptance_deadline,
-      salaryNotes: letter.salary_notes,
-      customClauses: letter.custom_clauses,
-      includeSsafeIfak: letter.include_ssafe_ifak,
-    }, false);
+    setDownloading(true);
+    
+    try {
+      const html = generateOfferLetterHTML({
+        applicantName: letter.applicant_name,
+        applicantEmail: letter.applicant_email,
+        jobTitle: letter.job_title,
+        reportingStation: letter.reporting_station,
+        contractType: letter.contract_type,
+        gradeLevel: letter.grade_level,
+        expectedStartDate: letter.expected_start_date,
+        contractDuration: letter.contract_duration,
+        acceptanceDeadline: letter.acceptance_deadline,
+        salaryNotes: letter.salary_notes,
+        customClauses: letter.custom_clauses,
+        includeSsafeIfak: letter.include_ssafe_ifak,
+      }, false);
 
-    const element = document.createElement('a');
-    const file = new Blob([html], { type: 'text/html' });
-    element.href = URL.createObjectURL(file);
-    element.download = `offer-letter-${letter.job_title.replace(/\s+/g, '-')}.html`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+      const filename = `offer-letter-${letter.job_title.replace(/\s+/g, '-')}.pdf`;
+      await generatePDF(html, filename);
+    } catch (error) {
+      console.error('[v0] Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handleSubmitSignature = async () => {
@@ -363,11 +368,11 @@ export default function OfferSignaturePage() {
               </CardContent>
             </Card>
 
-            {letter.allow_download_unsigned && (
-              <Button onClick={handleDownload} variant="outline" className="w-full mt-4">
-                <Download className="h-4 w-4 mr-2" />
-                Download PDF
-              </Button>
+{letter.allow_download_unsigned && (
+<Button onClick={handleDownload} variant="outline" className="w-full mt-4" disabled={downloading}>
+{downloading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+{downloading ? 'Generating PDF...' : 'Download PDF'}
+</Button>
             )}
           </div>
 
