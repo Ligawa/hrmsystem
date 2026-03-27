@@ -109,6 +109,13 @@ export default function NewOfferLetterPage() {
     try {
       const supabase = createClient();
       
+      // Get current authenticated user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('You must be logged in to create an offer letter');
+      }
+      
       // Calculate 10-day expiry
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 10);
@@ -134,6 +141,7 @@ export default function NewOfferLetterPage() {
           require_signature_before_download: requireSignatureBeforeDownload,
           status: 'draft',
           token_expires_at: expiryDate.toISOString(),
+          created_by: user.id,
         })
         .select()
         .single();
@@ -147,6 +155,7 @@ export default function NewOfferLetterPage() {
           offer_letter_id: data.id,
           action: 'created',
           details: { created_from: 'form' },
+          created_by: user.id,
         });
 
       router.push(`/setup/offer-letters/${data.id}`);
