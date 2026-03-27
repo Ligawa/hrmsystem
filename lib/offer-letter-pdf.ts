@@ -1,7 +1,7 @@
 'use client';
 
 // Use the external blob URL so html2pdf can load it via CORS without needing a local file path
-const UNEDP_LOGO_URL = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/unedp-logo-Qf0C9QElJzpN2olS4bdnPpd2HMpMQK.jpg';
+const UNEDP_LOGO_URL = 'https://oupmqhc10pd4webz.public.blob.vercel-storage.com/unedp-logo.jpg';
 
 export interface OfferLetterData {
   applicantName: string;
