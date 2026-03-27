@@ -1,5 +1,8 @@
 'use client';
 
+// Use the external blob URL so html2pdf can load it via CORS without needing a local file path
+const UNEDP_LOGO_URL = 'https://oupmqhc10pd4webz.public.blob.vercel-storage.com/unedp-logo.jpg';
+
 export interface OfferLetterData {
   applicantName: string;
   applicantEmail: string;
@@ -157,39 +160,11 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
         .container {
           max-width: 850px;
           margin: 0 auto;
-          padding: 40px;
+          padding: 0 0 40px 0;
           background-color: white;
         }
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 40px;
-          border-bottom: 3px solid #003D7A;
-          padding-bottom: 20px;
-        }
-        .logo {
-          font-size: 24px;
-          font-weight: 700;
-          color: #003D7A;
-          letter-spacing: 1px;
-        }
-        .logo-subtitle {
-          font-size: 12px;
-          color: #666;
-          margin-top: 5px;
-          letter-spacing: 0.5px;
-        }
-        .date-box {
-          text-align: right;
-          font-size: 11px;
-          color: #666;
-        }
-        .date-box div {
-          margin-bottom: 8px;
-        }
-        .date-box strong {
-          color: #1a1a1a;
+        .letter-body {
+          padding: 0 40px;
         }
         h1, h2, h3 {
           color: #003D7A;
@@ -286,28 +261,33 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
     <body>
       <div class="container">
         <!-- Header -->
-        <div class="header">
-          <div style="display: flex; align-items: center; gap: 18px;">
-            <img
-              src="/unedf-logo.jpg"
-              alt="UNEDF Logo"
-              style="width: 80px; height: 80px; object-fit: contain; border-radius: 4px;"
-              crossorigin="anonymous"
-            />
-            <div>
-              <div class="logo">UNEDF</div>
-              <div class="logo-subtitle">United Nations Economic Development Foundation</div>
-              <div style="font-size: 10px; color: #888; margin-top: 3px; letter-spacing: 0.3px;">www.unoedp.org</div>
+        <div style="margin-bottom: 0; padding-bottom: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 40px 20px 40px; background-color: #ffffff;">
+            <!-- Logo and org name -->
+            <div style="display: flex; align-items: center; gap: 0;">
+              <img
+                src="${UNEDP_LOGO_URL}"
+                alt="UNEDP Logo"
+                style="width: 140px; height: auto; object-fit: contain; display: block;"
+                crossorigin="anonymous"
+              />
+            </div>
+            <!-- Document info -->
+            <div style="text-align: right;">
+              <div style="font-size: 22px; font-weight: 800; color: #003D7A; letter-spacing: 2px; text-transform: uppercase;">Offer Letter</div>
+              <div style="width: 100%; height: 2px; background: #003D7A; margin: 6px 0;"></div>
+              <div style="font-size: 10.5px; color: #555; margin-top: 4px;">Date: <strong style="color: #1a1a1a;">${todayDate}</strong></div>
+              <div style="font-size: 10.5px; color: #555; margin-top: 2px;">Ref: <strong style="color: #1a1a1a;">OL-${new Date().getFullYear()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}</strong></div>
+              <div style="font-size: 10px; color: #888; margin-top: 4px;">www.unoedp.org</div>
             </div>
           </div>
-          <div class="date-box">
-            <div style="font-size: 13px; font-weight: 700; color: #003D7A; letter-spacing: 1px; margin-bottom: 8px;">OFFER LETTER</div>
-            <div>Date: ${todayDate}</div>
-            <div>Reference: OL-${new Date().getFullYear()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}</div>
-          </div>
+          <!-- Full-width colour bar below header -->
+          <div style="height: 5px; background: linear-gradient(to right, #003D7A, #0099CC);"></div>
+          <div style="height: 2px; background: #C9A84C; margin-bottom: 30px;"></div>
         </div>
 
         <!-- Main Content -->
+        <div class="letter-body">
         <h1>EMPLOYMENT OFFER LETTER</h1>
         
         <div class="letter-content">
@@ -425,9 +405,10 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
 
         <!-- Footer -->
         <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 10px; color: #999;">
-          <p>United Nations Economic Development Foundation</p>
-          <p>This is an official employment offer letter.</p>
+          <p>United Nations Economic Development Foundation &nbsp;|&nbsp; www.unoedp.org &nbsp;|&nbsp; careers@unoedp.org</p>
+          <p style="margin-top: 4px;">This is an official employment offer letter issued by UNEDP.</p>
         </div>
+        </div><!-- end letter-body -->
       </div>
     </body>
     </html>
