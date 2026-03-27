@@ -18,7 +18,9 @@ export interface OfferLetterData {
   includeSsafeIfak: boolean;
   signatureDate?: string;
   signerName?: string;
-  signatureImageUrl?: string;
+  // For drawn signatures: a base64 data URL. For typed: the name string.
+  signatureData?: string;
+  signatureType?: 'typed' | 'drawn';
 }
 
 export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean = false): string {
@@ -66,41 +68,57 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
     </section>
   ` : '';
 
+  // Render the actual signature mark — drawn = image, typed = styled cursive text
+  const signatureMark = (() => {
+    if (!data.signatureData) return '';
+    if (data.signatureType === 'drawn') {
+      return `<img src="${data.signatureData}" style="max-height: 70px; max-width: 100%; display: block;" alt="Signature" />`;
+    }
+    // Typed: render as cursive script text
+    return `<span style="font-family: 'Georgia', serif; font-style: italic; font-size: 26px; color: #1a1a1a; line-height: 1;">${data.signatureData}</span>`;
+  })();
+
   const signatureSection = isSigned ? `
     <section style="margin-top: 50px; page-break-inside: avoid;">
-      <h3 style="font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 30px; border-bottom: 2px solid #003D7A; padding-bottom: 10px;">
+      <h3 style="font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; border-bottom: 2px solid #003D7A; padding-bottom: 10px;">
         ACCEPTANCE AND SIGNATURE
       </h3>
       <p style="font-size: 11px; line-height: 1.6; color: #333; margin-bottom: 30px;">
         I hereby accept the offer of employment on the terms and conditions outlined in this letter.
       </p>
-      
-      <table style="width: 100%; margin-bottom: 40px; border-collapse: collapse;">
+
+      <table style="width: 100%; margin-bottom: 30px; border-collapse: collapse;">
         <tr>
-          <td style="width: 45%; border-bottom: 1px solid #000; padding-bottom: 10px; vertical-align: bottom; padding-right: 20px;">
-            ${data.signatureImageUrl ? `<img src="${data.signatureImageUrl}" style="max-width: 100%; max-height: 60px;" alt="Signature" />` : ''}
+          <td style="width: 45%; vertical-align: bottom; padding-right: 20px;">
+            <div style="min-height: 70px; border-bottom: 2px solid #000; padding-bottom: 6px; display: flex; align-items: flex-end;">
+              ${signatureMark}
+            </div>
           </td>
           <td style="width: 10%;"></td>
-          <td style="width: 45%; border-bottom: 1px solid #000; padding-bottom: 10px; vertical-align: bottom;">
-            <!-- HR Signature -->
+          <td style="width: 45%; vertical-align: bottom;">
+            <div style="min-height: 70px; border-bottom: 2px solid #ccc; padding-bottom: 6px;"></div>
           </td>
         </tr>
         <tr>
-          <td style="padding-top: 5px; font-size: 10px; color: #666;">
-            <strong>${data.signerName || 'Applicant Signature'}</strong><br/>
-            ${data.signatureDate ? `Date: ${data.signatureDate}` : ''}
+          <td style="padding-top: 8px; font-size: 10pt; color: #444;">
+            <strong style="display: block;">${data.signerName || data.applicantName}</strong>
+            <span style="color: #666;">Applicant</span><br/>
+            <span style="color: #666;">Date: ${data.signatureDate || todayDate}</span>
           </td>
           <td></td>
-          <td style="padding-top: 5px; font-size: 10px; color: #666;">
-            <strong>Authorized HR Representative</strong><br/>
-            Date: ${todayDate}
+          <td style="padding-top: 8px; font-size: 10pt; color: #444;">
+            <strong style="display: block;">Authorized HR Representative</strong>
+            <span style="color: #666;">UNEDP Human Resources</span><br/>
+            <span style="color: #666;">Date: _______________</span>
           </td>
         </tr>
       </table>
 
-      <p style="font-size: 10px; color: #666; font-style: italic; border-top: 1px solid #ccc; padding-top: 10px;">
-        <strong>Signed electronically on ${data.signatureDate || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>
-      </p>
+      <div style="background-color: #f0f8f0; border: 1px solid #4caf50; border-left: 4px solid #2e7d32; border-radius: 4px; padding: 12px 16px; margin-top: 10px;">
+        <p style="font-size: 10pt; color: #2e7d32; margin: 0; font-weight: 600;">
+          Electronically signed on ${data.signatureDate || todayDate} &mdash; This document has been accepted by ${data.signerName || data.applicantName}.
+        </p>
+      </div>
     </section>
   ` : `
     <section style="margin-top: 50px; page-break-inside: avoid;">

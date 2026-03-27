@@ -46,6 +46,9 @@ export default function OfferSignaturePage() {
   const [signed, setSigned] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [savedSignatureData, setSavedSignatureData] = useState('');
+  const [savedSignatureType, setSavedSignatureType] = useState<'typed' | 'drawn'>('typed');
+  const [savedSignatureDate, setSavedSignatureDate] = useState('');
 
   useEffect(() => {
     async function fetchLetter() {
@@ -70,9 +73,23 @@ export default function OfferSignaturePage() {
           return;
         }
 
-        // Check if already signed
+        // Check if already signed — fetch the signature record too
         if (data.status === 'signed') {
           setSigned(true);
+          const { data: sigRecord } = await supabase
+            .from('offer_letter_signatures')
+            .select('signature_data, signature_type, signed_at')
+            .eq('offer_letter_id', data.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+          if (sigRecord) {
+            setSavedSignatureData(sigRecord.signature_data);
+            setSavedSignatureType(sigRecord.signature_type as 'typed' | 'drawn');
+            setSavedSignatureDate(new Date(sigRecord.signed_at).toLocaleDateString('en-US', {
+              year: 'numeric', month: 'long', day: 'numeric'
+            }));
+          }
         }
 
         setLetter(data);
@@ -189,7 +206,14 @@ export default function OfferSignaturePage() {
       salaryNotes: letter.salary_notes,
       customClauses: letter.custom_clauses,
       includeSsafeIfak: letter.include_ssafe_ifak,
-    }, false);
+      // Include signature data if the letter has been signed
+      ...(signed && savedSignatureData ? {
+        signatureData: savedSignatureData,
+        signatureType: savedSignatureType,
+        signerName: letter.applicant_name,
+        signatureDate: savedSignatureDate,
+      } : {}),
+    }, signed);
     printOfferLetter(html);
   };
 
@@ -212,7 +236,13 @@ export default function OfferSignaturePage() {
         salaryNotes: letter.salary_notes,
         customClauses: letter.custom_clauses,
         includeSsafeIfak: letter.include_ssafe_ifak,
-      }, false);
+        ...(signed && savedSignatureData ? {
+          signatureData: savedSignatureData,
+          signatureType: savedSignatureType,
+          signerName: letter.applicant_name,
+          signatureDate: savedSignatureDate,
+        } : {}),
+      }, signed);
 
       const filename = `offer-letter-${letter.job_title.replace(/\s+/g, '-')}.pdf`;
       await generatePDF(html, filename);
@@ -285,6 +315,12 @@ export default function OfferSignaturePage() {
           },
         });
 
+      // Persist signature so it appears in the printed/downloaded document
+      setSavedSignatureData(signatureData);
+      setSavedSignatureType(signatureType);
+      setSavedSignatureDate(new Date().toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      }));
       setSigned(true);
       setStep('view');
 
