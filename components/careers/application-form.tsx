@@ -54,27 +54,53 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
 
       const supabase = createClient();
 
-      const { error: insertError } = await supabase
-        .from("applications")
+      // Calculate submission deadline (3 days from now)
+      const deadline = new Date();
+      deadline.setDate(deadline.getDate() + 3);
+
+      const { data: insertedData, error: insertError } = await supabase
+        .from("job_applications")
         .insert({
           job_id: jobId,
           full_name: formData.full_name,
           email: formData.email,
           phone: formData.phone || null,
-          linkedin_url: formData.linkedin_url || null,
-          portfolio_url: formData.portfolio_url || null,
-          current_company: formData.current_company || null,
-          current_title: formData.current_title || null,
-          years_experience: formData.years_experience
-            ? parseInt(formData.years_experience)
-            : null,
           cover_letter: formData.cover_letter || null,
           resume_url: resumeUrl,
-          status: "new",
+          status: "pending",
+          submission_deadline: deadline.toISOString(),
+        })
+        .select();
+
+      if (insertError || !insertedData || insertedData.length === 0) {
+        throw new Error(insertError?.message || "Failed to create application");
+      }
+
+      const applicationId = insertedData[0].id;
+
+      // Send automated confirmation email to applicant
+      try {
+        const emailResponse = await fetch("/api/emails/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: formData.email,
+            subject: `Application Confirmation - ${jobTitle} Position`,
+            applicantName: formData.full_name,
+            jobTitle: jobTitle,
+            applicationId: applicationId,
+            type: "application_confirmation",
+          }),
         });
 
-      if (insertError) {
-        throw new Error(insertError.message);
+        if (!emailResponse.ok) {
+          console.error("[v0] Failed to send confirmation email");
+        }
+      } catch (emailError) {
+        console.error("[v0] Error sending email:", emailError);
+        // Don't throw - application was already saved
       }
 
       setSuccess(true);

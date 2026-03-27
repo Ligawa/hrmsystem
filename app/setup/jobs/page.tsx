@@ -44,7 +44,7 @@ export default function JobsAdminPage() {
       const jobsWithCounts = await Promise.all(
         data.map(async (job) => {
           const { count } = await supabase
-            .from("applications")
+            .from("job_applications")
             .select("*", { count: "exact", head: true })
             .eq("job_id", job.id);
           return { ...job, applications_count: count ?? 0 };
