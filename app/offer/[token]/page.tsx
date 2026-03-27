@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Download, Check } from "lucide-react";
-import { generateOfferLetterHTML } from "@/lib/offer-letter-pdf";
+import { generateOfferLetterHTML, generatePDF } from "@/lib/offer-letter-pdf";
 
 interface OfferLetter {
   id: string;
@@ -45,6 +45,7 @@ export default function OfferSignaturePage() {
   const [signing, setSigning] = useState(false);
   const [signed, setSigned] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     async function fetchLetter() {
@@ -105,57 +106,103 @@ export default function OfferSignaturePage() {
     }
   }, [params.token]);
 
+  const getCanvasCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!canvasRef.current) return { x: 0, y: 0 };
+    const rect = canvasRef.current.getBoundingClientRect();
+    const scaleX = canvasRef.current.width / rect.width;
+    const scaleY = canvasRef.current.height / rect.height;
+    
+    if ('touches' in e) {
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY
+      };
+    }
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
+  };
+
   const handleDrawSignature = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !canvasRef.current) return;
     
-    const rect = canvasRef.current.getBoundingClientRect();
     const ctx = canvasRef.current.getContext('2d');
+    const { x, y } = getCanvasCoordinates(e);
     
     if (ctx) {
-      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.lineTo(x, y);
       ctx.stroke();
     }
   };
 
-  const startDrawing = () => {
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing || !canvasRef.current) return;
+    e.preventDefault();
+    
+    const ctx = canvasRef.current.getContext('2d');
+    const { x, y } = getCanvasCoordinates(e);
+    
+    if (ctx) {
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+  };
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
     const ctx = canvasRef.current.getContext('2d');
+    const { x, y } = getCanvasCoordinates(e);
+    
     if (ctx) {
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       ctx.beginPath();
-      ctx.moveTo(0, 0);
+      ctx.moveTo(x, y);
     }
     setIsDrawing(true);
   };
 
   const stopDrawing = () => {
+    if (!canvasRef.current) return;
+    const ctx = canvasRef.current.getContext('2d');
+    if (ctx) {
+      ctx.closePath();
+    }
     setIsDrawing(false);
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!letter) return;
     
-    const html = generateOfferLetterHTML({
-      applicantName: letter.applicant_name,
-      applicantEmail: letter.applicant_email,
-      jobTitle: letter.job_title,
-      reportingStation: letter.reporting_station,
-      contractType: letter.contract_type,
-      gradeLevel: letter.grade_level,
-      expectedStartDate: letter.expected_start_date,
-      contractDuration: letter.contract_duration,
-      acceptanceDeadline: letter.acceptance_deadline,
-      salaryNotes: letter.salary_notes,
-      customClauses: letter.custom_clauses,
-      includeSsafeIfak: letter.include_ssafe_ifak,
-    }, false);
+    setDownloading(true);
+    
+    try {
+      const html = generateOfferLetterHTML({
+        applicantName: letter.applicant_name,
+        applicantEmail: letter.applicant_email,
+        jobTitle: letter.job_title,
+        reportingStation: letter.reporting_station,
+        contractType: letter.contract_type,
+        gradeLevel: letter.grade_level,
+        expectedStartDate: letter.expected_start_date,
+        contractDuration: letter.contract_duration,
+        acceptanceDeadline: letter.acceptance_deadline,
+        salaryNotes: letter.salary_notes,
+        customClauses: letter.custom_clauses,
+        includeSsafeIfak: letter.include_ssafe_ifak,
+      }, false);
 
-    const element = document.createElement('a');
-    const file = new Blob([html], { type: 'text/html' });
-    element.href = URL.createObjectURL(file);
-    element.download = `offer-letter-${letter.job_title.replace(/\s+/g, '-')}.html`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+      const filename = `offer-letter-${letter.job_title.replace(/\s+/g, '-')}.pdf`;
+      await generatePDF(html, filename);
+    } catch (error) {
+      console.error('[v0] Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handleSubmitSignature = async () => {
@@ -321,11 +368,11 @@ export default function OfferSignaturePage() {
               </CardContent>
             </Card>
 
-            {letter.allow_download_unsigned && (
-              <Button onClick={handleDownload} variant="outline" className="w-full mt-4">
-                <Download className="h-4 w-4 mr-2" />
-                Download PDF
-              </Button>
+{letter.allow_download_unsigned && (
+<Button onClick={handleDownload} variant="outline" className="w-full mt-4" disabled={downloading}>
+{downloading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+{downloading ? 'Generating PDF...' : 'Download PDF'}
+</Button>
             )}
           </div>
 
@@ -416,15 +463,20 @@ export default function OfferSignaturePage() {
                     {signatureType === 'drawn' && (
                       <div>
                         <Label>Draw Signature Below</Label>
+                        <p className="text-sm text-muted-foreground mb-2">Use your mouse or finger to draw your signature</p>
                         <canvas
                           ref={canvasRef}
-                          width={400}
-                          height={150}
+                          width={500}
+                          height={200}
                           onMouseDown={startDrawing}
                           onMouseUp={stopDrawing}
                           onMouseMove={handleDrawSignature}
                           onMouseLeave={stopDrawing}
-                          className="mt-2 border-2 border-dashed border-gray-300 rounded w-full cursor-crosshair bg-white"
+                          onTouchStart={startDrawing}
+                          onTouchEnd={stopDrawing}
+                          onTouchMove={handleTouchMove}
+                          className="mt-2 border-2 border-dashed border-gray-300 rounded w-full cursor-crosshair bg-white touch-none"
+                          style={{ touchAction: 'none' }}
                         />
                         <Button 
                           variant="outline" 
@@ -439,7 +491,7 @@ export default function OfferSignaturePage() {
                             }
                           }}
                         >
-                          Clear
+                          Clear Signature
                         </Button>
                       </div>
                     )}

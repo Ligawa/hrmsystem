@@ -3,12 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { Download, X } from "lucide-react";
+import { Download, X, Loader2 } from "lucide-react";
+import { generatePDF } from "@/lib/offer-letter-pdf";
 
 export default function PreviewPage() {
   const params = useParams();
   const [html, setHtml] = useState('');
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     const storedHtml = localStorage.getItem(`offer-letter-${params.id}`);
@@ -18,17 +20,15 @@ export default function PreviewPage() {
     setLoading(false);
   }, [params.id]);
 
-  const handleDownload = async () => {
+  const handleDownloadPDF = async () => {
+    setDownloading(true);
     try {
-      const element = document.createElement('a');
-      const file = new Blob([html], { type: 'text/html' });
-      element.href = URL.createObjectURL(file);
-      element.download = `offer-letter-${params.id}.html`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
+      await generatePDF(html, `offer-letter-${params.id}.pdf`);
     } catch (error) {
-      console.error('[v0] Error downloading:', error);
+      console.error('[v0] Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -39,12 +39,21 @@ export default function PreviewPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Toolbar */}
-      <div className="sticky top-0 bg-white border-b shadow-sm p-4 flex justify-between items-center">
+      <div className="sticky top-0 bg-white border-b shadow-sm p-4 flex justify-between items-center z-10">
         <h1 className="text-lg font-semibold">Offer Letter Preview</h1>
         <div className="flex gap-2">
-          <Button onClick={handleDownload} variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Save HTML
+          <Button onClick={handleDownloadPDF} disabled={downloading}>
+            {downloading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Generating PDF...
+              </>
+            ) : (
+              <>
+                <Download className="h-4 w-4 mr-2" />
+                Download PDF
+              </>
+            )}
           </Button>
           <Button onClick={() => window.close()} variant="outline">
             <X className="h-4 w-4" />
