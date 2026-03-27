@@ -279,11 +279,6 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
           margin: 15mm;
         }
         @media print {
-          * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            color-adjust: exact !important;
-          }
           body {
             margin: 0;
             padding: 0;
@@ -499,10 +494,13 @@ export async function generatePDF(html: string, filename: string): Promise<void>
   
   return new Promise((resolve, reject) => {
     const element = document.createElement('div');
-    element.innerHTML = html;
+    
+    // Strip out any <style> tags that might contain Tailwind CSS with modern color functions
+    const cleanHtml = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+    element.innerHTML = cleanHtml;
 
     const options = {
-      margin: [15, 15, 15, 15], // 15mm margins: top, left, bottom, right
+      margin: [15, 15, 15, 15],
       filename: filename,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -511,16 +509,17 @@ export async function generatePDF(html: string, filename: string): Promise<void>
         allowTaint: true,
         logging: false,
         backgroundColor: '#ffffff',
-        removeContainer: true
+        removeContainer: true,
+        foreignObjectRendering: false
       },
       jsPDF: { 
         unit: 'mm', 
         format: 'a4', 
         orientation: 'portrait',
-        compress: true
+        compress: false
       },
       pagebreak: { 
-        mode: 'avoid-all', // Automatically handles pagination
+        mode: 'avoid-all',
         before: [],
         after: [],
         avoid: []
