@@ -150,9 +150,10 @@ export default function NewOfferLetterPage() {
         });
 
       router.push(`/setup/offer-letters/${data.id}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('[v0] Error creating offer letter:', error);
-      alert('Error creating offer letter');
+      const errorMessage = error?.message || error?.code || 'Unknown error';
+      alert(`Error creating offer letter: ${errorMessage}`);
     } finally {
       setSaving(false);
     }
