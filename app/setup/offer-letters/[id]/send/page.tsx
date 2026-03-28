@@ -78,8 +78,8 @@ UNEDF Human Resources Team`);
       
       // Generate secure token
       const token = uuidv4();
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 10); // 10-day expiry
+      // Use the admin-provided acceptance deadline instead of hardcoding 10 days
+      const expiryDate = new Date(letter.acceptance_deadline);
 
       // Update offer letter with token
       const { error: updateError } = await supabase
@@ -107,6 +107,7 @@ UNEDF Human Resources Team`);
           body: emailMessage,
           offerLetterId: letter.id,
           signatureToken: token,
+          acceptanceDeadline: letter.acceptance_deadline,
         })
       });
 
@@ -209,7 +210,9 @@ UNEDF Human Resources Team`);
           <h4 className="font-semibold text-sm mb-3">Important Information</h4>
           <ul className="text-sm space-y-2 text-amber-900">
             <li>✓ A secure signing link will be sent to {letter.applicant_email}</li>
-            <li>✓ The applicant will have 10 days to sign and accept the offer</li>
+            <li>✓ The applicant will have until {new Date(letter.acceptance_deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} to sign and accept the offer</li>
+            <li>✓ After this deadline, the offer will be automatically revoked and cannot be signed</li>
+            <li>✓ Only admins can re-issue revoked offer letters</li>
             <li>✓ You will receive notifications when the offer is viewed and signed</li>
             <li>✓ An audit trail will be maintained for compliance</li>
           </ul>

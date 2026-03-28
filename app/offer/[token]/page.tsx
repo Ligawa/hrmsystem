@@ -68,7 +68,19 @@ export default function OfferSignaturePage() {
 
         // Check if token is expired
         if (new Date(data.token_expires_at) < new Date()) {
-          setError('This offer letter has expired');
+          // Automatically revoke the offer
+          await supabase
+            .from('offer_letters')
+            .update({ status: 'revoked' })
+            .eq('id', data.id);
+          setError('This offer letter has expired and been automatically revoked. Please contact HR to request a new offer.');
+          setLoading(false);
+          return;
+        }
+
+        // Check if already revoked
+        if (data.status === 'revoked') {
+          setError('This offer letter has been revoked. Only HR can re-issue it.');
           setLoading(false);
           return;
         }
