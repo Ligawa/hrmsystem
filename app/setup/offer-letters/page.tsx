@@ -31,9 +31,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import {
   FileCheck, Plus, Eye, Send, Download, Trash2, Copy,
   Clock, X, Layers, Loader2, AlertTriangle, CheckCircle2, Filter,
+  Bold, Italic, List, Type,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -104,6 +106,7 @@ export default function OfferLettersPage() {
   const [bulkGrade, setBulkGrade] = useState('');
   const [bulkStation, setBulkStation] = useState('');
   const [bulkSalaryNotes, setBulkSalaryNotes] = useState('');
+  const salaryNotesRef = React.useRef<HTMLTextAreaElement>(null);
   const [bulkIncludeSsafe, setBulkIncludeSsafe] = useState(true);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -233,6 +236,49 @@ export default function OfferLettersPage() {
     } else {
       setSelectedAppIds(new Set(filteredApps.map(a => a.id)));
     }
+  }
+
+  // Rich text formatting helpers
+  function insertFormatting(before: string, after: string = '') {
+    const textarea = salaryNotesRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = bulkSalaryNotes.substring(start, end) || 'text';
+    const newText =
+      bulkSalaryNotes.substring(0, start) +
+      before + selectedText + after +
+      bulkSalaryNotes.substring(end);
+
+    setBulkSalaryNotes(newText);
+
+    // Restore cursor position
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(
+        start + before.length,
+        start + before.length + selectedText.length
+      );
+    }, 0);
+  }
+
+  function insertBulletPoint() {
+    const textarea = salaryNotesRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const lineStart = bulkSalaryNotes.lastIndexOf('\n', start - 1) + 1;
+    const beforeLine = bulkSalaryNotes.substring(0, lineStart);
+    const afterLine = bulkSalaryNotes.substring(lineStart);
+
+    const newText = beforeLine + '• ' + afterLine;
+    setBulkSalaryNotes(newText);
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(lineStart + 2, lineStart + 2);
+    }, 0);
   }
 
   async function executeBulkIssue() {
@@ -522,7 +568,71 @@ export default function OfferLettersPage() {
                 </div>
                 <div className="space-y-1.5 lg:col-span-3">
                   <Label>Salary &amp; Benefits Notes</Label>
-                  <Input placeholder="Optional notes on compensation..." value={bulkSalaryNotes} onChange={e => setBulkSalaryNotes(e.target.value)} />
+                  <div className="border rounded-md overflow-hidden bg-white">
+                    {/* Formatting Toolbar */}
+                    <div className="flex flex-wrap items-center gap-1 bg-muted/40 border-b p-2">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => insertFormatting('**', '**')}
+                        title="Bold"
+                        className="h-8 w-8 p-0"
+                      >
+                        <Bold className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => insertFormatting('_', '_')}
+                        title="Italic"
+                        className="h-8 w-8 p-0"
+                      >
+                        <Italic className="h-4 w-4" />
+                      </Button>
+                      <div className="w-px h-6 bg-border mx-1"></div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={insertBulletPoint}
+                        title="Add bullet point"
+                        className="h-8 w-8 p-0"
+                      >
+                        <List className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => insertFormatting('**Heading:** ')}
+                        title="Add heading"
+                        className="h-8 w-8 p-0"
+                      >
+                        <Type className="h-4 w-4" />
+                      </Button>
+                      <div className="flex-1"></div>
+                      <span className="text-xs text-muted-foreground px-2">
+                        Use **text** for bold, _text_ for italic
+                      </span>
+                    </div>
+                    {/* Text Area */}
+                    <Textarea
+                      ref={salaryNotesRef}
+                      placeholder="Enter compensation details, benefits, allowances, and other salary-related information. Supports rich formatting with the tools above."
+                      value={bulkSalaryNotes}
+                      onChange={e => setBulkSalaryNotes(e.target.value)}
+                      className="rounded-none border-0 focus-visible:ring-0 min-h-32 font-mono text-sm"
+                    />
+                    {/* Preview */}
+                    <div className="border-t bg-muted/20 p-3 text-xs text-muted-foreground max-h-24 overflow-y-auto">
+                      <p className="font-semibold mb-2">Preview:</p>
+                      <div className="whitespace-pre-wrap break-words text-foreground">
+                        {bulkSalaryNotes || 'Your formatted text will appear here...'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 lg:col-span-3">
                   <Checkbox id="bulk-ssafe" checked={bulkIncludeSsafe} onCheckedChange={v => setBulkIncludeSsafe(v as boolean)} />
