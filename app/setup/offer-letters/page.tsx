@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -106,7 +106,7 @@ export default function OfferLettersPage() {
   const [bulkGrade, setBulkGrade] = useState('');
   const [bulkStation, setBulkStation] = useState('');
   const [bulkSalaryNotes, setBulkSalaryNotes] = useState('');
-  const salaryNotesRef = React.useRef<HTMLTextAreaElement>(null);
+  const salaryNotesRef = useRef<HTMLTextAreaElement>(null);
   const [bulkIncludeSsafe, setBulkIncludeSsafe] = useState(true);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
