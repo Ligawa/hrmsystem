@@ -245,8 +245,9 @@ export default function OfferLetterDetailPage() {
           ${letter.status === 'sent' ? 'bg-purple-100 text-purple-800' : ''}
           ${letter.status === 'signed' ? 'bg-green-100 text-green-800' : ''}
           ${letter.status === 'viewed' ? 'bg-cyan-100 text-cyan-800' : ''}
+          ${letter.status === 'revoked' ? 'bg-red-100 text-red-800' : ''}
         `}>
-          {letter.status}
+          {letter.status === 'revoked' ? 'REVOKED' : letter.status}
         </Badge>
       </div>
 
@@ -261,6 +262,14 @@ export default function OfferLetterDetailPage() {
             <Button>
               <Send className="mr-2 h-4 w-4" />
               Send Offer
+            </Button>
+          </Link>
+        )}
+        {letter.status === 'revoked' && (
+          <Link href={`/setup/offer-letters/${letter.id}/send`}>
+            <Button className="bg-amber-600 hover:bg-amber-700">
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Re-issue Offer
             </Button>
           </Link>
         )}

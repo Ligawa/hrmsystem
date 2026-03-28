@@ -206,8 +206,11 @@ United Nations Economic Development Foundation
 
     // Handle offer letter sent type
     if (type === 'offer_letter_sent') {
-      const { signatureToken, offerLetterId } = body;
+      const { signatureToken, offerLetterId, acceptanceDeadline } = body;
       const signingLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://unoedp.org'}/offer/${signatureToken}`;
+      const deadlineDate = new Date(acceptanceDeadline);
+      const deadlineStr = deadlineDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const daysUntil = Math.ceil((deadlineDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
       
       htmlContent = `
         <!DOCTYPE html>
@@ -256,7 +259,8 @@ United Nations Economic Development Foundation
 
                 <div class="deadline">
                   <strong>Important: Acceptance Deadline</strong><br/>
-                  Please sign and accept this offer letter by the deadline shown in your personalized offer document. Once you accept, please download and retain a copy for your records.
+                  <strong style="font-size: 14px; color: #d97706;">${deadlineStr}</strong> (${daysUntil} day${daysUntil !== 1 ? 's' : ''} remaining)<br/>
+                  <p style="margin-top: 8px; margin-bottom: 0;">Please sign and accept this offer letter by the deadline. After this date, the offer will be automatically revoked and cannot be signed. Only our HR team can re-issue it.</p>
                 </div>
 
                 <h3>What to Expect</h3>
@@ -278,7 +282,7 @@ United Nations Economic Development Foundation
 
               <div class="footer">
                 <p><strong>UNEDF | Employment</strong></p>
-                <p>This is an official employment offer. The link above will expire in 10 days. Please act promptly to accept your offer.</p>
+                <p>This is an official employment offer. The offer link will expire on ${deadlineStr}. Please act promptly to accept your offer.</p>
                 <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} United Nations Economic Development Foundation. All rights reserved.</p>
               </div>
             </div>
@@ -299,7 +303,9 @@ Click the link below to access your secure signing portal and review your comple
 
 ${signingLink}
 
-Please sign and accept your offer letter by the deadline shown in your personalized offer document.
+ACCEPTANCE DEADLINE: ${deadlineStr} (${daysUntil} day${daysUntil !== 1 ? 's' : ''} remaining)
+
+Please sign and accept this offer letter by the deadline. After this date, the offer will be automatically revoked and cannot be signed. Only our HR team can re-issue it.
 
 If you have any questions, contact: careers@unoedp.org
 
