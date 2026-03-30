@@ -1040,24 +1040,18 @@ export default function ContractSignaturePage() {
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    onChange={(e) => setBsafeFile(e.files?.[0] || null)}
+                    accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.svg"
+                    onChange={handleFileSelect}
                     className="hidden"
                   />
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.svg"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                />
-                <Button
-                  variant="outline"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full"
-                >
-                  Select BSAFE File (PDF or Image)
-                </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full"
+                  >
+                    Select BSAFE File (PDF or Image)
+                  </Button>
+                </div>
                 
                 {bsafeFile && (
                   <div className="space-y-3">
