@@ -95,6 +95,7 @@ export default function ContractSignaturePage() {
   const [savedSignatureData, setSavedSignatureData] = useState('');
 
   const [bsafeFile, setBsafeFile] = useState<File | null>(null);
+  const [bsafePreview, setBsafePreview] = useState<string>('');
   const [bsafeUploading, setBsafeUploading] = useState(false);
 
   // Load contract
@@ -381,35 +382,81 @@ export default function ContractSignaturePage() {
       setBsafeUploading(true);
       const supabase = createClient();
 
-      // Upload to blob storage
+      // Create FormData
       const formData = new FormData();
       formData.append('file', bsafeFile);
+
+      console.log('[v0] Uploading BSAFE file:', bsafeFile.name);
 
       const uploadRes = await fetch(`/api/contracts/${contract!.id}/upload-bsafe`, {
         method: 'POST',
         body: formData,
       });
 
+      const uploadData = await uploadRes.json();
+
       if (!uploadRes.ok) {
-        throw new Error('Upload failed');
+        console.error('[v0] Upload failed:', uploadData);
+        throw new Error(uploadData.error || 'Upload failed');
       }
 
-      // Update contract status
-      await supabase
+      console.log('[v0] BSAFE upload successful');
+
+      // Update contract status to bsafe_pending
+      const { error: updateError } = await supabase
         .from('employment_contracts')
-        .update({ status: 'bsafe_pending' })
+        .update({ 
+          status: 'bsafe_pending',
+          bsafe_status: 'submitted',
+          bsafe_submitted_at: new Date().toISOString(),
+        })
         .eq('id', contract!.id);
+
+      if (updateError) {
+        console.error('[v0] Update error:', updateError);
+        throw updateError;
+      }
 
       const newCompleted = new Set(completedSteps);
       newCompleted.add('bsafe-upload');
       setCompletedSteps(newCompleted);
       setCurrentStep('completed');
     } catch (err) {
-      console.error('[v0] Error:', err);
-      alert('Error uploading BSAFE file');
+      console.error('[v0] BSAFE upload error:', err);
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      alert(`Error uploading BSAFE file: ${errorMsg}`);
     } finally {
       setBsafeUploading(false);
     }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Invalid file type. Allowed: PDF, JPG, PNG, GIF, WebP, SVG');
+      return;
+    }
+
+    // Validate file size (max 20MB)
+    if (file.size > 20 * 1024 * 1024) {
+      alert('File too large. Maximum size is 20MB');
+      return;
+    }
+
+    setBsafeFile(file);
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const preview = event.target?.result as string;
+      setBsafePreview(preview);
+      console.log('[v0] File preview created');
+    };
+    reader.readAsDataURL(file);
   };
 
   const getCanvasCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
@@ -997,16 +1044,52 @@ export default function ContractSignaturePage() {
                     onChange={(e) => setBsafeFile(e.files?.[0] || null)}
                     className="hidden"
                   />
-                  <Button
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    Select File
-                  </Button>
-                  {bsafeFile && (
-                    <p className="text-sm mt-2">Selected: {bsafeFile.name}</p>
-                  )}
-                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.svg"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full"
+                >
+                  Select BSAFE File (PDF or Image)
+                </Button>
+                
+                {bsafeFile && (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-blue-50 rounded border border-blue-200">
+                      <p className="text-sm font-semibold text-blue-900">Selected: {bsafeFile.name}</p>
+                      <p className="text-xs text-blue-700 mt-1">Size: {(bsafeFile.size / 1024).toFixed(2)} KB</p>
+                    </div>
+
+                    {bsafePreview && (
+                      <div className="border rounded-lg overflow-hidden bg-gray-50">
+                        {bsafeFile.type === 'application/pdf' ? (
+                          <div className="p-4 text-center">
+                            <p className="text-sm text-muted-foreground mb-2">PDF Preview</p>
+                            <iframe
+                              src={bsafePreview}
+                              className="w-full h-64 rounded"
+                              title="PDF Preview"
+                            />
+                          </div>
+                        ) : (
+                          <div className="p-4 text-center">
+                            <img
+                              src={bsafePreview}
+                              alt="File preview"
+                              className="max-w-full max-h-64 mx-auto rounded"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <Button
                   onClick={handleBsafeUpload}
@@ -1014,7 +1097,7 @@ export default function ContractSignaturePage() {
                   className="w-full"
                 >
                   {bsafeUploading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                  Upload BSAFE
+                  Upload BSAFE Certification
                 </Button>
               </div>
             )}
