@@ -69,7 +69,7 @@ export async function POST(
       );
     }
 
-    // Convert file to base64 for preview and storage
+    // Store file as base64 temporarily in memory for preview generation
     const buffer = await file.arrayBuffer();
     const base64 = Buffer.from(buffer).toString('base64');
     const dataUrl = `data:${file.type};base64,${base64}`;
@@ -85,27 +85,27 @@ export async function POST(
 
     let uploadResult;
     if (existingUpload) {
-      // Update existing upload
+      // Update existing upload - only store file metadata, not the entire base64 data
       uploadResult = await supabase
         .from('bsafe_uploads')
         .update({
           file_name: file.name,
           file_size: file.size,
-          file_url: dataUrl,
+          file_url: `file://${file.name}`, // Store reference instead of full base64
           uploaded_at: new Date().toISOString(),
         })
         .eq('contract_id', contractId)
         .select()
         .single();
     } else {
-      // Create new upload
+      // Create new upload - only store file metadata, not the entire base64 data
       uploadResult = await supabase
         .from('bsafe_uploads')
         .insert({
           contract_id: contractId,
           file_name: file.name,
           file_size: file.size,
-          file_url: dataUrl,
+          file_url: `file://${file.name}`, // Store reference instead of full base64
           uploaded_at: new Date().toISOString(),
         })
         .select()
@@ -124,11 +124,14 @@ export async function POST(
 
     console.log('[v0] BSAFE upload successful');
 
+    // Return the preview data URL to the client (not stored in DB due to size limits)
     return NextResponse.json({
       success: true,
       message: 'BSAFE file uploaded successfully',
       fileName: file.name,
-      preview: dataUrl,
+      fileSize: file.size,
+      fileType: file.type,
+      preview: dataUrl, // Send preview only to client for display
     });
 
   } catch (error) {
