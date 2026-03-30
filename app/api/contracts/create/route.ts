@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Fetch the offer letter
     const { data: offerLetter, error: offerError } = await supabase
