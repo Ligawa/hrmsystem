@@ -947,6 +947,8 @@ export default function ContractSignaturePage() {
                     </Button>
                   </div>
                 )}
+              </div>
+            )}
 
             {/* BSAFE Upload */}
             {currentStep === 'bsafe-upload' && (
