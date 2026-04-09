@@ -7,11 +7,20 @@ import { cookies } from 'next/headers'
  * it.
  */
 export async function createClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  // Handle missing credentials during build time
+  if (!url || !key) {
+    console.warn('[v0] Supabase credentials not available. This may occur during build time.')
+    return null as any // Return null during build - page should be dynamic
+  }
+
   const cookieStore = await cookies()
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {
