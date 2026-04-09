@@ -527,8 +527,8 @@ This is an automated email from the UNEDP HR system.
 
     // Build from address with custom name
     const fromAddress = fromName && fromName !== 'noreply' 
-      ? `${fromName} <noreply@unoedp.org>`
-      : 'noreply@unoedp.org';
+      ? `${fromName} <application@wvio.org>`
+      : 'application@wvio.org';
 
     // Send email via Resend
     console.log('[v0] Sending email to:', to, 'from:', fromAddress);
@@ -578,7 +578,7 @@ This is an automated email from the UNEDP HR system.
             .insert([
               {
                 inbox_id: inboxId,
-                from_email: 'noreply@unoedp.org',
+                from_email: 'application@wvio.org',
                 to_email: to,
                 subject: subject,
                 body: textContent,

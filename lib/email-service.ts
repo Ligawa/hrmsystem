@@ -13,7 +13,7 @@ export async function sendEmail({
   subject,
   html,
   text,
-  from = 'noreply@wvio.org',
+  from = 'application@wvio.org',
 }: SendEmailOptions) {
   if (!RESEND_API_KEY) {
     console.error('[v0] RESEND_API_KEY is not set');
