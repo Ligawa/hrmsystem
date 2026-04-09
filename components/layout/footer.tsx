@@ -30,11 +30,11 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { name: "Facebook", href: "https://facebook.com/undp", icon: Facebook },
-  { name: "Twitter", href: "https://twitter.com/undp", icon: Twitter },
-  { name: "Instagram", href: "https://instagram.com/undp", icon: Instagram },
-  { name: "LinkedIn", href: "https://linkedin.com/company/undp", icon: Linkedin },
-  { name: "YouTube", href: "https://youtube.com/undp", icon: Youtube },
+  { name: "Facebook", href: "https://facebook.com/worldvision", icon: Facebook },
+  { name: "Twitter", href: "https://twitter.com/worldvision", icon: Twitter },
+  { name: "Instagram", href: "https://instagram.com/worldvision", icon: Instagram },
+  { name: "LinkedIn", href: "https://linkedin.com/company/world-vision", icon: Linkedin },
+  { name: "YouTube", href: "https://youtube.com/worldvision", icon: Youtube },
 ]
 
 export function Footer() {
@@ -46,16 +46,16 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
               <img 
-                src="/images/unedp-logo.jpg" 
-                alt="UN Economic Development Programme Logo" 
+                src="/images/wvi-logo-white.svg" 
+                alt="World Vision International Logo" 
                 className="h-16 w-auto rounded bg-white p-2"
               />
             </Link>
             <p className="mt-4 text-sm text-white/80">
-              UN Economic Development Programme
+              World Vision International
             </p>
             <p className="mt-2 text-xs text-white/60">
-              Promoting sustainable economic development worldwide
+              Promoting sustainable development worldwide
             </p>
           </div>
 
@@ -140,7 +140,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 text-center text-sm text-white/60">
-          <p>© {new Date().getFullYear()} UN Economic Development Programme (UNEDP)</p>
+          <p>© {new Date().getFullYear()} World Vision International (WVI)</p>
         </div>
       </div>
     </footer>

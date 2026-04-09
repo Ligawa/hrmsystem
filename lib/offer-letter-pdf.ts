@@ -1,7 +1,7 @@
 'use client';
 
 // Use the external blob URL so html2pdf can load it via CORS without needing a local file path
-const UNEDP_LOGO_URL = 'https://oupmqhc10pd4webz.public.blob.vercel-storage.com/unedp-logo.jpg';
+const WVI_LOGO_URL = '/images/wvi-logo.svg';
 
 export interface OfferLetterData {
   applicantName: string;
@@ -105,7 +105,7 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
         SSAFE and IFAK 2.0 Requirement
       </h3>
       <p style="font-size: 11px; line-height: 1.6; color: #333; margin-bottom: 10px;">
-        All UNEDF staff members are required to complete and maintain the following safety training certifications:
+        All World Vision International staff members are required to complete and maintain the following safety training certifications:
       </p>
       <ul style="font-size: 11px; line-height: 1.8; color: #333; margin-left: 20px; margin-bottom: 15px;">
         <li><strong>SSAFE (Staff Safety Awareness and Familiarization Education):</strong> An online induction training mandatory for all UN staff.</li>
@@ -117,7 +117,7 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
       <ul style="font-size: 11px; line-height: 1.8; color: #333; margin-left: 20px; margin-bottom: 15px;">
         <li><strong>IICAR</strong> (www.iicar.org) - International Institute of Career Advancement and Recognition</li>
         <li><strong>UNSSC</strong> (www.unssc.org) - United Nations System Staff College</li>
-        <li>Other accredited first aid certification providers approved by UNEDF</li>
+        <li>Other accredited first aid certification providers approved by World Vision International</li>
       </ul>
       <p style="font-size: 11px; line-height: 1.6; color: #333;">
         Proof of completion must be submitted to Human Resources no later than <strong>${formattedDeadline}</strong> — the same deadline as the acceptance of this offer. Failure to provide proof of completion by this date may result in withdrawal of this offer or suspension of employment benefits.
@@ -165,7 +165,7 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
           <td></td>
           <td style="padding-top: 8px; font-size: 10pt; color: #444;">
             <strong style="display: block;">Authorized HR Representative</strong>
-            <span style="color: #666;">UNEDP Human Resources</span><br/>
+            <span style="color: #666;">World Vision International Human Resources</span><br/>
             <span style="color: #666;">Date: _______________</span>
           </td>
         </tr>
@@ -404,8 +404,8 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
             <!-- Logo and org name -->
             <div style="display: flex; align-items: center; gap: 0;">
               <img
-                src="${UNEDP_LOGO_URL}"
-                alt="UNEDP Logo"
+                src="${WVI_LOGO_URL}"
+                alt="World Vision International Logo"
                 style="width: 140px; height: auto; object-fit: contain; display: block;"
                 crossorigin="anonymous"
               />
@@ -416,7 +416,7 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
               <div style="width: 100%; height: 2px; background: #003D7A; margin: 6px 0;"></div>
               <div style="font-size: 10.5px; color: #555; margin-top: 4px;">Date: <strong style="color: #1a1a1a;">${todayDate}</strong></div>
               <div style="font-size: 10.5px; color: #555; margin-top: 2px;">Ref: <strong style="color: #1a1a1a;">OL-${new Date().getFullYear()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}</strong></div>
-              <div style="font-size: 10px; color: #888; margin-top: 4px;">www.unoedp.org</div>
+              <div style="font-size: 10px; color: #888; margin-top: 4px;">www.wvio.org</div>
             </div>
           </div>
           <!-- Full-width colour bar below header -->
@@ -432,7 +432,7 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
           <div class="salutation">Dear ${data.applicantName},</div>
 
           <div class="opening-paragraph">
-            <p>We are pleased to extend an offer of employment to you for the position of <strong>${data.jobTitle}</strong> with the United Nations Economic Development Foundation (UNEDF).</p>
+            <p>We are pleased to extend an offer of employment to you for the position of <strong>${data.jobTitle}</strong> with World Vision International (WVI).</p>
           </div>
 
           <p>
@@ -504,11 +504,10 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
         <section>
           <h2>CONDITIONS OF APPOINTMENT</h2>
           <p>
-            Your employment with UNEDF is on the following basis:
+            Your employment with World Vision International is on the following basis:
           </p>
           <ul>
-            <li><strong>Probation Period:</strong> A probation period of 3 months applies, during which either party may terminate the appointment with one week's written notice.</li>
-            <li><strong>Code of Conduct:</strong> You must adhere to the UNEDF Code of Conduct and UN Staff Rules and Regulations.</li>
+            <li><strong>Code of Conduct:</strong> You must adhere to the World Vision International Code of Conduct and UN Staff Rules and Regulations.</li>
             <li><strong>Confidentiality:</strong> All information obtained during employment must be treated as confidential.</li>
             <li><strong>Conflict of Interest:</strong> You must declare any conflict of interest and comply with UN conflict resolution procedures.</li>
             <li><strong>Notice Period:</strong> After the probation period, either party must provide 30 days' written notice for termination.</li>
@@ -536,7 +535,7 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
             Please note that the deadline for submitting any required documentation — including proof of training certifications, educational credentials, and other pre-employment requirements — is also <strong>${formattedDeadline}</strong>, coinciding with the acceptance deadline.
           </p>
           <p>
-            If you have any questions regarding this offer, please do not hesitate to contact our Human Resources department at <strong>careers@unoedp.org</strong>.
+            If you have any questions regarding this offer, please do not hesitate to contact our Human Resources department at <strong>careers@wvio.org</strong>.
           </p>
         </section>
 
@@ -545,8 +544,8 @@ export function generateOfferLetterHTML(data: OfferLetterData, isSigned: boolean
 
         <!-- Footer -->
         <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 10px; color: #999;">
-          <p>United Nations Economic Development Foundation &nbsp;|&nbsp; www.unoedp.org &nbsp;|&nbsp; careers@unoedp.org</p>
-          <p style="margin-top: 4px;">This is an official employment offer letter issued by UNEDP.</p>
+          <p>World Vision International &nbsp;|&nbsp; www.wvio.org &nbsp;|&nbsp; careers@wvio.org</p>
+          <p style="margin-top: 4px;">This is an official employment offer letter issued by World Vision International.</p>
         </div>
         </div><!-- end letter-body -->
       </div>

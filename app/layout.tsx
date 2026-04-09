@@ -13,35 +13,35 @@ const sourceSans = Source_Sans_3({
 
 export const metadata: Metadata = {
   title: {
-    default: 'UNEDP | UN Economic Development Programme',
-    template: '%s | UNEDP'
+    default: 'World Vision International | WVI',
+    template: '%s | World Vision International'
   },
-  description: 'UNEDP works globally to promote sustainable economic development, reduce poverty and inequality, and build resilient economies for a better future.',
-  keywords: ['UNEDP', 'United Nations', 'economic development', 'sustainable development', 'poverty reduction', 'development programme', 'global development'],
+  description: 'World Vision International works globally to promote sustainable economic development, reduce poverty and inequality, and build resilient economies for a better future.',
+  keywords: ['World Vision International', 'WVI', 'international development', 'sustainable development', 'poverty reduction', 'global development', 'humanitarian'],
   icons: {
-    icon: '/images/unedp-logo.jpg',
-    shortcut: '/images/unedp-logo.jpg',
-    apple: '/images/unedp-logo.jpg',
+    icon: '/images/wvi-logo.svg',
+    shortcut: '/images/wvi-logo.svg',
+    apple: '/images/wvi-logo.svg',
   },
   openGraph: {
-    title: 'UNEDP | UN Economic Development Programme',
+    title: 'World Vision International | WVI',
     description: 'Promoting sustainable economic development and reducing poverty worldwide.',
     type: 'website',
-    siteName: 'UNEDP',
+    siteName: 'World Vision International',
     images: [
       {
-        url: '/images/unedp-logo.jpg',
+        url: '/images/wvi-logo.svg',
         width: 1200,
         height: 630,
-        alt: 'UN Economic Development Programme',
+        alt: 'World Vision International',
       }
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'UNEDP | UN Economic Development Programme',
+    title: 'World Vision International | WVI',
     description: 'Promoting sustainable economic development and reducing poverty worldwide.',
-    images: ['/images/unedp-logo.jpg'],
+    images: ['/images/wvi-logo.svg'],
   },
     generator: 'v0.app'
 }

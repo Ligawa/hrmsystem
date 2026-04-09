@@ -91,7 +91,7 @@ export default function HomePage() {
               Building a Better Future for People and Planet
             </h1>
             <p className="mt-6 text-lg text-white/90 md:text-xl leading-relaxed">
-              The UN Economic Development Programme works in about 170 countries and territories, 
+              World Vision International works in about 170 countries and territories, 
               helping to promote sustainable economic development, reduce poverty and inequality, 
               and build resilient economies for a better future.
             </p>
@@ -134,7 +134,7 @@ export default function HomePage() {
                 Driving Progress on the Sustainable Development Goals
               </h2>
               <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-                UNEDP is committed to advancing sustainable development globally. We help countries build and share solutions 
+                World Vision International is committed to advancing sustainable development globally. We help countries build and share solutions 
                 to achieve the 17 Sustainable Development Goals, working across the interconnected challenges of 
                 poverty, inequality, climate change, and governance.
               </p>
@@ -309,7 +309,7 @@ export default function HomePage() {
               </Button>
             </form>
             <p className="mt-4 text-sm text-white/70">
-              By subscribing, you agree to receive communications from UNEDP. You can unsubscribe at any time.
+              By subscribing, you agree to receive communications from World Vision International. You can unsubscribe at any time.
             </p>
           </div>
         </div>
