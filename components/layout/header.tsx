@@ -41,20 +41,17 @@ export function Header() {
   const [currentLang, setCurrentLang] = useState("en")
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-white">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between lg:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
             <img 
               src="/images/wvi-logo.svg" 
               alt="World Vision International Logo" 
-              className="h-12 w-auto"
+              className="h-10 w-auto"
             />
-            <div className="hidden flex-col sm:flex">
-              <span className="text-xs font-semibold text-primary">World Vision International</span>
-              <span className="text-lg font-bold text-primary">WVI</span>
-            </div>
+            <span className="hidden sm:inline text-sm font-bold text-primary">World Vision International</span>
           </Link>
 
           {/* Desktop Navigation */}

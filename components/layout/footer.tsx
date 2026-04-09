@@ -39,7 +39,7 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-[#0468B1] text-white">
+    <footer className="border-t border-border bg-primary text-white">
       <div className="container mx-auto px-4 py-12 lg:py-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Logo and Description */}
@@ -55,7 +55,7 @@ export function Footer() {
               World Vision International
             </p>
             <p className="mt-2 text-xs text-white/60">
-              Promoting sustainable development worldwide
+              Protecting vulnerable children and fighting poverty globally
             </p>
           </div>
 
@@ -73,9 +73,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Our Work Links */}
+          {/* Focus Areas Links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Our Work</h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Focus Areas</h3>
             <ul className="space-y-2">
               {footerLinks.work.map((link) => (
                 <li key={link.name}>
