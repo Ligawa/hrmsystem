@@ -41,17 +41,17 @@ export function Header() {
   const [currentLang, setCurrentLang] = useState("en")
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-white">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-secondary text-white">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <img 
-              src="/images/wvi-logo.svg" 
+              src="/images/wvi-logo-white.svg" 
               alt="World Vision International Logo" 
               className="h-10 w-auto"
             />
-            <span className="hidden sm:inline text-sm font-bold text-primary">World Vision International</span>
+            <span className="hidden sm:inline text-sm font-bold text-white">World Vision International</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -60,7 +60,7 @@ export function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:text-primary"
+                className="px-4 py-2 text-sm font-semibold text-white transition-colors hover:text-white/80"
               >
                 {item.name}
               </Link>
@@ -75,13 +75,14 @@ export function Header() {
                 <input
                   type="search"
                   placeholder="Search..."
-                  className="h-9 w-64 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="h-9 w-64 rounded-md border border-white/30 bg-white/10 px-3 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white"
                   autoFocus
                 />
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setSearchOpen(false)}
+                  className="text-white hover:bg-white/20"
                   aria-label="Close search"
                 >
                   <X className="h-5 w-5" />
@@ -92,7 +93,7 @@ export function Header() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setSearchOpen(true)}
-                className="hidden lg:flex"
+                className="hidden lg:flex text-white hover:bg-white/20"
                 aria-label="Open search"
               >
                 <Search className="h-5 w-5" />
@@ -102,7 +103,7 @@ export function Header() {
             {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hidden gap-1 lg:flex">
+                <Button variant="ghost" size="sm" className="hidden gap-1 lg:flex text-white hover:bg-white/20">
                   <Globe className="h-4 w-4" />
                   <span className="uppercase">{currentLang}</span>
                   <ChevronDown className="h-3 w-3" />
@@ -113,7 +114,7 @@ export function Header() {
                   <DropdownMenuItem
                     key={lang.code}
                     onClick={() => setCurrentLang(lang.code)}
-                    className={currentLang === lang.code ? "bg-muted" : ""}
+                    className={currentLang === lang.code ? "bg-secondary text-white" : ""}
                   >
                     {lang.name}
                   </DropdownMenuItem>
@@ -124,7 +125,7 @@ export function Header() {
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
+                <Button variant="ghost" size="icon" className="lg:hidden text-white hover:bg-white/20" aria-label="Open menu">
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
