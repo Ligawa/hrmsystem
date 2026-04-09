@@ -13,7 +13,7 @@ export async function sendEmail({
   subject,
   html,
   text,
-  from = 'noreply@unoedp.org',
+  from = 'noreply@wvio.org',
 }: SendEmailOptions) {
   if (!RESEND_API_KEY) {
     console.error('[v0] RESEND_API_KEY is not set');
@@ -60,7 +60,7 @@ export const emailTemplates = {
         <p>Dear ${applicantName},</p>
         <p>Thank you for applying for the position of <strong>${jobTitle}</strong>.</p>
         <p>We have received your application and will review it shortly. You will be notified if you are selected for an interview.</p>
-        <p>Best regards,<br/>The UNDP Team</p>
+        <p>Best regards,<br/>The World Vision International Team</p>
       </div>
     `,
   }),
@@ -81,19 +81,19 @@ export const emailTemplates = {
                <p>While your application was strong, we have decided to move forward with other candidates at this time.</p>
                <p>We encourage you to apply for future opportunities.</p>`
         }
-        <p>Best regards,<br/>The UNDP Team</p>
+        <p>Best regards,<br/>The World Vision International Team</p>
       </div>
     `,
   }),
 
   newsletterSignup: () => ({
-    subject: 'Welcome to UNDP Updates',
+    subject: 'Welcome to World Vision International Updates',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>Welcome!</h2>
-        <p>Thank you for subscribing to UNDP news and updates.</p>
+        <p>Thank you for subscribing to World Vision International news and updates.</p>
         <p>You will now receive the latest information about our programs and opportunities.</p>
-        <p>Best regards,<br/>The UNDP Team</p>
+        <p>Best regards,<br/>The World Vision International Team</p>
       </div>
     `,
   }),
@@ -126,7 +126,7 @@ export const emailTemplates = {
             <br/>• IICAR: <a href="https://iicar.org">https://iicar.org</a>
           </p>
           <p>If you have any questions, please contact our HR department.</p>
-          <p>Best regards,<br/><strong>UNDP Human Resources</strong></p>
+          <p>Best regards,<br/><strong>World Vision International Human Resources</strong></p>
         </div>
       </div>
     `,
@@ -148,7 +148,7 @@ export const emailTemplates = {
             <li>You will be added to payroll</li>
           </ul>
           <p>Thank you for completing all onboarding requirements. We look forward to working with you!</p>
-          <p>Best regards,<br/><strong>UNDP Human Resources</strong></p>
+          <p>Best regards,<br/><strong>World Vision International Human Resources</strong></p>
         </div>
       </div>
     `,
@@ -165,7 +165,7 @@ export const emailTemplates = {
           <p><strong>Issue:</strong> ${reason}</p>
           <p>Please address the issue and resubmit your BSAFE certification. You can upload a corrected version through your contract portal.</p>
           <p>If you have any questions about the requirements, please contact our HR department.</p>
-          <p>Best regards,<br/><strong>UNDP Human Resources</strong></p>
+          <p>Best regards,<br/><strong>World Vision International Human Resources</strong></p>
         </div>
       </div>
     `,
@@ -181,7 +181,7 @@ export const emailTemplates = {
           <p>Your employment contract for the position of <strong>${jobTitle}</strong> has been updated.</p>
           <p><strong>Status:</strong> <span style="background-color: #f0f9ff; padding: 4px 8px; border-radius: 4px; text-transform: capitalize;">${status}</span></p>
           <p>${message}</p>
-          <p>Best regards,<br/><strong>UNDP Human Resources</strong></p>
+          <p>Best regards,<br/><strong>World Vision International Human Resources</strong></p>
         </div>
       </div>
     `,
@@ -197,7 +197,7 @@ export const emailTemplates = {
           <p>Your offer letter for the position of <strong>${jobTitle}</strong> has been updated.</p>
           <p><strong>Status:</strong> <span style="background-color: #f0f9ff; padding: 4px 8px; border-radius: 4px; text-transform: capitalize;">${status}</span></p>
           <p>${message}</p>
-          <p>Best regards,<br/><strong>UNDP Human Resources</strong></p>
+          <p>Best regards,<br/><strong>World Vision International Human Resources</strong></p>
         </div>
       </div>
     `,

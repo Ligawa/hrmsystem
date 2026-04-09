@@ -30,32 +30,32 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { name: "Facebook", href: "https://facebook.com/undp", icon: Facebook },
-  { name: "Twitter", href: "https://twitter.com/undp", icon: Twitter },
-  { name: "Instagram", href: "https://instagram.com/undp", icon: Instagram },
-  { name: "LinkedIn", href: "https://linkedin.com/company/undp", icon: Linkedin },
-  { name: "YouTube", href: "https://youtube.com/undp", icon: Youtube },
+  { name: "Facebook", href: "https://facebook.com/worldvision", icon: Facebook },
+  { name: "Twitter", href: "https://twitter.com/worldvision", icon: Twitter },
+  { name: "Instagram", href: "https://instagram.com/worldvision", icon: Instagram },
+  { name: "LinkedIn", href: "https://linkedin.com/company/world-vision", icon: Linkedin },
+  { name: "YouTube", href: "https://youtube.com/worldvision", icon: Youtube },
 ]
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-[#0468B1] text-white">
+    <footer className="border-t border-border bg-slate-800 text-white">
       <div className="container mx-auto px-4 py-12 lg:py-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Logo and Description */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
               <img 
-                src="/images/unedp-logo.jpg" 
-                alt="UN Economic Development Programme Logo" 
-                className="h-16 w-auto rounded bg-white p-2"
+                src="/images/wvi-logo-white.svg" 
+                alt="World Vision International Logo" 
+                className="h-16 w-auto"
               />
             </Link>
             <p className="mt-4 text-sm text-white/80">
-              UN Economic Development Programme
+              World Vision International
             </p>
             <p className="mt-2 text-xs text-white/60">
-              Promoting sustainable economic development worldwide
+              Protecting vulnerable children and fighting poverty globally
             </p>
           </div>
 
@@ -73,9 +73,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Our Work Links */}
+          {/* Focus Areas Links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Our Work</h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Focus Areas</h3>
             <ul className="space-y-2">
               {footerLinks.work.map((link) => (
                 <li key={link.name}>
@@ -140,7 +140,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 text-center text-sm text-white/60">
-          <p>© {new Date().getFullYear()} UN Economic Development Programme (UNEDP)</p>
+          <p>© {new Date().getFullYear()} World Vision International (WVI)</p>
         </div>
       </div>
     </footer>

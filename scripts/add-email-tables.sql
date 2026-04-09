@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS email_settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   domain VARCHAR(255) NOT NULL UNIQUE,
   is_active BOOLEAN DEFAULT TRUE,
-  allowed_reply_tos TEXT[] DEFAULT ARRAY['unoedp.org', 'alghahim.co.ke'],
+  allowed_reply_tos TEXT[] DEFAULT ARRAY['wvio.org', 'alghahim.co.ke'],
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -86,5 +86,5 @@ CREATE POLICY "Allow read email_settings to authenticated"
 
 -- Insert default email settings
 INSERT INTO email_settings (domain, is_active)
-VALUES ('unoedp.org', TRUE)
+VALUES ('wvio.org', TRUE)
 ON CONFLICT (domain) DO NOTHING;

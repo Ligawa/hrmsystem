@@ -24,13 +24,13 @@ export interface ContractParams {
 const letterheadHTML = `
   <div style="text-align: center; margin-bottom: 40px; border-bottom: 2px solid #003366; padding-bottom: 20px;">
     <div style="font-size: 24px; font-weight: bold; color: #003366; margin-bottom: 5px;">
-      UNITED NATIONS
+      WORLD VISION INTERNATIONAL
     </div>
     <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
-      ORGANIZATION
+      HUMAN RESOURCES
     </div>
     <div style="font-size: 11px; color: #666;">
-      Office of Human Resources
+      Office of Employment Contracts
     </div>
   </div>
 `;
@@ -225,7 +225,7 @@ export function generateContractHTML(
         
         <div class="section">
           <p style="text-align: center; font-weight: bold; margin-bottom: 20px;">
-            This Employment Contract ("Contract") is entered into as of ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}, between the United Nations and the below-named individual.
+            This Employment Contract ("Contract") is entered into as of ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}, between World Vision International and the below-named individual.
           </p>
         </div>
 
@@ -259,7 +259,7 @@ export function generateContractHTML(
         <h2>1. POSITION AND DUTIES</h2>
         <div class="section">
           <p>
-            The United Nations hereby engages the Employee in the position of <strong>${jobTitle}</strong> at the ${reportingStation || 'Headquarters'} office. The Employee agrees to perform all duties and responsibilities as assigned by the United Nations and in accordance with the United Nations Staff Regulations and Rules.
+            World Vision International hereby engages the Employee in the position of <strong>${jobTitle}</strong> at the ${reportingStation || 'Headquarters'} office. The Employee agrees to perform all duties and responsibilities as assigned by World Vision International and in accordance with the United Nations Staff Regulations and Rules.
           </p>
         </div>
 
@@ -278,7 +278,7 @@ export function generateContractHTML(
         <h2>3. COMPENSATION</h2>
         <div class="section">
           <p>
-            The Employee shall receive compensation as determined by the United Nations salary structure for the position and grade level. Details regarding salary, benefits, and allowances will be provided separately.
+            The Employee shall receive compensation as determined by the World Vision International salary structure for the position and grade level. Details regarding salary, benefits, and allowances will be provided separately.
           </p>
           ${salaryNotes ? `<p><strong>Additional Salary Notes:</strong><br/>${salaryNotes}</p>` : ''}
         </div>
@@ -298,14 +298,14 @@ export function generateContractHTML(
         <h2>5. CONDUCT AND COMPLIANCE</h2>
         <div class="section">
           <p>
-            The Employee shall adhere to the United Nations Standards of Conduct, Code of Ethics, and all applicable policies. The Employee agrees to maintain confidentiality regarding all United Nations information and operations.
+            The Employee shall adhere to the World Vision International Standards of Conduct, Code of Ethics, and all applicable policies. The Employee agrees to maintain confidentiality regarding all World Vision International information and operations.
           </p>
         </div>
 
         <h2>6. TERMINATION</h2>
         <div class="section">
           <p>
-            Either party may terminate this contract in accordance with the United Nations Staff Regulations and Rules. The United Nations reserves the right to terminate this contract at any time with appropriate notice as per regulations.
+            Either party may terminate this contract in accordance with the United Nations Staff Regulations and Rules. World Vision International reserves the right to terminate this contract at any time with appropriate notice as per regulations.
           </p>
         </div>
 
@@ -319,7 +319,7 @@ export function generateContractHTML(
         <h2>ACKNOWLEDGMENT AND SIGNATURE</h2>
         <div class="signature-section">
           <p>
-            By signing below, the Employee acknowledges having read and understood the terms and conditions of this Employment Contract and agrees to abide by all United Nations regulations and policies.
+            By signing below, the Employee acknowledges having read and understood the terms and conditions of this Employment Contract and agrees to abide by all World Vision International regulations and policies.
           </p>
 
           ${signatureHTML}

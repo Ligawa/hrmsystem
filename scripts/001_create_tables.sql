@@ -1,4 +1,4 @@
--- UNEDF Website Database Schema
+-- World Vision International Website Database Schema
 
 -- Countries table
 create table if not exists countries (
