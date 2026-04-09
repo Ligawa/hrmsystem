@@ -39,7 +39,7 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-primary text-white">
+    <footer className="border-t border-border bg-slate-800 text-white">
       <div className="container mx-auto px-4 py-12 lg:py-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Logo and Description */}
@@ -48,7 +48,7 @@ export function Footer() {
               <img 
                 src="/images/wvi-logo-white.svg" 
                 alt="World Vision International Logo" 
-                className="h-16 w-auto rounded bg-white p-2"
+                className="h-16 w-auto"
               />
             </Link>
             <p className="mt-4 text-sm text-white/80">

@@ -45,11 +45,11 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between lg:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <img 
               src="/images/wvi-logo-white.svg" 
               alt="World Vision International Logo" 
-              className="h-10 w-auto"
+              className="h-10 w-auto flex-shrink-0"
             />
             <span className="hidden sm:inline text-sm font-bold text-white">World Vision International</span>
           </Link>
