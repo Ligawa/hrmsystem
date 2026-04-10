@@ -27,6 +27,7 @@ import {
   Calendar,
 } from "lucide-react";
 import Link from "next/link";
+import { ApplicationDocuments } from "@/components/admin/application-documents";
 
 interface Application {
   id: string;
@@ -289,6 +290,9 @@ export default function ApplicationDetailPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* Submitted Documents */}
+          <ApplicationDocuments applicationId={application.id} />
         </div>
 
         {/* Sidebar */}

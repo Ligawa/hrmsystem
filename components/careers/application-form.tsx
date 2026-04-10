@@ -86,6 +86,23 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
       }
 
       const applicationId = insertedData[0].id;
+      
+      // Generate secure application token for tracking portal
+      const tokenResponse = await fetch('/api/applications/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          applicationId: applicationId,
+        }),
+      });
+
+      let applicationToken = '';
+      if (tokenResponse.ok) {
+        const tokenData = await tokenResponse.json();
+        applicationToken = tokenData.token;
+      }
 
       // Send automated confirmation email to applicant
       try {
@@ -100,6 +117,8 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
             applicantName: formData.full_name,
             jobTitle: jobTitle,
             applicationId: applicationId,
+            applicationToken: applicationToken,
+            trackingPortalUrl: applicationToken ? `${window.location.origin}/application/${applicationToken}` : null,
             type: "application_confirmation",
           }),
         });

@@ -16,7 +16,9 @@ export async function POST(req: NextRequest) {
       applicantName,
       jobTitle,
       applicationId,
-      fromName = 'UNEDF Team',
+      applicationToken,
+      trackingPortalUrl,
+      fromName = 'World Vision',
       type = 'general'
     } = body;
 
@@ -63,8 +65,8 @@ export async function POST(req: NextRequest) {
           <body>
             <div class="container">
               <div class="header">
-                <div class="logo">UNEDF</div>
-                <div class="subheader">United Nations Economic Development Foundation</div>
+                <div class="logo">World Vision</div>
+                <div class="subheader">World Vision International - Human Resources</div>
               </div>
 
               <div class="content">
@@ -73,6 +75,17 @@ export async function POST(req: NextRequest) {
                 <div class="highlight-box">
                   <strong>Application Received</strong><br/>
                   Thank you for your interest in the <strong>${jobTitle}</strong> position. We have successfully received your application and sincerely appreciate your interest in joining our team.
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Track Your Application</div>
+                  <p>You can now track your application status and submit required documents through our secure applicant portal:</p>
+                  ${trackingPortalUrl ? `
+                  <div style="text-align: center; margin: 20px 0;">
+                    <a href="${trackingPortalUrl}" style="display: inline-block; background-color: #1e40af; color: white; padding: 12px 24px; border-radius: 4px; text-decoration: none; font-weight: 600;">View Your Application Status</a>
+                  </div>
+                  ` : ''}
+                  <p style="font-size: 12px; color: #666;">Keep this link safe - you will need it to submit documents and check your application progress.</p>
                 </div>
 
                 <div class="section">
@@ -94,8 +107,8 @@ export async function POST(req: NextRequest) {
                     <div class="requirement-item"><strong>2. Current Role & Position:</strong> What is your current position/role? If not currently employed, tell us about your most recent position and what you've been doing.</div>
                     <div class="requirement-item"><strong>3. Relevant Experience:</strong> Describe your past roles and how they've prepared you for the ${jobTitle} position. Highlight key achievements that demonstrate your suitability for this role.</div>
                     <div class="requirement-item"><strong>4. Professional Certifications:</strong> Mention any professional certifications or credentials you currently hold that are relevant to this position. If you don't have specific certifications but are willing to obtain them if required for the role, please state this clearly.</div>
-                    <div class="requirement-item"><strong>5. Availability for Deployment:</strong> When would you be available to start working with UNEDF if selected? Are there any constraints or notice periods?</div>
-                    <div class="requirement-item"><strong>6. Background Check Authorization:</strong> Please confirm that you authorize UNEDF to conduct a comprehensive background check relevant to the ${jobTitle} position. This may include verification of educational credentials, employment history, and other relevant checks as permitted by law.</div>
+                    <div class="requirement-item"><strong>5. Availability for Deployment:</strong> When would you be available to start working with World Vision if selected? Are there any constraints or notice periods?</div>
+                    <div class="requirement-item"><strong>6. Background Check Authorization:</strong> Please confirm that you authorize World Vision International to conduct a comprehensive background check relevant to the ${jobTitle} position. This may include verification of educational credentials, employment history, and other relevant checks as permitted by law.</div>
                   </div>
                   <p style="margin-top: 15px; font-style: italic; color: #666;">These questions help us thoroughly understand your background, qualifications, and fit for the role.</p>
                 </div>
@@ -123,11 +136,11 @@ export async function POST(req: NextRequest) {
                     <div class="requirement-item"><strong>ID Document:</strong> Scan or photograph your government-issued ID (Passport, National ID, or Driver's License) and include it</div>
                     <div class="requirement-item"><strong>Educational Certificates:</strong> Include scans of your educational qualifications and any relevant certifications</div>
                   </div>
-                  <p style="margin-top: 15px;"><strong>Reply to this email with:</strong></p>
+                  <p style="margin-top: 15px;"><strong>Submit through your secure portal:</strong></p>
                   <div style="background-color: #f0f4ff; border-left: 3px solid #1e40af; padding: 12px; margin: 10px 0;">
-                    - Your video interview link<br/>
-                    - Your documents (attached or Google Drive links)<br/>
-                    - Brief introduction if not covered in video
+                    1. Visit your application portal using the link above<br/>
+                    2. Upload your video interview and documents<br/>
+                    3. Track your application status in real-time
                   </div>
                 </div>
 
@@ -139,20 +152,20 @@ export async function POST(req: NextRequest) {
 
                 <div class="section">
                   <div class="section-title">Questions?</div>
-                  <p>If you have any questions about the application process or need assistance, please don't hesitate to reach out to us at <a href="mailto:careers@unoedp.org">careers@unoedp.org</a>.</p>
+                  <p>If you have any questions about the application process or need assistance, please don't hesitate to reach out to us at <a href="mailto:application@wvio.org">application@wvio.org</a>.</p>
                 </div>
 
                 <p>Thank you again for your interest in the ${jobTitle} position. We look forward to learning more about you.</p>
 
                 <p>Best regards,<br/>
-                <strong>UNEDF Recruitment Team</strong><br/>
-                United Nations Economic Development Foundation</p>
+                <strong>World Vision Recruitment Team</strong><br/>
+                World Vision International</p>
               </div>
 
               <div class="footer">
-                <p><strong>UNEDF | Careers</strong></p>
-                <p>This is an automated message. Please do not reply with attachments to this address. Use the reply function or submit documents through Google Drive.</p>
-                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} United Nations Economic Development Foundation. All rights reserved.</p>
+                <p><strong>World Vision | Careers</strong></p>
+                <p>This is an automated message. Please do not reply with attachments to this address. Use the reply function or submit documents through our secure portal.</p>
+                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} World Vision International. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -164,7 +177,7 @@ Application Confirmation for ${jobTitle} Position
 
 Dear ${applicantName},
 
-Thank you for your interest in the ${jobTitle} position at UNEDF. We have successfully received your application.
+Thank you for your interest in the ${jobTitle} position at World Vision International. We have successfully received your application.
 
 PLEASE ANSWER THESE QUESTIONS IN A VIDEO (5-7 minutes):
 
@@ -424,12 +437,12 @@ United Nations Economic Development Foundation
           <body>
             <div class="container">
               <div class="header">
-                <div class="logo">UNEDP</div>
-                <div class="subheader">UN Economic Development Programme - Human Resources</div>
+                <div class="logo">World Vision</div>
+                <div class="subheader">World Vision International - Human Resources</div>
               </div>
 
               <div class="automated-notice">
-                <strong>AUTOMATED REMINDER</strong> - This is an automated message from the UNEDP Human Resources system regarding your application for the <strong>${jobTitle}</strong> position.
+                <strong>AUTOMATED REMINDER</strong> - This is an automated message from the World Vision Human Resources system regarding your application for the <strong>${jobTitle}</strong> position.
               </div>
 
               <div class="content">
@@ -462,19 +475,19 @@ United Nations Economic Development Foundation
                   <li>Or share Google Drive links to your video and documents</li>
                 </ul>
 
-                <p>If you have already submitted these documents, please disregard this reminder. If you have any questions or need assistance, please contact us at <a href="mailto:careers@unoedp.org">careers@unoedp.org</a>.</p>
+                <p>If you have already submitted these documents, please disregard this reminder. If you have any questions or need assistance, please contact us at <a href="mailto:application@wvio.org">application@wvio.org</a>.</p>
 
-                <p>Thank you for your interest in joining UNEDP.</p>
+                <p>Thank you for your interest in joining World Vision International.</p>
 
                 <p>Best regards,<br/>
-                <strong>UNEDP Human Resources Team</strong><br/>
-                UN Economic Development Programme</p>
+                <strong>World Vision Human Resources Team</strong><br/>
+                World Vision International</p>
               </div>
 
               <div class="footer">
-                <p><strong>UNEDP Human Resources | Automated Notification</strong></p>
-                <p>This is an automated email sent by the UNEDP HR system. Please do not reply directly to this email address for general inquiries. For questions about your application, contact <a href="mailto:careers@unoedp.org">careers@unoedp.org</a>.</p>
-                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} UN Economic Development Programme. All rights reserved.</p>
+                <p><strong>World Vision Human Resources | Automated Notification</strong></p>
+                <p>This is an automated email sent by the World Vision HR system. Please do not reply directly to this email address for general inquiries. For questions about your application, contact <a href="mailto:application@wvio.org">application@wvio.org</a>.</p>
+                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} World Vision International. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -482,11 +495,11 @@ United Nations Economic Development Foundation
       `;
       
       textContent = `
-AUTOMATED REMINDER - UNEDP Human Resources System
+AUTOMATED REMINDER - World Vision Human Resources System
 
 Dear ${applicantName},
 
-This is an automated reminder regarding your application for the ${jobTitle} position at UNEDP.
+This is an automated reminder regarding your application for the ${jobTitle} position at World Vision International.
 
 ACTION REQUIRED: We have not yet received all the required documents and information for your application.
 
@@ -508,14 +521,14 @@ HOW TO SUBMIT:
 
 If you have already submitted these documents, please disregard this reminder.
 
-Questions? Contact: careers@unoedp.org
+Questions? Contact: application@wvio.org
 
 Best regards,
-UNEDP Human Resources Team
-UN Economic Development Programme
+World Vision Human Resources Team
+World Vision International
 
 ---
-This is an automated email from the UNEDP HR system.
+This is an automated email from the World Vision HR system.
       `;
     }
 
