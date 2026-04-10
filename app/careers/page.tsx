@@ -19,9 +19,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Careers at UNEDF",
+  title: "Careers at World Vision",
   description:
-    "Join UNEDF and make a difference. Explore career opportunities with the United Nations Economic Development Foundation.",
+    "Join World Vision and make a difference. Explore career opportunities to create lasting change in communities worldwide.",
 };
 
 const benefits = [
