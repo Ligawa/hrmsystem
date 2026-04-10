@@ -1,18 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-interface ApplicationSubmission {
-  email: string;
-  videoLink: string;
-  documents: Array<{
-    name: string;
-    size: number;
-    type: string;
-  }>;
-  submittedAt: string;
-}
-
-// In-memory storage for demo (in production, use a database)
-const submissions: ApplicationSubmission[] = [];
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * POST /api/applications/submit
@@ -39,8 +26,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
+    // Initialize Supabase
+    const supabase = await createClient();
+    if (!supabase) {
+      console.error('[v0] Supabase client not available');
+      return NextResponse.json(
+        { error: 'Database service temporarily unavailable' },
+        { status: 503 }
+      );
+    }
+
     // Check for duplicate submissions
-    const existingSubmission = submissions.find((s) => s.email === email);
+    const { data: existingSubmission } = await supabase
+      .from('application_submissions')
+      .select('id')
+      .eq('email', email)
+      .single();
+
     if (existingSubmission) {
       return NextResponse.json(
         {
@@ -50,29 +52,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create submission record
-    const submission: ApplicationSubmission = {
-      email,
-      videoLink,
-      documents,
-      submittedAt: new Date().toISOString(),
-    };
+    // Create submission record in Supabase
+    const submittedAt = new Date().toISOString();
+    const { data: submission, error: submitError } = await supabase
+      .from('application_submissions')
+      .insert([
+        {
+          email,
+          video_link: videoLink,
+          documents: documents,
+          submitted_at: submittedAt,
+          status: 'submitted',
+        },
+      ])
+      .select()
+      .single();
 
-    // Store submission
-    submissions.push(submission);
+    if (submitError) {
+      console.error('[v0] Supabase insert error:', submitError);
+      return NextResponse.json(
+        { error: 'Failed to save submission. Please try again.' },
+        { status: 500 }
+      );
+    }
 
     console.log('[v0] Application submitted:', {
       email,
       documentCount: documents.length,
-      timestamp: submission.submittedAt,
+      submissionId: submission.id,
+      timestamp: submittedAt,
     });
 
     return NextResponse.json(
       {
         success: true,
         message: 'Application submitted successfully',
-        submissionId: `APP-${Date.now()}`,
-        submittedAt: submission.submittedAt,
+        submissionId: submission.id,
+        submittedAt: submittedAt,
       },
       { status: 201 }
     );
@@ -90,17 +106,46 @@ export async function POST(request: NextRequest) {
  * Retrieves all submissions (admin only)
  */
 export async function GET(request: NextRequest) {
-  // In production, verify admin authentication here
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  try {
+    // In production, verify admin authentication here
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-  return NextResponse.json(
-    {
-      submissions,
-      totalSubmissions: submissions.length,
-    },
-    { status: 200 }
-  );
+    const supabase = await createClient();
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database service temporarily unavailable' },
+        { status: 503 }
+      );
+    }
+
+    const { data: submissions, error } = await supabase
+      .from('application_submissions')
+      .select('*')
+      .order('submitted_at', { ascending: false });
+
+    if (error) {
+      console.error('[v0] Supabase fetch error:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch submissions' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        submissions: submissions || [],
+        totalSubmissions: submissions?.length || 0,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('[v0] GET error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch submissions' },
+      { status: 500 }
+    );
+  }
 }
