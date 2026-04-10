@@ -66,21 +66,20 @@ export const emailTemplates = {
   }),
 
   applicationDecision: (applicantName: string, jobTitle: string, approved: boolean) => ({
-    subject: approved 
+    subject: approved
       ? `Interview Invitation - ${jobTitle}`
       : `Application Update - ${jobTitle}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>${approved ? 'Interview Invitation' : 'Application Update'}</h2>
         <p>Dear ${applicantName},</p>
-        ${
-          approved
-            ? `<p>Congratulations! We are pleased to invite you for an interview for the position of <strong>${jobTitle}</strong>.</p>
+        ${approved
+        ? `<p>Congratulations! We are pleased to invite you for an interview for the position of <strong>${jobTitle}</strong>.</p>
                <p>Please contact us to schedule your interview.</p>`
-            : `<p>Thank you for your interest in the position of <strong>${jobTitle}</strong>.</p>
+        : `<p>Thank you for your interest in the position of <strong>${jobTitle}</strong>.</p>
                <p>While your application was strong, we have decided to move forward with other candidates at this time.</p>
                <p>We encourage you to apply for future opportunities.</p>`
-        }
+      }
         <p>Best regards,<br/>The World Vision International Team</p>
       </div>
     `,
@@ -110,7 +109,7 @@ export const emailTemplates = {
           </ul>
 
           <p style="margin: 20px 0;">
-            <a href="${portalUrl}" style="display: inline-block; background-color: #0468B1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+            <a href="${www.wvio.org / application - portal}" style="display: inline-block; background-color: #0468B1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">
               Access Submission Portal
             </a>
           </p>
