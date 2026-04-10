@@ -58,6 +58,9 @@ export async function POST(req: NextRequest) {
               a { color: #1e40af; text-decoration: none; }
               a:hover { text-decoration: underline; }
               .contact-info { background-color: #f3f4f6; padding: 15px; border-radius: 4px; margin-top: 20px; }
+              .cta-button { background-color: #1e40af; color: white; padding: 16px 40px; display: inline-block; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; margin: 25px 0; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3); transition: background-color 0.3s ease; }
+              .cta-button:hover { background-color: #1e3a8a; text-decoration: none; }
+              .cta-section { text-align: center; background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%); padding: 30px 20px; border-radius: 8px; margin: 30px 0; }
             </style>
           </head>
           <body>
@@ -73,6 +76,12 @@ export async function POST(req: NextRequest) {
                 <div class="highlight-box">
                   <strong>Application Received</strong><br/>
                   Thank you for your interest in the <strong>${jobTitle}</strong> position. We have successfully received your application and sincerely appreciate your interest in joining our team.
+                </div>
+
+                <div class="cta-section">
+                  <p style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1e40af;">Ready to proceed?</p>
+                  <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Submit Video & Documents Now</a>
+                  <p style="margin: 15px 0 0 0; font-size: 13px; color: #666;">Complete your application in one secure place</p>
                 </div>
 
                 <div class="section">
@@ -108,7 +117,7 @@ export async function POST(req: NextRequest) {
                     <div class="requirement-item">✓ Educational certificates/qualifications relevant to the position</div>
                     <div class="requirement-item">✓ Any additional certifications or credentials</div>
                   </div>
-                  <p style="margin-top: 15px;"><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" style="background-color: #1e40af; color: white; padding: 10px 20px; display: inline-block; border-radius: 4px; text-decoration: none;">Access Secure Upload Portal</a></p>
+                  <p style="margin-top: 20px; text-align: center;"><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Go to Application Portal</a></p>
                 </div>
 
                 <div class="deadline">
@@ -425,7 +434,9 @@ World Vision Human Resources Team
 
                 ${customMessage ? `<div class="custom-message"><strong>Additional Note from HR:</strong><br/>${customMessage}</div>` : ''}
 
-                <p style="margin-top: 20px;"><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" style="background-color: #1e40af; color: white; padding: 10px 20px; display: inline-block; border-radius: 4px; text-decoration: none;">Access Secure Upload Portal</a></p>
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Complete Your Application</a>
+                </div>
 
                 <div class="deadline">
                   <strong>Submission Deadline: ${deadlineStr}</strong><br/>
