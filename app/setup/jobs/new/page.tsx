@@ -12,13 +12,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 export default function NewJobPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [generating, setGenerating] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -41,6 +42,59 @@ export default function NewJobPage() {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
+  }
+
+  async function generateWithAI() {
+    if (!formData.title || !formData.level || !formData.location) {
+      setError("Please fill in Job Title, Level, and Location before generating");
+      return;
+    }
+
+    setGenerating(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/jobs/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: formData.title,
+          level: formData.level,
+          location: formData.location,
+          department: formData.department,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to generate job details");
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullResponse = "";
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          fullResponse += decoder.decode(value, { stream: true });
+        }
+      }
+
+      // Parse the generated JSON
+      const generated = JSON.parse(fullResponse);
+      
+      setFormData(prev => ({
+        ...prev,
+        description: generated.description || "",
+        requirements: (generated.requirements || []).join("\n"),
+        responsibilities: (generated.responsibilities || []).join("\n"),
+        benefits: (generated.benefits || []).join("\n"),
+      }));
+    } catch (err) {
+      console.error("[v0] AI generation error:", err);
+      setError("Failed to generate job details. Please try again or fill them manually.");
+    } finally {
+      setGenerating(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -218,8 +272,27 @@ export default function NewJobPage() {
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Job Description</CardTitle>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={generateWithAI}
+              disabled={generating || !formData.title || !formData.level || !formData.location}
+            >
+              {generating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Generate with AI
+                </>
+              )}
+            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
