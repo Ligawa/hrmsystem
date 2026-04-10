@@ -4,13 +4,12 @@ import React from "react"
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { upload } from "@vercel/blob/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, CheckCircle, Send, Upload } from "lucide-react";
+import { Loader2, CheckCircle, Send, Upload, AlertCircle } from "lucide-react";
 
 interface ApplicationFormProps {
   jobId: string;
@@ -43,13 +42,23 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
     try {
       let resumeUrl: string | null = null;
 
-      // Upload resume to Vercel Blob if provided
+      // Upload resume via backend if provided
       if (resumeFile) {
-        const blob = await upload(resumeFile.name, resumeFile, {
-          access: "public",
-          handleUploadUrl: "/api/upload",
+        const formData = new FormData();
+        formData.append("file", resumeFile);
+
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
         });
-        resumeUrl = blob.url;
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.error || "Failed to upload resume");
+        }
+
+        const uploadData = await uploadResponse.json();
+        resumeUrl = uploadData.url;
       }
 
       const supabase = createClient();
@@ -256,13 +265,31 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="resume">Resume / CV</Label>
+            <Label htmlFor="resume">Resume / CV (PDF, Max 5MB)</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="resume"
                 type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                accept=".pdf"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    // Validate file type
+                    if (file.type !== "application/pdf") {
+                      setError("Only PDF files are allowed");
+                      return;
+                    }
+                    // Validate file size (5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                      setError("File size must be less than 5MB");
+                      return;
+                    }
+                    setError(null);
+                    setResumeFile(file);
+                  } else {
+                    setResumeFile(null);
+                  }
+                }}
                 className="hidden"
               />
               <Button
@@ -272,9 +299,15 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
                 onClick={() => document.getElementById("resume")?.click()}
               >
                 <Upload className="mr-2 h-4 w-4" />
-                {resumeFile ? resumeFile.name : "Upload Resume (PDF, DOC)"}
+                {resumeFile ? resumeFile.name : "Upload Resume (PDF Only)"}
               </Button>
             </div>
+            {resumeFile && (
+              <div className="flex items-center gap-2 rounded-md bg-blue-50 p-2 text-sm text-blue-700">
+                <CheckCircle className="h-4 w-4" />
+                <span>{resumeFile.name} ({(resumeFile.size / 1024).toFixed(0)} KB)</span>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
