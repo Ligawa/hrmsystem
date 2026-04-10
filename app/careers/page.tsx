@@ -58,17 +58,28 @@ const typeColors: Record<string, string> = {
 };
 
 export default async function CareersPage() {
-  const supabase = await createClient();
+  let jobs = [];
 
-  const { data: jobs } = await supabase
-    .from("jobs")
-    .select("*")
-    .eq("is_active", true)
-    .order("featured", { ascending: false })
-    .order("created_at", { ascending: false });
+  try {
+    const supabase = await createClient();
+    if (supabase) {
+      const { data } = await supabase
+        .from("jobs")
+        .select("*")
+        .eq("is_active", true)
+        .order("featured", { ascending: false })
+        .order("created_at", { ascending: false });
+      
+      if (data) {
+        jobs = data;
+      }
+    }
+  } catch (error) {
+    console.log("[v0] Could not fetch jobs from database", error);
+  }
 
-  const featuredJobs = jobs?.filter((job) => job.featured) || [];
-  const regularJobs = jobs?.filter((job) => !job.featured) || [];
+  const featuredJobs = jobs?.filter((job: any) => job.featured) || [];
+  const regularJobs = jobs?.filter((job: any) => !job.featured) || [];
 
   return (
     <div className="min-h-screen">
@@ -113,10 +124,10 @@ export default async function CareersPage() {
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold md:text-4xl">Why Join UNEDP?</h2>
+            <h2 className="text-3xl font-bold md:text-4xl">Why Join World Vision?</h2>
             <p className="mt-4 text-muted-foreground">
-              At UNEDP, you will have the opportunity to contribute to
-              meaningful work that shapes the future of sustainable development.
+              At World Vision, you will have the opportunity to contribute to
+              meaningful work that transforms communities and creates lasting change worldwide.
             </p>
           </div>
           <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -230,7 +241,7 @@ export default async function CareersPage() {
               {jobs?.length || 0} Open Positions
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
-              Explore all available roles and find the perfect opportunity to advance your career with UNEDF.
+              Explore all available roles and find the perfect opportunity to advance your career with World Vision.
             </p>
           </div>
 
@@ -304,8 +315,7 @@ export default async function CareersPage() {
           <h2 className="text-3xl font-bold">Ready to Make an Impact?</h2>
           <p className="mx-auto mt-4 max-w-2xl text-white/90">
             Join thousands of professionals who have chosen to build their
-            careers at UNEDP and contribute to sustainable development
-            worldwide.
+            careers at World Vision and create lasting change in communities worldwide.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a href="#openings">
@@ -319,7 +329,7 @@ export default async function CareersPage() {
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-primary bg-transparent"
               >
-                About UNEDP
+                About World Vision
               </Button>
             </Link>
           </div>
