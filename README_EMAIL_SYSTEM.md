@@ -1,8 +1,8 @@
-# 📧 UNDP Email Management System
+# 📧 World Vision Email Management System
 
 ## What's New?
 
-Your UNDP application now has a **complete email management system** powered by Resend. Send and receive emails, manage an inbox, and reply to customers—all from your admin dashboard.
+Your World Vision application now has a **complete email management system** powered by Resend. Send and receive emails, manage an inbox, and reply to applicants—all from your admin dashboard.
 
 ---
 
@@ -16,7 +16,7 @@ Your UNDP application now has a **complete email management system** powered by 
 
 2. Create Admin Account  
    └─ Visit /setup/register
-   └─ Use @unoedp.org or @alghahim.co.ke email
+   └─ Use authorized email domain
    └─ Verify email
 
 3. Access Email Pages
@@ -51,7 +51,7 @@ Your UNDP application now has a **complete email management system** powered by 
 ### Admin Authentication
 ```
 /setup/register (Admin Only)
-├─ Restricted to: @unoedp.org, @alghahim.co.ke
+├─ Restricted to: Authorized email domains
 ├─ Not visible on public signup
 ├─ Email verification required
 └─ Secure password protection
@@ -151,6 +151,7 @@ Documentation/
 **Admin Dashboard**: `/setup`  
 **Email Inbox**: `/setup/emails`  
 **Email Settings**: `/setup/email-settings`  
+**Application Portal**: `/application-portal` (for secure document uploads)  
 **Admin Login**: `/setup/login`  
 **Admin Registration**: `/setup/register`  
 
@@ -367,4 +368,6 @@ Your UNDP application now has a **production-ready email system** with:
 
 **Last Updated**: 2024  
 **Version**: 1.0  
-**Status**: ✅ PRODUCTION READY
+**Status**: ✅ PRODUCTION READY  
+**Organization**: World Vision  
+**Application Note**: All templates updated to use secure document upload portal instead of email attachments
