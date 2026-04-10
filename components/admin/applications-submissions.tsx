@@ -43,10 +43,14 @@ interface ApplicationDocument {
 }
 
 interface ApplicationSubmission {
+  id?: string;
   email: string;
-  videoLink: string;
+  video_link?: string;
+  videoLink?: string;
   documents: ApplicationDocument[];
-  submittedAt: string;
+  submitted_at?: string;
+  submittedAt?: string;
+  status?: string;
 }
 
 interface SubmissionsData {
@@ -220,7 +224,7 @@ export function ApplicationsSubmissions() {
                       </div>
                     </TableCell>
                     <TableCell className="text-sm text-slate-600">
-                      {formatDate(submission.submittedAt)}
+                      {formatDate(submission.submitted_at || submission.submittedAt || '')}
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{submission.documents.length} files</Badge>
@@ -229,7 +233,7 @@ export function ApplicationsSubmissions() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleOpenLink(submission.videoLink)}
+                        onClick={() => handleOpenLink(submission.video_link || submission.videoLink || '')}
                         className="text-blue-600 hover:text-blue-700"
                       >
                         <ExternalLink className="h-4 w-4" />
@@ -270,12 +274,12 @@ export function ApplicationsSubmissions() {
                 </h3>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 text-sm bg-slate-50 p-2 rounded border border-slate-200 overflow-x-auto">
-                    {selectedSubmission.videoLink}
+                    {selectedSubmission.video_link || selectedSubmission.videoLink || 'No video link'}
                   </code>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleOpenLink(selectedSubmission.videoLink)}
+                    onClick={() => handleOpenLink(selectedSubmission.video_link || selectedSubmission.videoLink || '')}
                   >
                     <ExternalLink className="h-4 w-4" />
                   </Button>
@@ -308,7 +312,7 @@ export function ApplicationsSubmissions() {
               {/* Submission Info */}
               <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm text-blue-900">
-                  <strong>Submitted:</strong> {formatDate(selectedSubmission.submittedAt)}
+                  <strong>Submitted:</strong> {formatDate(selectedSubmission.submitted_at || selectedSubmission.submittedAt || '')}
                 </p>
               </div>
             </div>

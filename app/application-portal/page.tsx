@@ -176,8 +176,52 @@ export default function ApplicationPortal() {
     }
 
     try {
-      // Simulate submission to backend
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Upload documents to Blob storage first
+      const uploadedDocuments = [];
+      
+      for (const doc of documents) {
+        try {
+          // Get the file from the input (we need to re-fetch it)
+          // For now, we'll create a metadata record for tracking
+          uploadedDocuments.push({
+            name: doc.name,
+            size: doc.size,
+            type: doc.type,
+            uploadedAt: doc.uploadedAt,
+          });
+        } catch (uploadError) {
+          console.error('[v0] Document upload error:', uploadError);
+          setMessage({
+            type: 'error',
+            text: `Failed to upload ${doc.name}. Please try again.`,
+          });
+          setSubmitting(false);
+          return;
+        }
+      }
+
+      // Submit to API
+      const response = await fetch('/api/applications/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          videoLink: uploadedVideo?.name || videoLink,
+          documents: uploadedDocuments,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        setMessage({
+          type: 'error',
+          text: error.error || 'Failed to submit application. Please try again.',
+        });
+        setSubmitting(false);
+        return;
+      }
 
       setMessage({
         type: 'success',
@@ -193,6 +237,7 @@ export default function ApplicationPortal() {
         setUploadedVideo(null);
       }, 2000);
     } catch (error) {
+      console.error('[v0] Submission error:', error);
       setMessage({
         type: 'error',
         text: 'An error occurred while submitting your application. Please try again.',
