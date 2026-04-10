@@ -42,6 +42,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const blob = await put(filename, file, {
       access: "public",
       contentType: "application/pdf",
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
     return NextResponse.json(
