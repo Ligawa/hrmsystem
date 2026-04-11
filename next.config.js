@@ -4,10 +4,8 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
-  // React Compiler support (stable in Next.js 16)
-  experimental: {
-    reactCompiler: true,
-  },
+  // React Compiler support (stable in Next.js 16) - at root level
+  reactCompiler: true,
   // Image optimization
   images: {
     remotePatterns: [
