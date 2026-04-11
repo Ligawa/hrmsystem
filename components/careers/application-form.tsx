@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, CheckCircle, Send, Upload } from "lucide-react";
+import { Loader2, CheckCircle, Send, Upload, AlertCircle } from "lucide-react";
 
 interface ApplicationFormProps {
   jobId: string;
@@ -42,7 +42,7 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
     try {
       let resumeUrl: string | null = null;
 
-      // Upload resume to Vercel Blob if provided
+      // Upload resume via backend if provided
       if (resumeFile) {
         try {
           const uploadFormData = new FormData();
@@ -99,6 +99,23 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
       }
 
       const applicationId = insertedData[0].id;
+      
+      // Generate secure application token for tracking portal
+      const tokenResponse = await fetch('/api/applications/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          applicationId: applicationId,
+        }),
+      });
+
+      let applicationToken = '';
+      if (tokenResponse.ok) {
+        const tokenData = await tokenResponse.json();
+        applicationToken = tokenData.token;
+      }
 
       // Send automated confirmation email to applicant
       try {
@@ -113,6 +130,8 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
             applicantName: formData.full_name,
             jobTitle: jobTitle,
             applicationId: applicationId,
+            applicationToken: applicationToken,
+            trackingPortalUrl: applicationToken ? `https://www.wvio.org/application/${applicationToken}` : null,
             type: "application_confirmation",
           }),
         });
@@ -278,13 +297,31 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="resume">Resume / CV</Label>
+            <Label htmlFor="resume">Resume / CV (PDF, Max 5MB)</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="resume"
                 type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                accept=".pdf"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    // Validate file type
+                    if (file.type !== "application/pdf") {
+                      setError("Only PDF files are allowed");
+                      return;
+                    }
+                    // Validate file size (5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                      setError("File size must be less than 5MB");
+                      return;
+                    }
+                    setError(null);
+                    setResumeFile(file);
+                  } else {
+                    setResumeFile(null);
+                  }
+                }}
                 className="hidden"
               />
               <Button
@@ -294,9 +331,15 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
                 onClick={() => document.getElementById("resume")?.click()}
               >
                 <Upload className="mr-2 h-4 w-4" />
-                {resumeFile ? resumeFile.name : "Upload Resume (PDF, DOC)"}
+                {resumeFile ? resumeFile.name : "Upload Resume (PDF Only)"}
               </Button>
             </div>
+            {resumeFile && (
+              <div className="flex items-center gap-2 rounded-md bg-blue-50 p-2 text-sm text-blue-700">
+                <CheckCircle className="h-4 w-4" />
+                <span>{resumeFile.name} ({(resumeFile.size / 1024).toFixed(0)} KB)</span>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

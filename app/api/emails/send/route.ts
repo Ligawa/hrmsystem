@@ -85,6 +85,17 @@ export async function POST(req: NextRequest) {
                 </div>
 
                 <div class="section">
+                  <div class="section-title">Track Your Application</div>
+                  <p>You can now track your application status and submit required documents through our secure applicant portal:</p>
+                  ${trackingPortalUrl ? `
+                  <div style="text-align: center; margin: 20px 0;">
+                    <a href="${trackingPortalUrl}" style="display: inline-block; background-color: #1e40af; color: white; padding: 12px 24px; border-radius: 4px; text-decoration: none; font-weight: 600;">View Your Application Status</a>
+                  </div>
+                  ` : ''}
+                  <p style="font-size: 12px; color: #666;">Keep this link safe - you will need it to submit documents and check your application progress.</p>
+                </div>
+
+                <div class="section">
                   <div class="section-title">Next Steps</div>
                   <p>Due to the high volume of applications we receive, we are unable to schedule individual meetings with every applicant. However, we value your interest and would like to hear more about you through the following process:</p>
                 </div>
