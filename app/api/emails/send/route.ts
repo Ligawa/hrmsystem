@@ -16,9 +16,7 @@ export async function POST(req: NextRequest) {
       applicantName,
       jobTitle,
       applicationId,
-      applicationToken,
-      trackingPortalUrl,
-      fromName = 'World Vision',
+      fromName = 'World Vision Team',
       type = 'general'
     } = body;
 
@@ -60,13 +58,16 @@ export async function POST(req: NextRequest) {
               a { color: #1e40af; text-decoration: none; }
               a:hover { text-decoration: underline; }
               .contact-info { background-color: #f3f4f6; padding: 15px; border-radius: 4px; margin-top: 20px; }
+              .cta-button { background-color: #1e40af; color: white; padding: 16px 40px; display: inline-block; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; margin: 25px 0; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3); transition: background-color 0.3s ease; }
+              .cta-button:hover { background-color: #1e3a8a; text-decoration: none; }
+              .cta-section { text-align: center; background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%); padding: 30px 20px; border-radius: 8px; margin: 30px 0; }
             </style>
           </head>
           <body>
             <div class="container">
               <div class="header">
                 <div class="logo">World Vision</div>
-                <div class="subheader">World Vision International - Human Resources</div>
+                <div class="subheader">Recruitment & Talent Development</div>
               </div>
 
               <div class="content">
@@ -75,6 +76,12 @@ export async function POST(req: NextRequest) {
                 <div class="highlight-box">
                   <strong>Application Received</strong><br/>
                   Thank you for your interest in the <strong>${jobTitle}</strong> position. We have successfully received your application and sincerely appreciate your interest in joining our team.
+                </div>
+
+                <div class="cta-section">
+                  <p style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1e40af;">Ready to proceed?</p>
+                  <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Submit Video & Documents Now</a>
+                  <p style="margin: 15px 0 0 0; font-size: 13px; color: #666;">Complete your application in one secure place</p>
                 </div>
 
                 <div class="section">
@@ -95,7 +102,7 @@ export async function POST(req: NextRequest) {
 
                 <div class="section">
                   <div class="section-title">Video Interview & Key Questions</div>
-                  <p>Please record a brief video (3-5 minutes) answering the following questions. You may submit your video using:</p>
+                  <p>Please record a brief video (5-7 minutes) answering the following questions. You may submit your video using:</p>
                   <div class="requirement">
                     <div class="requirement-item"><strong>Option 1:</strong> <a href="https://loom.com" target="_blank">Loom.com</a> (Recommended - easy recording and upload)</div>
                     <div class="requirement-item"><strong>Option 2:</strong> <a href="https://drive.google.com" target="_blank">Google Drive</a> (Upload video file directly)</div>
@@ -108,40 +115,20 @@ export async function POST(req: NextRequest) {
                     <div class="requirement-item"><strong>3. Relevant Experience:</strong> Describe your past roles and how they've prepared you for the ${jobTitle} position. Highlight key achievements that demonstrate your suitability for this role.</div>
                     <div class="requirement-item"><strong>4. Professional Certifications:</strong> Mention any professional certifications or credentials you currently hold that are relevant to this position. If you don't have specific certifications but are willing to obtain them if required for the role, please state this clearly.</div>
                     <div class="requirement-item"><strong>5. Availability for Deployment:</strong> When would you be available to start working with World Vision if selected? Are there any constraints or notice periods?</div>
-                    <div class="requirement-item"><strong>6. Background Check Authorization:</strong> Please confirm that you authorize World Vision International to conduct a comprehensive background check relevant to the ${jobTitle} position. This may include verification of educational credentials, employment history, and other relevant checks as permitted by law.</div>
+                    <div class="requirement-item"><strong>6. Background Check Authorization:</strong> Please confirm that you authorize World Vision to conduct a comprehensive background check relevant to the ${jobTitle} position. This may include verification of educational credentials, employment history, and other relevant checks as permitted by law.</div>
                   </div>
                   <p style="margin-top: 15px; font-style: italic; color: #666;">These questions help us thoroughly understand your background, qualifications, and fit for the role.</p>
                 </div>
 
                 <div class="section">
-                  <div class="section-title">Required Documents</div>
-                  <p>Please prepare and submit the following documents:</p>
+                  <div class="section-title">Secure Document Upload Portal</div>
+                  <p>Please upload your supporting documents to our secure online portal. You'll be able to submit:</p>
                   <div class="requirement">
                     <div class="requirement-item">✓ Valid government-issued ID (Passport, National ID, or Driver's License)</div>
                     <div class="requirement-item">✓ Educational certificates/qualifications relevant to the position</div>
                     <div class="requirement-item">✓ Any additional certifications or credentials</div>
                   </div>
-                  <p style="margin-top: 15px;">You may submit these documents by:</p>
-                  <div class="requirement">
-                    <div class="requirement-item">• Replying to this email with the documents attached</div>
-                    <div class="requirement-item">• Uploading to <a href="https://drive.google.com" target="_blank">Google Drive</a> and sharing the link</div>
-                  </div>
-                </div>
-
-                <div class="section">
-                  <div class="section-title">How to Submit Your Video & Documents</div>
-                  <p>Once you've recorded your video answering the questions above, please submit as follows:</p>
-                  <div class="requirement">
-                    <div class="requirement-item"><strong>Video:</strong> Share your Loom link or upload your video to Google Drive and share the link in your reply</div>
-                    <div class="requirement-item"><strong>ID Document:</strong> Scan or photograph your government-issued ID (Passport, National ID, or Driver's License) and include it</div>
-                    <div class="requirement-item"><strong>Educational Certificates:</strong> Include scans of your educational qualifications and any relevant certifications</div>
-                  </div>
-                  <p style="margin-top: 15px;"><strong>Submit through your secure portal:</strong></p>
-                  <div style="background-color: #f0f4ff; border-left: 3px solid #1e40af; padding: 12px; margin: 10px 0;">
-                    1. Visit your application portal using the link above<br/>
-                    2. Upload your video interview and documents<br/>
-                    3. Track your application status in real-time
-                  </div>
+                  <p style="margin-top: 20px; text-align: center;"><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Go to Application Portal</a></p>
                 </div>
 
                 <div class="deadline">
@@ -152,20 +139,19 @@ export async function POST(req: NextRequest) {
 
                 <div class="section">
                   <div class="section-title">Questions?</div>
-                  <p>If you have any questions about the application process or need assistance, please don't hesitate to reach out to us at <a href="mailto:application@wvio.org">application@wvio.org</a>.</p>
+                  <p>If you have any questions about the application process or need assistance, please don't hesitate to reach out to us at <a href="mailto:careers@worldvision.org">careers@worldvision.org</a>.</p>
                 </div>
 
                 <p>Thank you again for your interest in the ${jobTitle} position. We look forward to learning more about you.</p>
 
                 <p>Best regards,<br/>
-                <strong>World Vision Recruitment Team</strong><br/>
-                World Vision International</p>
+                <strong>World Vision Recruitment Team</strong></p>
               </div>
 
               <div class="footer">
                 <p><strong>World Vision | Careers</strong></p>
-                <p>This is an automated message. Please do not reply with attachments to this address. Use the reply function or submit documents through our secure portal.</p>
-                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} World Vision International. All rights reserved.</p>
+                <p>This is an automated message. Please do not reply with attachments to this address. Use our secure upload portal to submit documents.</p>
+                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} World Vision. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -177,7 +163,7 @@ Application Confirmation for ${jobTitle} Position
 
 Dear ${applicantName},
 
-Thank you for your interest in the ${jobTitle} position at World Vision International. We have successfully received your application.
+Thank you for your interest in the ${jobTitle} position at World Vision. We have successfully received your application.
 
 PLEASE ANSWER THESE QUESTIONS IN A VIDEO (5-7 minutes):
 
@@ -194,26 +180,25 @@ PLEASE ANSWER THESE QUESTIONS IN A VIDEO (5-7 minutes):
    Mention any professional certifications or credentials you currently hold that are relevant to this position. If you don't have specific certifications but are willing to obtain them if required for the role, please state this clearly.
 
 5. AVAILABILITY FOR DEPLOYMENT
-   When would you be available to start working with UNEDF if selected? Any constraints or notice periods?
+   When would you be available to start working with World Vision if selected? Any constraints or notice periods?
 
 6. BACKGROUND CHECK AUTHORIZATION
-   Please confirm that you authorize UNEDF to conduct a comprehensive background check relevant to the ${jobTitle} position. This may include verification of educational credentials, employment history, and other relevant checks as permitted by law.
+   Please confirm that you authorize World Vision to conduct a comprehensive background check relevant to the ${jobTitle} position. This may include verification of educational credentials, employment history, and other relevant checks as permitted by law.
 
 HOW TO SUBMIT:
 - Record a video on Loom.com or Google Drive answering all the above questions
-- Attach or share links to:
-  * Your video interview
+- Upload supporting documents through our secure portal at: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal
   * Valid government-issued ID (Passport, National ID, or Driver's License)
   * Educational certificates and any professional certifications
-- Reply to this email with all materials
+
+DO NOT SEND DOCUMENTS VIA EMAIL - Use the secure portal above.
 
 SUBMISSION DEADLINE: ${deadlineStr} (3 days from today)
 
-Questions? Contact: careers@unoedp.org
+Questions? Contact: careers@worldvision.org
 
 Best regards,
-UNEDF Recruitment Team
-United Nations Economic Development Foundation
+World Vision Recruitment Team
       `;
     }
 
@@ -247,8 +232,8 @@ United Nations Economic Development Foundation
           <body>
             <div class="container">
               <div class="header">
-                <div class="logo">UNEDF</div>
-                <div style="font-size: 12px; color: #666;">United Nations Economic Development Foundation</div>
+                <div class="logo">World Vision</div>
+                <div style="font-size: 12px; color: #666;">Recruitment & Talent Development</div>
               </div>
 
               <div class="content">
@@ -256,7 +241,7 @@ United Nations Economic Development Foundation
 
                 <div class="highlight-box">
                   <strong>Employment Offer Letter Received</strong><br/>
-                  We are pleased to offer you the position of <strong>${jobTitle}</strong> at UNEDF. Please review your offer letter and accept it by signing electronically below.
+                  We are pleased to offer you the position of <strong>${jobTitle}</strong> at World Vision. Please review your offer letter and accept it by signing electronically below.
                 </div>
 
                 <h3>Next Steps</h3>
@@ -284,19 +269,18 @@ United Nations Economic Development Foundation
                   <li>Get a copy of the signed offer letter via email</li>
                 </ul>
 
-                <p>If you have any questions or concerns about your offer, please contact our Human Resources team at <a href="mailto:careers@unoedp.org">careers@unoedp.org</a>.</p>
+                <p>If you have any questions or concerns about your offer, please contact our Human Resources team at <a href="mailto:careers@worldvision.org">careers@worldvision.org</a>.</p>
 
-                <p>We look forward to welcoming you to the UNEDF team!</p>
+                <p>We look forward to welcoming you to the World Vision team!</p>
 
                 <p>Best regards,<br/>
-                <strong>UNEDF Human Resources Team</strong><br/>
-                United Nations Economic Development Foundation</p>
+                <strong>World Vision Human Resources Team</strong></p>
               </div>
 
               <div class="footer">
-                <p><strong>UNEDF | Employment</strong></p>
+                <p><strong>World Vision | Employment</strong></p>
                 <p>This is an official employment offer. The offer link will expire on ${deadlineStr}. Please act promptly to accept your offer.</p>
-                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} United Nations Economic Development Foundation. All rights reserved.</p>
+                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} World Vision. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -308,7 +292,7 @@ Employment Offer Letter
 
 Dear ${applicantName},
 
-We are pleased to offer you the position of ${jobTitle} at UNEDF.
+We are pleased to offer you the position of ${jobTitle} at World Vision.
 
 REVIEW AND SIGN YOUR OFFER LETTER:
 
@@ -320,11 +304,10 @@ ACCEPTANCE DEADLINE: ${deadlineStr} (${daysUntil} day${daysUntil !== 1 ? 's' : '
 
 Please sign and accept this offer letter by the deadline. After this date, the offer will be automatically revoked and cannot be signed. Only our HR team can re-issue it.
 
-If you have any questions, contact: careers@unoedp.org
+If you have any questions, contact: careers@worldvision.org
 
 Best regards,
-UNEDF Human Resources Team
-United Nations Economic Development Foundation
+World Vision Human Resources Team
       `;
     }
 
@@ -348,8 +331,8 @@ United Nations Economic Development Foundation
           <body>
             <div class="container">
               <div class="header">
-                <div class="logo">UNEDF</div>
-                <div style="font-size: 12px; color: #666;">United Nations Economic Development Foundation</div>
+                <div class="logo">World Vision</div>
+                <div style="font-size: 12px; color: #666;">Recruitment & Talent Development</div>
               </div>
 
               <div class="content">
@@ -371,16 +354,15 @@ United Nations Economic Development Foundation
 
                 <p>A signed copy of your offer letter has been saved and you can download it from your applicant portal.</p>
 
-                <p>Welcome to UNEDF! We're excited to have you join our team.</p>
+                <p>Welcome to World Vision! We're excited to have you join our team.</p>
 
                 <p>Best regards,<br/>
-                <strong>UNEDF Human Resources Team</strong><br/>
-                United Nations Economic Development Foundation</p>
+                <strong>World Vision Human Resources Team</strong></p>
               </div>
 
               <div class="footer">
-                <p><strong>UNEDF | Employment</strong></p>
-                <p>© ${new Date().getFullYear()} United Nations Economic Development Foundation. All rights reserved.</p>
+                <p><strong>World Vision | Employment</strong></p>
+                <p>© ${new Date().getFullYear()} World Vision. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -396,11 +378,10 @@ Your employment offer for the position of ${jobTitle} has been successfully sign
 
 Our Human Resources team will be in touch shortly with next steps and onboarding information.
 
-Welcome to UNEDF!
+Welcome to World Vision!
 
 Best regards,
-UNEDF Human Resources Team
-United Nations Economic Development Foundation
+World Vision Human Resources Team
       `;
     }
 
@@ -438,7 +419,7 @@ United Nations Economic Development Foundation
             <div class="container">
               <div class="header">
                 <div class="logo">World Vision</div>
-                <div class="subheader">World Vision International - Human Resources</div>
+                <div class="subheader">Recruitment & Talent Development - Human Resources</div>
               </div>
 
               <div class="automated-notice">
@@ -453,7 +434,7 @@ United Nations Economic Development Foundation
                   We are writing to remind you that we have not yet received all the required documents and information for your application for the <strong>${jobTitle}</strong> position.
                 </div>
 
-                <p>To continue processing your application, please submit the following:</p>
+                <p>To continue processing your application, please submit the following through our secure portal:</p>
 
                 <div class="requirement">
                   <div class="requirement-item"><strong>Video Interview:</strong> A 5-7 minute video answering the questions outlined in your original confirmation email. You can use <a href="https://loom.com">Loom.com</a> or upload to Google Drive.</div>
@@ -464,6 +445,10 @@ United Nations Economic Development Foundation
 
                 ${customMessage ? `<div class="custom-message"><strong>Additional Note from HR:</strong><br/>${customMessage}</div>` : ''}
 
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Complete Your Application</a>
+                </div>
+
                 <div class="deadline">
                   <strong>Submission Deadline: ${deadlineStr}</strong><br/>
                   <span style="font-size: 13px; color: #991b1b;">Please submit all required documents by this date to remain under consideration.</span>
@@ -471,23 +456,22 @@ United Nations Economic Development Foundation
 
                 <p><strong>How to Submit:</strong></p>
                 <ul>
-                  <li>Reply directly to this email with your documents attached</li>
-                  <li>Or share Google Drive links to your video and documents</li>
+                  <li>Use our secure upload portal (link above) to submit all documents</li>
+                  <li>Do NOT email documents - use the portal for security</li>
                 </ul>
 
-                <p>If you have already submitted these documents, please disregard this reminder. If you have any questions or need assistance, please contact us at <a href="mailto:application@wvio.org">application@wvio.org</a>.</p>
+                <p>If you have already submitted these documents, please disregard this reminder. If you have any questions or need assistance, please contact us at <a href="mailto:careers@worldvision.org">careers@worldvision.org</a>.</p>
 
-                <p>Thank you for your interest in joining World Vision International.</p>
+                <p>Thank you for your interest in joining World Vision.</p>
 
                 <p>Best regards,<br/>
-                <strong>World Vision Human Resources Team</strong><br/>
-                World Vision International</p>
+                <strong>World Vision Human Resources Team</strong></p>
               </div>
 
               <div class="footer">
                 <p><strong>World Vision Human Resources | Automated Notification</strong></p>
-                <p>This is an automated email sent by the World Vision HR system. Please do not reply directly to this email address for general inquiries. For questions about your application, contact <a href="mailto:application@wvio.org">application@wvio.org</a>.</p>
-                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} World Vision International. All rights reserved.</p>
+                <p>This is an automated email sent by the World Vision HR system. Please do not reply directly to this email address for general inquiries. For questions about your application, contact <a href="mailto:careers@worldvision.org">careers@worldvision.org</a>.</p>
+                <p style="margin-top: 10px; border-top: 1px solid #d1d5db; padding-top: 10px;">© ${new Date().getFullYear()} World Vision. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -499,11 +483,13 @@ AUTOMATED REMINDER - World Vision Human Resources System
 
 Dear ${applicantName},
 
-This is an automated reminder regarding your application for the ${jobTitle} position at World Vision International.
+This is an automated reminder regarding your application for the ${jobTitle} position at World Vision.
 
 ACTION REQUIRED: We have not yet received all the required documents and information for your application.
 
-Please submit the following:
+Please submit the following through our secure portal:
+${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal
+
 - Video Interview (5-7 minutes) answering the questions from your confirmation email
 - Government-issued ID (passport, national ID, or driver's license)
 - Educational certificates and degrees
@@ -516,16 +502,15 @@ DEADLINE: ${deadlineStr}
 Please submit all required documents by this date to remain under consideration.
 
 HOW TO SUBMIT:
-- Reply to this email with documents attached
-- Or share Google Drive links
+- Use our secure upload portal (DO NOT email documents for security)
+- Portal link: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal
 
 If you have already submitted these documents, please disregard this reminder.
 
-Questions? Contact: application@wvio.org
+Questions? Contact: careers@worldvision.org
 
 Best regards,
 World Vision Human Resources Team
-World Vision International
 
 ---
 This is an automated email from the World Vision HR system.

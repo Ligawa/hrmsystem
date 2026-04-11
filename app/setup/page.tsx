@@ -82,7 +82,7 @@ export default async function SetupDashboard() {
       <div>
         <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
         <p className="mt-2 text-muted-foreground">
-          Manage your UNEDF website content
+          Manage your World Vision website content
         </p>
       </div>
 
@@ -129,6 +129,13 @@ export default async function SetupDashboard() {
               <span>Review Applications {newApplicationsCount ? `(${newApplicationsCount} new)` : ''}</span>
             </Link>
             <Link
+              href="/setup/submissions"
+              className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-muted"
+            >
+              <FileText className="h-5 w-5 text-primary" />
+              <span>View Document Submissions</span>
+            </Link>
+            <Link
               href="/setup/news/new"
               className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-muted"
             >
@@ -151,7 +158,7 @@ export default async function SetupDashboard() {
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted-foreground">
             <p>
-              Welcome to the UNEDF Admin Dashboard. From here you can manage all
+              Welcome to the World Vision Admin Dashboard. From here you can manage all
               content on your website.
             </p>
             <ul className="list-inside list-disc space-y-2">
@@ -160,6 +167,9 @@ export default async function SetupDashboard() {
               </li>
               <li>
                 <strong>Applications:</strong> Review and respond to applicants
+              </li>
+              <li>
+                <strong>Document Submissions:</strong> View secure submissions from application portal
               </li>
               <li>
                 <strong>Countries:</strong> Add and edit country program pages

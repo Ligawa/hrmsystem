@@ -44,21 +44,34 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
 
       // Upload resume via backend if provided
       if (resumeFile) {
-        const formData = new FormData();
-        formData.append("file", resumeFile);
+        try {
+          const uploadFormData = new FormData();
+          uploadFormData.append('file', resumeFile);
 
-        const uploadResponse = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
+          const uploadResponse = await fetch("/api/resume-upload", {
+            method: "POST",
+            body: uploadFormData,
+          });
 
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json();
-          throw new Error(errorData.error || "Failed to upload resume");
+          if (!uploadResponse.ok) {
+            const errorData = await uploadResponse.json();
+            throw new Error(errorData.error || "Failed to upload resume");
+          }
+
+          const uploadedData = await uploadResponse.json();
+          resumeUrl = uploadedData.url;
+
+          console.log("[v0] Resume uploaded successfully:", resumeUrl);
+        } catch (uploadError) {
+          console.error("[v0] File upload error:", uploadError);
+          setError(
+            uploadError instanceof Error
+              ? uploadError.message
+              : "Failed to upload resume. Please try again."
+          );
+          setLoading(false);
+          return;
         }
-
-        const uploadData = await uploadResponse.json();
-        resumeUrl = uploadData.url;
       }
 
       const supabase = createClient();
@@ -357,7 +370,7 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
           </Button>
 
           <p className="text-center text-xs text-muted-foreground">
-            By submitting, you agree to our privacy policy and consent to UNEDF
+            By submitting, you agree to our privacy policy and consent to World Vision International
             processing your data for recruitment purposes.
           </p>
         </form>

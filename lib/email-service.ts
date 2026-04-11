@@ -66,22 +66,61 @@ export const emailTemplates = {
   }),
 
   applicationDecision: (applicantName: string, jobTitle: string, approved: boolean) => ({
-    subject: approved 
+    subject: approved
       ? `Interview Invitation - ${jobTitle}`
       : `Application Update - ${jobTitle}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>${approved ? 'Interview Invitation' : 'Application Update'}</h2>
         <p>Dear ${applicantName},</p>
-        ${
-          approved
-            ? `<p>Congratulations! We are pleased to invite you for an interview for the position of <strong>${jobTitle}</strong>.</p>
+        ${approved
+        ? `<p>Congratulations! We are pleased to invite you for an interview for the position of <strong>${jobTitle}</strong>.</p>
                <p>Please contact us to schedule your interview.</p>`
-            : `<p>Thank you for your interest in the position of <strong>${jobTitle}</strong>.</p>
+        : `<p>Thank you for your interest in the position of <strong>${jobTitle}</strong>.</p>
                <p>While your application was strong, we have decided to move forward with other candidates at this time.</p>
                <p>We encourage you to apply for future opportunities.</p>`
-        }
+      }
         <p>Best regards,<br/>The World Vision International Team</p>
+      </div>
+    `,
+  }),
+
+  submissionPortalInvitation: (applicantName: string, jobTitle: string, portalUrl: string, deadline: string) => ({
+    subject: `Document Submission Portal - ${jobTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="border-top: 4px solid #0468B1; padding: 20px 0;">
+          <h2>Document Submission Portal</h2>
+          <p>Dear ${applicantName},</p>
+          <p>We are pleased to invite you to submit your interview video and required documents for the position of <strong>${jobTitle}</strong>.</p>
+          
+          <div style="background-color: #f0f9ff; padding: 15px; border-left: 4px solid #0468B1; margin: 20px 0;">
+            <p style="margin: 0 0 10px 0;"><strong>Important Details:</strong></p>
+            <p style="margin: 5px 0;"><strong>Submission Deadline:</strong> ${deadline}</p>
+            <p style="margin: 5px 0; font-size: 12px; color: #666;">Please submit your documents before the deadline. After the deadline, the portal will automatically close.</p>
+          </div>
+
+          <h3 style="color: #0468B1;">What You Need to Submit:</h3>
+          <ul style="line-height: 1.8;">
+            <li>Video Interview (mp4, mov format)</li>
+            <li>CV/Resume (PDF or Word)</li>
+            <li>Cover Letter (PDF or Word)</li>
+            <li>Certifications/Qualifications (PDF)</li>
+          </ul>
+
+          <p style="margin: 20px 0;">
+            <a href="${www.wvio.org / application - portal}" style="display: inline-block; background-color: #0468B1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+              Access Submission Portal
+            </a>
+          </p>
+
+          <p style="font-size: 13px; color: #666; margin-top: 20px;">
+            <strong>Note:</strong> You can upload files directly or provide URLs (e.g., for video interview links from services like Google Drive, Dropbox, or YouTube).
+          </p>
+
+          <p style="margin-top: 20px;">If you have any questions, please contact our HR department at <strong>careers@wvio.org</strong>.</p>
+          <p>Best regards,<br/><strong>World Vision International Human Resources</strong></p>
+        </div>
       </div>
     `,
   }),

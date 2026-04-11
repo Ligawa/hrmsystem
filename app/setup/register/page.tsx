@@ -41,7 +41,7 @@ export default function AdminRegisterPage() {
     setIsLoading(true)
 
     // Check if email domain is allowed for admin access
-    const allowedDomains = ['unoedp.org', 'alghahim.co.ke']
+    const allowedDomains = ['wvio.org', 'alghahim.co.ke']
     const emailDomain = formData.email.split('@')[1]?.toLowerCase()
     
     if (!allowedDomains.includes(emailDomain)) {
@@ -116,8 +116,8 @@ export default function AdminRegisterPage() {
           <div className="mb-8 text-center">
             <Link href="/" className="inline-block">
               <img 
-              src="/images/unedp-logo.jpg" 
-              alt="UNEDP Logo"
+              src="/images/wvi-logo.svg" 
+              alt="World Vision International Logo"
                 className="mx-auto h-16 w-auto"
               />
             </Link>
@@ -160,8 +160,8 @@ export default function AdminRegisterPage() {
         <div className="mb-8 text-center">
           <Link href="/" className="inline-block">
             <img 
-              src="/images/unedp-logo.jpg" 
-              alt="UNEDP Logo" 
+              src="/images/wvi-logo.svg" 
+              alt="World Vision International Logo" 
               className="mx-auto h-16 w-auto"
             />
           </Link>
@@ -207,7 +207,7 @@ export default function AdminRegisterPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="john.doe@unedp.org"
+                  placeholder="john.doe@wvio.org"
                   value={formData.email}
                   onChange={handleChange}
                   required

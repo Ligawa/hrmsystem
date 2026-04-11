@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "About UNEDP | United Nations Development Programme",
-  description: "Learn about UNEDP's mission, vision, history, and leadership. Working in 170+ countries to eradicate poverty and build sustainable development.",
+  title: "About World Vision | Global Humanitarian Organization",
+  description: "Learn about World Vision's mission, vision, history, and leadership. Working in 100+ countries to transform lives and build communities.",
 }
 
 const coreValues = [
