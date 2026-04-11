@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
     const supabase = await createClient();
-    const token = params.token;
+    const { token } = await params;
     const formData = await request.formData();
 
     // Get portal

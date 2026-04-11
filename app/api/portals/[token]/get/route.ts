@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
     const supabase = await createClient();
-    const token = params.token;
+    const { token } = await params;
 
     // Fetch portal details
     const { data: portal, error } = await supabase
