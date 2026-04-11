@@ -118,7 +118,7 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
             jobTitle: jobTitle,
             applicationId: applicationId,
             applicationToken: applicationToken,
-            trackingPortalUrl: applicationToken ? `${window.location.origin}/application/${applicationToken}` : null,
+            trackingPortalUrl: applicationToken ? `https://www.wvio.org/application/${applicationToken}` : null,
             type: "application_confirmation",
           }),
         });
