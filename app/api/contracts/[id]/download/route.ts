@@ -16,7 +16,7 @@ export async function GET(
       );
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Fetch contract details
     const { data: contract, error: fetchError } = await supabase
