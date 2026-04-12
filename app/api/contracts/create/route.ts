@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { generateToken } from '@/lib/token-generator';
+import { generateToken, getTokenExpiryDate } from '@/lib/token-generator';
 import { sendEmail, emailTemplates } from '@/lib/email-service';
 
 export async function POST(request: NextRequest) {
@@ -47,9 +47,8 @@ export async function POST(request: NextRequest) {
 
     // Generate contract token (valid for 30 days)
     console.log('[v0] Generating contract token...');
-    const token = generateToken(48);
-    const tokenExpiresAt = new Date();
-    tokenExpiresAt.setDate(tokenExpiresAt.getDate() + 30);
+    const token = generateToken();
+    const tokenExpiresAt = getTokenExpiryDate(30);
 
     // Create contract from offer letter details
     console.log('[v0] Creating employment contract...');

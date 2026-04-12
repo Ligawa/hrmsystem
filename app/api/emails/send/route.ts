@@ -36,6 +36,10 @@ export async function POST(req: NextRequest) {
       deadline.setDate(deadline.getDate() + 3);
       const deadlineStr = deadline.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       
+      // Generate tracking portal URL using applicant email
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org';
+      const trackingPortalUrl = `${baseUrl}/track?email=${encodeURIComponent(to)}`;
+      
       htmlContent = `
         <!DOCTYPE html>
         <html>
