@@ -18,7 +18,7 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Fetch offer letter details
     const { data: offer, error: offerError } = await supabase
