@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     // Send contract issuance email to applicant
     try {
       console.log('[v0] Preparing to send contract email...');
-      const baseUrl = 'https://www.unoedp.org';
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org';
       const contractLink = `${baseUrl}/contract/${token}`;
       
       const deadline = new Date(offerLetter.acceptance_deadline).toLocaleDateString('en-US', {

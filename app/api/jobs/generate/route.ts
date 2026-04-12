@@ -41,9 +41,7 @@ Make sure:
 - All text emphasizes impact on vulnerable populations`
 
     const result = streamText({
-      model: xai('grok-4', {
-        apiKey: process.env.XAI_API_KEY,
-      }),
+      model: xai('grok-4'),
       prompt: prompt,
       system: 'You are a helpful HR assistant for World Vision International. Generate only valid JSON responses without any markdown formatting.',
     })
