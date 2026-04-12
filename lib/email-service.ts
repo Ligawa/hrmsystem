@@ -109,7 +109,7 @@ export const emailTemplates = {
           </ul>
 
           <p style="margin: 20px 0;">
-            <a href="${www.wvio.org / application - portal}" style="display: inline-block; background-color: #0468B1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+            <a href="${portalUrl}" style="display: inline-block; background-color: #0468B1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold;">
               Access Submission Portal
             </a>
           </p>
