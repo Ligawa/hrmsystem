@@ -16,7 +16,7 @@ export async function GET(
       );
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Fetch contract details
     const { data: contract, error: fetchError } = await supabase
@@ -97,7 +97,7 @@ export async function GET(
 
     // If PDF conversion succeeded, return PDF
     if (pdfBuffer) {
-      return new NextResponse(pdfBuffer, {
+      return new NextResponse(new Uint8Array(pdfBuffer), {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `attachment; filename="${filename}.pdf"`,

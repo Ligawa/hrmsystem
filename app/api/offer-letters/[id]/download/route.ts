@@ -47,7 +47,7 @@ export async function GET(
       );
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Fetch offer letter details
     const { data: offerLetter, error: fetchError } = await supabase

@@ -545,21 +545,25 @@ export async function POST(request: NextRequest) {
     // Note: We need to execute this carefully since we can't execute multi-statement SQL directly
     // The Supabase client will handle it, but we should be aware of limitations
 
-    const { error } = await supabase.rpc('exec', { sql: setupSQL }).catch(
-      async () => {
-        // If exec RPC doesn't exist, try alternative approach
-        // We'll need to split and execute statements individually
-        console.log('[v0] exec RPC not available, using alternative approach')
-        return { error: null, data: null }
-      },
-    )
+    let setupError = null
+    try {
+      const { error } = await supabase.rpc('exec', { sql: setupSQL })
+      if (error) {
+        setupError = error
+      }
+    } catch (err) {
+      // If exec RPC doesn't exist, try alternative approach
+      // We'll need to split and execute statements individually
+      console.log('[v0] exec RPC not available, using alternative approach')
+      console.error('[v0] RPC error:', err)
+    }
 
-    if (error) {
-      console.error('[v0] Setup error:', error)
+    if (setupError) {
+      console.error('[v0] Setup error:', setupError)
       return NextResponse.json(
         {
           error: 'Database setup failed',
-          details: error.message,
+          details: setupError.message || 'Unknown error',
         },
         { status: 500 },
       )
