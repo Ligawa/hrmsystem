@@ -209,7 +209,7 @@ World Vision Recruitment Team
     // Handle offer letter sent type
     if (type === 'offer_letter_sent') {
       const { signatureToken, offerLetterId, acceptanceDeadline } = body;
-      const signingLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://unoedp.org'}/offer/${signatureToken}`;
+      const signingLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org'}/offer/${signatureToken}`;
       const deadlineDate = new Date(acceptanceDeadline);
       const deadlineStr = deadlineDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       const daysUntil = Math.ceil((deadlineDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
