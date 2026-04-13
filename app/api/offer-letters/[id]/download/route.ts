@@ -3,12 +3,12 @@ import { createClient } from '@/lib/supabase/server';
 import { generateOfferLetterHTML } from '@/lib/offer-letter-pdf';
 
 // Helper to convert HTML to PDF using Puppeteer (for server-side PDF generation)
-async function convertHtmlToPdf(html: string): Promise<Buffer | null> {
+async function convertHtmlToPdf(html: string): Promise<Uint8Array | Buffer | null> {
   try {
     // Dynamic import for Puppeteer (server-only)
     const puppeteer = await import('puppeteer');
     const browser = await puppeteer.default.launch({
-      headless: 'new',
+      headless: true,
       args: ['--no-sandbox'],
     });
     const page = await browser.newPage();
@@ -119,7 +119,7 @@ export async function GET(
     const filename = `offer-letter-${offerLetter.applicant_name.replace(/\s+/g, '-')}-${offerId}`;
 
     // Try to convert to PDF using Puppeteer
-    let pdfBuffer: Buffer | null = null;
+    let pdfBuffer: Uint8Array | Buffer | null = null;
     try {
       pdfBuffer = await convertHtmlToPdf(wrappedHtml);
     } catch (error) {
