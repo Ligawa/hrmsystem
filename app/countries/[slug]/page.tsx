@@ -56,12 +56,14 @@ export default async function CountryPage({
   }
 
   // Get related news for this country
-  const { data: relatedNews } = await supabase
-    .from<News>("news")
+  const { data } = await supabase
+    .from("news")
     .select("title, slug, published_at")
     .eq("country_id", country.id)
     .order("published_at", { ascending: false })
     .limit(3);
+
+  const relatedNews = data as News[] | null;
 
   return (
     <div className="flex flex-col">
