@@ -7,6 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
 
+interface News {
+  title: string;
+  slug: string;
+  published_at: string;
+}
+
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
@@ -51,7 +57,7 @@ export default async function CountryPage({
 
   // Get related news for this country
   const { data: relatedNews } = await supabase
-    .from("news")
+    .from<News>("news")
     .select("title, slug, published_at")
     .eq("country_id", country.id)
     .order("published_at", { ascending: false })
