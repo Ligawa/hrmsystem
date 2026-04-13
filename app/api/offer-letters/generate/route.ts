@@ -13,7 +13,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase client unavailable' },
+        { status: 500 }
+      );
+    }
 
     // Fetch offer letter details
     const { data: offerLetter, error: fetchError } = await supabase
