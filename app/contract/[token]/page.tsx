@@ -369,7 +369,6 @@ export default function ContractSignaturePage() {
 
     try {
       setBsafeUploading(true);
-      const supabase = createClient();
 
       // Create FormData
       const formData = new FormData();
@@ -390,21 +389,6 @@ export default function ContractSignaturePage() {
       }
 
       console.log('[v0] BSAFE upload successful');
-
-      // Update contract status to bsafe_pending
-      const { error: updateError } = await supabase
-        .from('employment_contracts')
-        .update({ 
-          status: 'bsafe_pending',
-          bsafe_status: 'submitted',
-          bsafe_submitted_at: new Date().toISOString(),
-        })
-        .eq('id', contract!.id);
-
-      if (updateError) {
-        console.error('[v0] Update error:', updateError);
-        throw updateError;
-      }
 
       const newCompleted = new Set(completedSteps);
       newCompleted.add('bsafe-upload');

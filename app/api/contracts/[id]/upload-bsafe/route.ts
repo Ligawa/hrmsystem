@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceRoleClient } from '@/lib/supabase/server';
 
 export async function POST(
   request: NextRequest,
@@ -52,7 +52,7 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
+    const supabase = await createServiceRoleClient();
 
     // Check contract exists
     const { data: contract, error: contractError } = await supabase
@@ -118,6 +118,24 @@ export async function POST(
       console.error('[v0] Upload error:', uploadError);
       return NextResponse.json(
         { error: `Failed to upload file: ${uploadError.message}` },
+        { status: 500 }
+      );
+    }
+
+    // Update contract status to reflect BSAFE submission.
+    const { error: contractUpdateError } = await supabase
+      .from('employment_contracts')
+      .update({
+        status: 'bsafe_pending',
+        bsafe_status: 'submitted',
+        bsafe_submitted_at: new Date().toISOString(),
+      })
+      .eq('id', contractId);
+
+    if (contractUpdateError) {
+      console.error('[v0] Contract status update error:', contractUpdateError);
+      return NextResponse.json(
+        { error: 'Failed to update contract status' },
         { status: 500 }
       );
     }
