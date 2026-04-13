@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { generateOfferLetterHTML } from '@/lib/offer-letter-pdf';
 
 // Helper to convert HTML to PDF using Puppeteer (for server-side PDF generation)
-async function convertHtmlToPdf(html: string): Promise<Buffer | null> {
+async function convertHtmlToPdf(html: string): Promise<Uint8Array | Buffer | null> {
   try {
     // Dynamic import for Puppeteer (server-only)
     const puppeteer = await import('puppeteer');
