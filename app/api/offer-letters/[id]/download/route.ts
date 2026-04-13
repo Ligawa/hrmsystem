@@ -119,7 +119,7 @@ export async function GET(
     const filename = `offer-letter-${offerLetter.applicant_name.replace(/\s+/g, '-')}-${offerId}`;
 
     // Try to convert to PDF using Puppeteer
-    let pdfBuffer: Buffer | null = null;
+    let pdfBuffer: Uint8Array | Buffer | null = null;
     try {
       pdfBuffer = await convertHtmlToPdf(wrappedHtml);
     } catch (error) {
