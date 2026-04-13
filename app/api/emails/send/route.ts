@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
 
                 <div class="cta-section">
                   <p style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1e40af;">Ready to proceed?</p>
-                  <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Submit Video & Documents Now</a>
+                  <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org'}/application-portal" class="cta-button">Submit Video & Documents Now</a>
                   <p style="margin: 15px 0 0 0; font-size: 13px; color: #666;">Complete your application in one secure place</p>
                 </div>
 
@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
                     <div class="requirement-item">✓ Educational certificates/qualifications relevant to the position</div>
                     <div class="requirement-item">✓ Any additional certifications or credentials</div>
                   </div>
-                  <p style="margin-top: 20px; text-align: center;"><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Go to Application Portal</a></p>
+                  <p style="margin-top: 20px; text-align: center;"><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org'}/application-portal" class="cta-button">Go to Application Portal</a></p>
                 </div>
 
                 <div class="deadline">
@@ -191,7 +191,7 @@ PLEASE ANSWER THESE QUESTIONS IN A VIDEO (5-7 minutes):
 
 HOW TO SUBMIT:
 - Record a video on Loom.com or Google Drive answering all the above questions
-- Upload supporting documents through our secure portal at: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal
+- Upload supporting documents through our secure portal at: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org'}/application-portal
   * Valid government-issued ID (Passport, National ID, or Driver's License)
   * Educational certificates and any professional certifications
 
@@ -450,7 +450,7 @@ World Vision Human Resources Team
                 ${customMessage ? `<div class="custom-message"><strong>Additional Note from HR:</strong><br/>${customMessage}</div>` : ''}
 
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal" class="cta-button">Complete Your Application</a>
+                  <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org'}/application-portal" class="cta-button">Complete Your Application</a>
                 </div>
 
                 <div class="deadline">
@@ -492,7 +492,7 @@ This is an automated reminder regarding your application for the ${jobTitle} pos
 ACTION REQUIRED: We have not yet received all the required documents and information for your application.
 
 Please submit the following through our secure portal:
-${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal
+${process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org'}/application-portal
 
 - Video Interview (5-7 minutes) answering the questions from your confirmation email
 - Government-issued ID (passport, national ID, or driver's license)
@@ -507,7 +507,7 @@ Please submit all required documents by this date to remain under consideration.
 
 HOW TO SUBMIT:
 - Use our secure upload portal (DO NOT email documents for security)
-- Portal link: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://worldvision.org'}/application-portal
+- Portal link: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://wvio.org'}/application-portal
 
 If you have already submitted these documents, please disregard this reminder.
 
