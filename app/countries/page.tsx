@@ -2,17 +2,9 @@ export const dynamic = 'force-dynamic';
 
 import { createClient } from "@/lib/supabase/server";
 import { CountriesClient } from "@/components/countries/countries-client";
+import type { Country, CountryWithDetails, Region } from "@/lib/types/country";
 
-interface Country {
-  id: string;
-  name: string;
-  slug: string;
-  region: string;
-  overview?: string | null;
-  flag_url?: string | null;
-}
-
-const regions = [
+const regions: Region[] = [
   { id: "all", name: "All Regions" },
   { id: "Africa", name: "Africa" },
   { id: "Arab States", name: "Arab States" },
@@ -29,7 +21,7 @@ export default async function CountriesPage() {
     .select("*")
     .order("name");
 
-  const countries = data as Country[] | null;
+  const countries = data as CountryWithDetails[] | null;
 
   if (error) {
     console.error("Error fetching countries:", error);

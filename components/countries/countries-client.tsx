@@ -11,20 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-interface Country {
-  id: string;
-  name: string;
-  slug: string;
-  region: string;
-  description: string | null;
-  featured: boolean;
-}
-
-interface Region {
-  id: string;
-  name: string;
-}
+import type { Country, Region } from "@/lib/types/country";
 
 interface CountriesClientProps {
   countries: Country[];
