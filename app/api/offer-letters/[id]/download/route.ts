@@ -128,7 +128,8 @@ export async function GET(
 
     // If PDF conversion succeeded, return PDF
     if (pdfBuffer) {
-      return new NextResponse(pdfBuffer, {
+      const pdfArrayBuffer = Buffer.from(pdfBuffer).buffer;
+      return new NextResponse(pdfArrayBuffer, {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `attachment; filename="${filename}.pdf"`,
