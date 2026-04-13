@@ -8,7 +8,7 @@ async function convertHtmlToPdf(html: string): Promise<Buffer | null> {
     // Dynamic import for Puppeteer (server-only)
     const puppeteer = await import('puppeteer');
     const browser = await puppeteer.default.launch({
-      headless: 'new',
+      headless: true,
       args: ['--no-sandbox'],
     });
     const page = await browser.newPage();
