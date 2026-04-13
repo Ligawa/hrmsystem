@@ -52,14 +52,14 @@ export default function SendOfferLetterPage() {
 
       setEmailMessage(`Dear ${data.applicant_name},
 
-Please find attached your employment offer letter for the position of ${data.job_title} at UNEDF.
+Please find attached your employment offer letter for the position of ${data.job_title} at World Vision.
 
 Please review the terms and conditions carefully. If you accept this offer, you will need to sign the letter electronically. You have until ${deadline} to accept.
 
 Should you have any questions, please do not hesitate to contact us.
 
 Best regards,
-UNEDF Human Resources Team`);
+World Vision Human Resources Team`);
 
       setLoading(false);
     }
