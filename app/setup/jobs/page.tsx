@@ -42,7 +42,7 @@ export default function JobsAdminPage() {
     if (!error && data) {
       // Get application counts for each job
       const jobsWithCounts = await Promise.all(
-        data.map(async (job) => {
+        data.map(async (job: Job) => {
           const { count } = await supabase
             .from("job_applications")
             .select("*", { count: "exact", head: true })

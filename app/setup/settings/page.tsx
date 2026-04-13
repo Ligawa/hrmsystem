@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Subscription } from "@/lib/types/subscription";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -114,7 +115,7 @@ export default async function SettingsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {subscriptions.map((sub) => (
+                {subscriptions.map((sub: Subscription) => (
                   <TableRow key={sub.id}>
                     <TableCell className="font-medium">{sub.email}</TableCell>
                     <TableCell>

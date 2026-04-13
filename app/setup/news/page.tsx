@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil } from "lucide-react";
 import { DeleteNewsButton } from "@/components/admin/delete-news-button";
+import { News } from "@/lib/types/news";
 
 export default async function NewsAdmin() {
   const supabase = await createClient();
@@ -55,7 +56,7 @@ export default async function NewsAdmin() {
           </TableHeader>
           <TableBody>
             {news && news.length > 0 ? (
-              news.map((article) => (
+              news.map((article: News) => (
                 <TableRow key={article.id}>
                   <TableCell className="font-medium max-w-[300px] truncate">
                     {article.title}

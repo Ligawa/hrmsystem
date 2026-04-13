@@ -598,9 +598,9 @@ export async function generatePDF(html: string, filename: string): Promise<void>
       // Wait for any images to load
       setTimeout(() => {
         const options = {
-          margin: [10, 10, 10, 10],
+          margin: [10, 10, 10, 10] as [number, number, number, number],
           filename: filename,
-          image: { type: 'jpeg', quality: 0.95 },
+          image: { type: 'jpeg' as const, quality: 0.95 },
           html2canvas: { 
             scale: 1.5,
             useCORS: true, 
@@ -614,7 +614,7 @@ export async function generatePDF(html: string, filename: string): Promise<void>
           jsPDF: { 
             unit: 'mm', 
             format: 'a4', 
-            orientation: 'portrait'
+            orientation: 'portrait' as const
           },
           pagebreak: { 
             mode: 'avoid-all'

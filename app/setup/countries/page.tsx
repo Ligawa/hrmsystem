@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { DeleteCountryButton } from "@/components/admin/delete-country-button";
+import { Country } from "@/lib/types/country";
 
 export default async function CountriesAdmin() {
   const supabase = await createClient();
@@ -56,7 +57,7 @@ export default async function CountriesAdmin() {
           </TableHeader>
           <TableBody>
             {countries && countries.length > 0 ? (
-              countries.map((country) => (
+              countries.map((country: Country) => (
                 <TableRow key={country.id}>
                   <TableCell className="font-medium">{country.name}</TableCell>
                   <TableCell>{country.region}</TableCell>

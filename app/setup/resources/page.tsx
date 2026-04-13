@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil } from "lucide-react";
 import { DeleteResourceButton } from "@/components/admin/delete-resource-button";
+import { Resource } from "@/lib/types/resource";
 
 export default async function ResourcesAdmin() {
   const supabase = await createClient();
@@ -57,7 +58,7 @@ export default async function ResourcesAdmin() {
           </TableHeader>
           <TableBody>
             {resources && resources.length > 0 ? (
-              resources.map((resource) => (
+              resources.map((resource: Resource) => (
                 <TableRow key={resource.id}>
                   <TableCell className="font-medium max-w-[300px] truncate">
                     {resource.title}

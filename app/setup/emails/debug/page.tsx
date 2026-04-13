@@ -6,9 +6,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 
+interface EmailDebugResults {
+  lastSync?: string;
+  syncResult?: any;
+  [key: string]: any;
+}
+
 export default function EmailDebugPage() {
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<EmailDebugResults | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const testEmailService = async () => {

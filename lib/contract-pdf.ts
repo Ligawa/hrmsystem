@@ -340,7 +340,7 @@ export async function generatePDF(html: string): Promise<Buffer | null> {
   try {
     const puppeteer = await import('puppeteer');
     const browser = await puppeteer.default.launch({
-      headless: 'new',
+      headless: true,
       args: ['--no-sandbox'],
     });
     const page = await browser.newPage();
@@ -358,7 +358,7 @@ export async function generatePDF(html: string): Promise<Buffer | null> {
     });
     
     await browser.close();
-    return pdfBuffer;
+    return Buffer.from(pdfBuffer);
   } catch (error) {
     console.log('[v0] PDF generation not available:', error);
     return null;
