@@ -18,6 +18,20 @@ import {
 import Link from "next/link";
 import type { Metadata } from "next";
 
+interface Job {
+  id: string;
+  title: string;
+  slug: string;
+  location: string;
+  type: string;
+  department?: string | null;
+  level?: string | null;
+  salary_range?: string | null;
+  description?: string | null;
+  closing_date?: string | null;
+  featured: boolean;
+}
+
 export const metadata: Metadata = {
   title: "Careers at World Vision",
   description:
@@ -58,7 +72,7 @@ const typeColors: Record<string, string> = {
 };
 
 export default async function CareersPage() {
-  let jobs = [];
+  let jobs: Job[] = [];
 
   try {
     const supabase = await createClient();
@@ -71,15 +85,15 @@ export default async function CareersPage() {
         .order("created_at", { ascending: false });
       
       if (data) {
-        jobs = data;
+        jobs = data as Job[];
       }
     }
   } catch (error) {
     console.log("[v0] Could not fetch jobs from database", error);
   }
 
-  const featuredJobs = jobs?.filter((job: any) => job.featured) || [];
-  const regularJobs = jobs?.filter((job: any) => !job.featured) || [];
+  const featuredJobs = jobs.filter((job) => job.featured);
+  const regularJobs = jobs.filter((job) => !job.featured);
 
   return (
     <div className="min-h-screen">
