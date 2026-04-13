@@ -49,8 +49,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       {
         success: true,
         url: blob.url,
-        filename: blob.filename,
-        size: blob.size,
+        downloadUrl: blob.downloadUrl,
+        pathname: blob.pathname,
+        contentType: blob.contentType,
+        contentDisposition: blob.contentDisposition,
+        filename,
+        size: file.size,
       },
       { status: 200 }
     );
