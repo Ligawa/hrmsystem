@@ -313,48 +313,37 @@ export default function ContractSignaturePage() {
 
     try {
       setSigning(true);
-      const supabase = createClient();
+
+      if (!contract) {
+        throw new Error('Contract record is unavailable');
+      }
 
       let signatureData = signerName;
       if (signatureType === 'drawn' && canvasRef.current) {
         signatureData = canvasRef.current.toDataURL();
       }
 
-      console.log('[v0] Attempting to save signature for contract:', contract!.id);
-      
-      const { error } = await supabase
-        .from('contract_signatures')
-        .insert({
-          contract_id: contract!.id,
-          signer_name: signerName,
-          signer_email: contract!.applicant_email,
-          signature_type: signatureType,
-          signature_data: signatureData,
-          signature_date: new Date().toISOString(),
-        });
+      console.log('[v0] Attempting to save signature for contract:', contract.id);
 
-      if (error) {
-        console.error('[v0] Signature insertion error:', error);
-        throw error;
+      const response = await fetch(`/api/contracts/${params.token}/sign`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          signerName,
+          signatureType,
+          signatureData,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        console.error('[v0] Signature API error:', result);
+        throw new Error(result?.error || 'Failed to sign contract');
       }
 
-      console.log('[v0] Signature saved successfully, updating contract status');
-
-      // Update contract status
-      const { error: updateError } = await supabase
-        .from('employment_contracts')
-        .update({ 
-          status: 'signed', 
-          signed_at: new Date().toISOString() 
-        })
-        .eq('id', contract!.id);
-
-      if (updateError) {
-        console.error('[v0] Contract update error:', updateError);
-        throw updateError;
-      }
-
-      console.log('[v0] Contract status updated to signed');
+      console.log('[v0] Signature saved successfully and contract status updated');
 
       setSigned(true);
       setSavedSignatureData(signatureData);

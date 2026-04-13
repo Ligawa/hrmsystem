@@ -41,3 +41,23 @@ export async function createClient() {
     },
   )
 }
+
+export async function createServiceRoleClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!url || !key) {
+    throw new Error('Missing Supabase service role credentials. Set SUPABASE_SERVICE_ROLE_KEY in your environment.')
+  }
+
+  return createServerClient(url, key, {
+    cookies: {
+      getAll() {
+        return []
+      },
+      setAll() {
+        return undefined
+      },
+    },
+  })
+}
