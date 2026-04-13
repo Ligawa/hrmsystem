@@ -1,3 +1,4 @@
+import { put } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceRoleClient } from '@/lib/supabase/server';
 
@@ -76,6 +77,24 @@ export async function POST(
 
     console.log('[v0] Uploading BSAFE file:', file.name, 'Size:', file.size, 'Type:', file.type);
 
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('[v0] Missing BLOB_READ_WRITE_TOKEN environment variable');
+      return NextResponse.json(
+        { error: 'File upload is not configured on the server' },
+        { status: 500 }
+      );
+    }
+
+    const timestamp = Date.now();
+    const ext = file.name.includes('.') ? file.name.substring(file.name.lastIndexOf('.')) : '';
+    const filename = `bsafe-${contractId}-${timestamp}${ext}`;
+
+    const blob = await put(filename, file, {
+      access: 'public',
+      contentType: file.type,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    });
+
     // First, check if an upload already exists for this contract
     const { data: existingUpload } = await supabase
       .from('bsafe_uploads')
@@ -85,27 +104,27 @@ export async function POST(
 
     let uploadResult;
     if (existingUpload) {
-      // Update existing upload - only store file metadata, not the entire base64 data
       uploadResult = await supabase
         .from('bsafe_uploads')
         .update({
           file_name: file.name,
           file_size: file.size,
-          file_url: `file://${file.name}`, // Store reference instead of full base64
+          file_type: file.type,
+          file_url: blob.url,
           uploaded_at: new Date().toISOString(),
         })
         .eq('contract_id', contractId)
         .select()
         .single();
     } else {
-      // Create new upload - only store file metadata, not the entire base64 data
       uploadResult = await supabase
         .from('bsafe_uploads')
         .insert({
           contract_id: contractId,
           file_name: file.name,
           file_size: file.size,
-          file_url: `file://${file.name}`, // Store reference instead of full base64
+          file_type: file.type,
+          file_url: blob.url,
           uploaded_at: new Date().toISOString(),
         })
         .select()
