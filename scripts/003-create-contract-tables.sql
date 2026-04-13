@@ -56,6 +56,29 @@ CREATE TABLE IF NOT EXISTS employment_contracts (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Contract Details Table
+CREATE TABLE IF NOT EXISTS contract_details (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  contract_id UUID UNIQUE NOT NULL REFERENCES employment_contracts(id) ON DELETE CASCADE,
+
+  account_holder_name VARCHAR(255),
+  bank_name VARCHAR(255),
+  account_number VARCHAR(100),
+  swift_code VARCHAR(20),
+  iban VARCHAR(50),
+
+  visa_status VARCHAR(50), -- 'valid', 'expired', 'not-required', 'applying'
+  visa_expiry DATE,
+  needs_visa_assistance BOOLEAN DEFAULT false,
+
+  ifaq_confirmed BOOLEAN DEFAULT false,
+  ssafe_confirmed BOOLEAN DEFAULT false,
+  ssafe_approval_number VARCHAR(100),
+
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
 -- Contract Signatures Table
 CREATE TABLE IF NOT EXISTS contract_signatures (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -79,6 +102,7 @@ CREATE TABLE IF NOT EXISTS bsafe_uploads (
   
   file_name VARCHAR(255) NOT NULL,
   file_size INTEGER,
+  file_type VARCHAR(100),
   file_url VARCHAR(500) NOT NULL,
   
   -- BSAFE Source and Validation
@@ -138,6 +162,16 @@ CREATE POLICY "Users can sign own contracts" ON contract_signatures
 
 CREATE POLICY "Users can insert own signatures" ON contract_signatures
   FOR INSERT WITH CHECK (auth.role() = 'service_role');
+
+-- RLS Policies for contract_details
+CREATE POLICY "Users can view own contract details" ON contract_details
+  FOR SELECT USING (
+    auth.jwt() ->> 'email' = (SELECT applicant_email FROM offer_letters ol WHERE ol.id = (SELECT offer_letter_id FROM employment_contracts WHERE id = contract_id))
+    OR auth.role() = 'service_role'
+  );
+
+CREATE POLICY "Admins can manage contract details" ON contract_details
+  FOR ALL USING (auth.role() = 'service_role');
 
 -- RLS Policies for bsafe_uploads
 -- Allow users to upload their own BSAFE
