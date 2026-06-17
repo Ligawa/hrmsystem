@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       const question = assessment.assessment_questions.find((q: any) => q.id === response.questionId)
       if (!question) continue
 
-      let isCorrect = false
+      let isCorrect: boolean | null = false
       let marks = 0
 
       if (question.question_type === 'mcq') {
@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
         isCorrect = null
       } else {
         marks = 0
+        isCorrect = false
       }
 
       totalScore += marks

@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: documentId } = await params
     const supabase = await createClient()
-    const documentId = params.id
     const { status, rejectionReason } = await request.json()
 
     if (!documentId || !status) {

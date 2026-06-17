@@ -13,7 +13,7 @@ export const blobStorage = {
       const path = pathname ? `${pathname}/${filename}` : filename
 
       const blob = await put(path, file, {
-        access: 'private',
+        access: 'public',
         addRandomSuffix: true
       })
 

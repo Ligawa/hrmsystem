@@ -221,7 +221,7 @@ export default function VideoInterviewsReviewPage() {
                               <Star
                                 key={i}
                                 className={`h-4 w-4 ${
-                                  i < interview.overall_rating
+                                  interview.overall_rating && i < interview.overall_rating
                                     ? 'fill-yellow-400 text-yellow-400'
                                     : 'text-gray-300'
                                 }`}

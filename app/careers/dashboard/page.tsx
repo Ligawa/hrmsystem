@@ -114,19 +114,19 @@ export default function ApplicantDashboardPage() {
 
                     <div className="pt-4 space-y-3 border-t border-gray-200">
                       <label className="flex items-center gap-3">
-                        <input type="checkbox" checked defaultReadOnly className="w-4 h-4 text-blue-600 rounded" />
+                        <input type="checkbox" checked readOnly className="w-4 h-4 text-blue-600 rounded" />
                         <span className="text-sm text-gray-700">Basic Information</span>
                       </label>
                       <label className="flex items-center gap-3">
-                        <input type="checkbox" checked defaultReadOnly className="w-4 h-4 text-blue-600 rounded" />
+                        <input type="checkbox" checked readOnly className="w-4 h-4 text-blue-600 rounded" />
                         <span className="text-sm text-gray-700">Professional Details</span>
                       </label>
                       <label className="flex items-center gap-3">
-                        <input type="checkbox" defaultReadOnly className="w-4 h-4 text-gray-300 rounded" />
+                        <input type="checkbox" readOnly className="w-4 h-4 text-gray-300 rounded" />
                         <span className="text-sm text-gray-700">Education</span>
                       </label>
                       <label className="flex items-center gap-3">
-                        <input type="checkbox" defaultReadOnly className="w-4 h-4 text-gray-300 rounded" />
+                        <input type="checkbox" readOnly className="w-4 h-4 text-gray-300 rounded" />
                         <span className="text-sm text-gray-700">Work Experience</span>
                       </label>
                     </div>
