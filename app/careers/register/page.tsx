@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { registerApplicant } from '@/lib/services/applicant-auth-service';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { FileUpload } from '@/components/file-upload';
 
 export default function ApplicantRegisterPage() {
   const router = useRouter();
@@ -21,6 +22,10 @@ export default function ApplicantRegisterPage() {
     phone: '',
     password: '',
     confirmPassword: '',
+    profilePictureUrl: '',
+    resumeUrl: '',
+    coverLetterUrl: '',
+    identificationDocUrl: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,9 +114,9 @@ export default function ApplicantRegisterPage() {
         <div className="max-w-md mx-auto">
         <div className="text-center mb-8">
           <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg"
             alt="WHO Logo"
-            className="h-16 w-16 mx-auto mb-4"
+            className="h-20 w-auto mx-auto mb-4"
           />
           <h1 className="text-3xl font-bold text-gray-900">Join WHO</h1>
           <p className="text-gray-600 mt-2">Create your applicant profile</p>
@@ -224,12 +229,62 @@ export default function ApplicantRegisterPage() {
                 />
               </div>
 
+              <div className="border-t pt-6">
+                <h3 className="font-semibold text-gray-900 mb-4">Application Documents</h3>
+                <p className="text-sm text-gray-600 mb-4">Upload the following documents to complete your application:</p>
+                
+                <div className="space-y-4">
+                  <FileUpload
+                    label="Profile Picture"
+                    accept="image/*"
+                    maxSize={5}
+                    acceptedFormats={['JPG', 'PNG', 'GIF']}
+                    helperText="Upload a professional profile photo. Max 5MB."
+                    onFileUpload={(url) => setFormData(prev => ({ ...prev, profilePictureUrl: url }))}
+                  />
+                  
+                  <FileUpload
+                    label="Resume/CV"
+                    accept=".pdf,.doc,.docx"
+                    maxSize={10}
+                    acceptedFormats={['PDF', 'DOC', 'DOCX']}
+                    helperText="Upload your resume or CV. Max 10MB."
+                    onFileUpload={(url) => setFormData(prev => ({ ...prev, resumeUrl: url }))}
+                  />
+                  
+                  <FileUpload
+                    label="Cover Letter"
+                    accept=".pdf,.doc,.docx"
+                    maxSize={5}
+                    acceptedFormats={['PDF', 'DOC', 'DOCX']}
+                    helperText="Upload a cover letter. Max 5MB."
+                    onFileUpload={(url) => setFormData(prev => ({ ...prev, coverLetterUrl: url }))}
+                  />
+                  
+                  <FileUpload
+                    label="Identification Document"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    maxSize={10}
+                    acceptedFormats={['PDF', 'JPG', 'PNG']}
+                    helperText="Upload a copy of your ID. Max 10MB."
+                    onFileUpload={(url) => setFormData(prev => ({ ...prev, identificationDocUrl: url }))}
+                  />
+                </div>
+              </div>
+
               <Button
                 type="submit"
                 disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2"
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating Account...
+                  </>
+                ) : (
+                  'Create Account'
+                )}
               </Button>
             </form>
 
