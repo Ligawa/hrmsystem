@@ -70,14 +70,15 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4 py-12">
-      <div className="max-w-md mx-auto">
-        <div className="text-center mb-8">
-          <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png"
-            alt="WHO Logo"
-            className="h-16 w-16 mx-auto mb-4"
-          />
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat p-4 py-12" style={{backgroundImage: 'url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg)'}}>
+      <div className="min-h-screen bg-black/50 flex items-center justify-center">
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-8">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg"
+              alt="WHO Logo"
+              className="h-16 w-16 mx-auto mb-4"
+            />
           <h1 className="text-3xl font-bold text-gray-900">Applicant Portal</h1>
           <p className="text-gray-600 mt-2">Sign in to your account</p>
         </div>
@@ -215,6 +216,7 @@ function LoginContent() {
           </CardContent>
         </Card>
       </div>
+    </div>
     </div>
   );
 }

@@ -13,24 +13,24 @@ const sourceSans = Source_Sans_3({
 
 export const metadata: Metadata = {
   title: {
-    default: 'World Vision International | WVI',
-    template: '%s | World Vision International'
+    default: 'World Health Organisation | WHO',
+    template: '%s | World Health Organisation'
   },
-  description: 'World Vision International works globally to promote sustainable economic development, reduce poverty and inequality, and build resilient economies for a better future.',
-  keywords: ['World Vision International', 'WVI', 'international development', 'sustainable development', 'poverty reduction', 'global development', 'humanitarian'],
+  description: 'World Health Organisation is the directing and coordinating authority for health within the United Nations system.',
+  keywords: ['World Health Organisation', 'WHO', 'health', 'global health', 'public health', 'healthcare', 'disease prevention'],
   icons: {
     icon: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20FAv%20Icon-3GW8trrW6xCuRYBOBiLUYMU5Qdvm98.jpg',
     shortcut: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20FAv%20Icon-3GW8trrW6xCuRYBOBiLUYMU5Qdvm98.jpg',
     apple: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20FAv%20Icon-3GW8trrW6xCuRYBOBiLUYMU5Qdvm98.jpg',
   },
   openGraph: {
-    title: 'World Vision International | WVI',
-    description: 'Promoting sustainable economic development and reducing poverty worldwide.',
+    title: 'World Health Organisation | WHO',
+    description: 'World Health Organisation - directing and coordinating global health.',
     type: 'website',
-    siteName: 'World Vision International',
+    siteName: 'World Health Organisation',
     images: [
       {
-        url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-0o6k8pOMH06DnuLiYYgcUVTBSUN7hD.jpg',
+        url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg',
         width: 1200,
         height: 630,
         alt: 'World Health Organization',
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'World Vision International | WVI',
-    description: 'Promoting sustainable economic development and reducing poverty worldwide.',
-    images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-0o6k8pOMH06DnuLiYYgcUVTBSUN7hD.jpg'],
+    title: 'World Health Organisation | WHO',
+    description: 'World Health Organisation - directing and coordinating global health.',
+    images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg'],
   },
     generator: 'v0.app'
 }
