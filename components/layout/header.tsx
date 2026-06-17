@@ -47,7 +47,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <img 
-              src="/images/wvi-logo-white.svg" 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png" 
               alt="World Vision International Logo" 
               className="h-10 w-auto flex-shrink-0"
             />

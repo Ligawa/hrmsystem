@@ -111,25 +111,36 @@ export default function AdminRegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4">
-        <div className="w-full max-w-md">
+      <div 
+        className="min-h-screen flex items-center justify-center p-4"
+        style={{
+          backgroundImage: 'url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-h4IRjXr2RHdKRtcGEXjlLNLdwnaPu7.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/60" />
+        
+        <div className="w-full max-w-md relative z-10">
           <div className="mb-8 text-center">
             <Link href="/" className="inline-block">
               <img 
-              src="/images/wvi-logo.svg" 
-              alt="World Vision International Logo"
-                className="mx-auto h-16 w-auto"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png" 
+              alt="WHO Logo"
+                className="mx-auto h-20 w-auto drop-shadow-lg"
               />
             </Link>
           </div>
           
-          <Card>
+          <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-0">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
                 <CheckCircle2 className="h-6 w-6 text-green-600" />
               </div>
-              <CardTitle className="text-2xl">Registration Submitted</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-2xl text-gray-900">Registration Submitted</CardTitle>
+              <CardDescription className="text-gray-600">
                 Please check your email to verify your account
               </CardDescription>
             </CardHeader>
@@ -154,27 +165,38 @@ export default function AdminRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4 py-12">
-      <div className="w-full max-w-md">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 py-12"
+      style={{
+        backgroundImage: 'url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-h4IRjXr2RHdKRtcGEXjlLNLdwnaPu7.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/60" />
+      
+      <div className="w-full max-w-md relative z-10">
         {/* Logo */}
         <div className="mb-8 text-center">
           <Link href="/" className="inline-block">
             <img 
-              src="/images/wvi-logo.svg" 
-              alt="World Vision International Logo" 
-              className="mx-auto h-16 w-auto"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png" 
+              alt="WHO Logo" 
+              className="mx-auto h-20 w-auto drop-shadow-lg"
             />
           </Link>
           <div className="mt-4 flex items-center justify-center gap-2">
-            <Shield className="h-5 w-5 text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">Admin Portal</span>
+            <Shield className="h-5 w-5 text-blue-400" />
+            <span className="text-sm font-medium text-gray-200">Admin Portal</span>
           </div>
         </div>
 
-        <Card>
+        <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-0">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Request Admin Access</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl text-gray-900">Request Admin Access</CardTitle>
+            <CardDescription className="text-gray-600">
               Fill out the form below to request administrator access
             </CardDescription>
           </CardHeader>
