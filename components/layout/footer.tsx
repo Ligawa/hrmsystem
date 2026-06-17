@@ -3,29 +3,12 @@ import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react"
 
 const footerLinks = {
   about: [
-    { name: "Who We Are", href: "/about" },
-    { name: "Our Leadership", href: "/about#leadership" },
-    { name: "Our History", href: "/about#history" },
+    { name: "About WHO", href: "/about" },
     { name: "Careers", href: "/careers" },
   ],
-  work: [
-    { name: "Sustainable Development", href: "/what-we-do" },
-    { name: "Climate Action", href: "/issues/climate" },
-    { name: "Gender Equality", href: "/issues/gender" },
-    { name: "Governance", href: "/issues/governance" },
-  ],
   resources: [
-    { name: "Publications", href: "/resources" },
-    { name: "Data Portal", href: "/resources#data" },
-    { name: "Annual Reports", href: "/resources#reports" },
-    { name: "Press Room", href: "/news" },
-  ],
-  countries: [
-    { name: "Africa", href: "/countries?region=africa" },
-    { name: "Arab States", href: "/countries?region=arab" },
-    { name: "Asia & Pacific", href: "/countries?region=asia" },
-    { name: "Europe & CIS", href: "/countries?region=europe" },
-    { name: "Latin America", href: "/countries?region=latam" },
+    { name: "Resources", href: "/resources" },
+    { name: "News", href: "/news" },
   ],
 }
 
@@ -41,21 +24,18 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-blue-950 text-white">
       <div className="container mx-auto px-4 py-12 lg:py-16">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-8 md:grid-cols-3">
           {/* Logo and Description */}
-          <div className="lg:col-span-1">
+          <div>
             <Link href="/" className="inline-block">
               <img 
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg" 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg" 
                 alt="World Health Organisation Logo" 
-                className="h-16 w-auto"
+                className="h-20 w-auto"
               />
             </Link>
             <p className="mt-4 text-sm text-white/80">
               World Health Organisation
-            </p>
-            <p className="mt-2 text-xs text-white/60">
-              Directing and coordinating global health priorities
             </p>
           </div>
 
@@ -73,39 +53,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Focus Areas Links */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Focus Areas</h3>
-            <ul className="space-y-2">
-              {footerLinks.work.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-sm text-white/80 transition-colors hover:text-white">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Resources Links */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Resources</h3>
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-sm text-white/80 transition-colors hover:text-white">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Countries Links */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Countries</h3>
-            <ul className="space-y-2">
-              {footerLinks.countries.map((link) => (
                 <li key={link.name}>
                   <Link href={link.href} className="text-sm text-white/80 transition-colors hover:text-white">
                     {link.name}
