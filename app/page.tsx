@@ -1,71 +1,64 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Users, Heart, Droplet, BookOpen, MapPin, Smile } from "lucide-react"
+import { ArrowRight, Briefcase, Users, Globe, CheckCircle2, Clock, Award } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-const impactStats = [
-  { value: "100+", label: "Countries", icon: MapPin },
-  { value: "1M+", label: "Children Sponsored", icon: Heart },
-  { value: "600M", label: "People Reached Annually", icon: Users },
-  { value: "70+", label: "Years of Impact", icon: Smile },
+const jobBenefits = [
+  { icon: Globe, label: "Global Impact", description: "Work with international teams making a difference worldwide" },
+  { icon: Users, label: "Diverse Teams", description: "Collaborate with talented professionals from 100+ countries" },
+  { icon: Award, label: "Professional Growth", description: "Access to training, mentorship, and career development programs" },
+  { icon: CheckCircle2, label: "Meaningful Work", description: "Contribute directly to WHO's mission of global health" },
 ]
 
-const focusAreas = [
+const applicationSteps = [
   {
-    title: "Child Protection",
-    description: "Protecting children from violence, exploitation, and abuse in vulnerable communities.",
-    icon: Heart,
-    href: "/what-we-do#child-protection",
-    color: "bg-red-500",
+    number: "1",
+    title: "Create Your Profile",
+    description: "Register as an applicant and build your professional profile with education and work experience.",
   },
   {
-    title: "Education",
-    description: "Ensuring every child has access to quality education and learning opportunities.",
-    icon: BookOpen,
-    href: "/what-we-do#education",
-    color: "bg-yellow-500",
+    number: "2",
+    title: "Browse Open Positions",
+    description: "Explore job opportunities across different roles, locations, and career levels.",
   },
   {
-    title: "Health & Nutrition",
-    description: "Providing health services, nutrition support, and maternal care for vulnerable families.",
-    icon: Heart,
-    href: "/what-we-do#health",
-    color: "bg-green-500",
+    number: "3",
+    title: "Submit Application",
+    description: "Apply to positions that match your skills and interests with a personalized cover letter.",
   },
   {
-    title: "Water & Sanitation",
-    description: "Delivering clean water and sanitation access to communities in need.",
-    icon: Droplet,
-    href: "/what-we-do#water",
-    color: "bg-blue-500",
+    number: "4",
+    title: "Complete Assessments",
+    description: "Participate in technical assessments and evaluations relevant to the position.",
+  },
+  {
+    number: "5",
+    title: "Interview Process",
+    description: "Engage with our recruitment team through multiple interview rounds.",
+  },
+  {
+    number: "6",
+    title: "Get Hired",
+    description: "Receive your offer and join the WHO family to make global health impact.",
   },
 ]
 
-const latestStories = [
+const whyChooseWHO = [
   {
-    title: "Hope Through Education: Transforming Lives in East Africa",
-    excerpt: "Meet the children whose futures are being transformed through quality education and mentorship programs across Kenya and Uganda.",
-    image: "/images/image-18-credit-undp-nigeria-amalachukwu-ibeneme-crop.jpg",
-    date: "January 28, 2026",
-    category: "Education",
-    slug: "hope-education-east-africa",
+    title: "Mission-Driven Work",
+    description: "Be part of the world's leading global health authority working to achieve better health for all.",
+    icon: Globe,
   },
   {
-    title: "Clean Water Changes Everything: A Village's Story",
-    excerpt: "See how access to clean water and sanitation facilities is improving health outcomes for children and families in rural communities.",
-    image: "/images/image-1-credit-undp-afghanistan.jpg",
-    date: "January 25, 2026",
-    category: "Water & Sanitation",
-    slug: "clean-water-story",
+    title: "International Career",
+    description: "Access opportunities across 150+ countries with exposure to diverse healthcare systems.",
+    icon: Briefcase,
   },
   {
-    title: "Sponsorship Stories: Changing Lives One Child at a Time",
-    excerpt: "Discover the powerful impact of child sponsorship and how supporters around the world are making a difference in children's lives.",
-    image: "/images/undp-cu-diosmara-farm-2025.jpg",
-    date: "January 22, 2026",
-    category: "Sponsorship",
-    slug: "sponsorship-stories",
+    title: "Professional Development",
+    description: "Invest in your growth with training, conferences, and mentorship from global experts.",
+    icon: Award,
   },
 ]
 
@@ -73,267 +66,185 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative min-h-[75vh] flex items-center">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/human-development-healthy-planet.jpg"
-            alt="Children representing World Vision International's mission"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#CC4D3E]/85 via-[#CC4D3E]/65 to-transparent" />
-        </div>
-        
+      <section className="relative min-h-[75vh] flex items-center bg-gradient-to-br from-blue-50 to-blue-100">
         <div className="container relative z-10 mx-auto px-4 py-20">
-          <div className="max-w-2xl text-white">
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl text-balance">
-              Protect. Empower. Transform.
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-3 mb-6">
+              <img 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png"
+                alt="WHO Logo"
+                className="h-16 w-16"
+              />
+              <span className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Careers at WHO</span>
+            </div>
+            <h1 className="text-5xl font-bold leading-tight md:text-6xl lg:text-7xl text-gray-900 text-balance">
+              Shape Global Health. Make an Impact.
             </h1>
-            <p className="mt-6 text-lg text-white/95 md:text-xl leading-relaxed">
-              World Vision International is a global humanitarian organization dedicated to protecting vulnerable children, 
-              fighting poverty, and building a more just world where every child can thrive.
+            <p className="mt-6 text-xl text-gray-700 md:text-2xl leading-relaxed max-w-2xl">
+              Join the World Health Organization and work at the forefront of global health challenges. 
+              Build your career with a mission to achieve better health for all.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Button asChild size="lg" className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold">
-                <Link href="/what-we-do">
-                  Sponsor a Child
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Button asChild size="lg" className="bg-blue-600 text-white hover:bg-blue-700 font-semibold">
+                <Link href="/careers/browse">
+                  Browse Open Positions
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10 bg-transparent">
-                <Link href="/news">Our Stories</Link>
+              <Button asChild size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                <Link href="/careers/register">Start Your Application</Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Impact Stats */}
-      <section className="bg-primary py-16">
+      {/* Why Choose WHO */}
+      <section className="bg-gradient-to-br from-blue-600 to-blue-800 py-16 lg:py-24 text-white">
         <div className="container mx-auto px-4">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {impactStats.map((stat) => (
-              <div key={stat.label} className="text-center text-white">
-                <stat.icon className="mx-auto h-10 w-10 mb-4 opacity-90" />
-                <div className="text-4xl font-bold md:text-5xl">{stat.value}</div>
-                <div className="mt-2 text-sm uppercase tracking-wide text-white/85">{stat.label}</div>
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-4xl font-bold">Why Join WHO?</h2>
+            <p className="mt-4 text-lg text-blue-100">
+              Work with the world's leading global health authority on meaningful projects that save lives.
+            </p>
+          </div>
+          
+          <div className="grid gap-8 md:grid-cols-3">
+            {whyChooseWHO.map((item) => (
+              <div key={item.title} className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-white/20">
+                <item.icon className="h-12 w-12 mb-4 text-blue-200" />
+                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                <p className="text-blue-100">{item.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Our Mission Section */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      {/* Application Process */}
+      <section className="py-16 lg:py-24 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-foreground md:text-4xl text-balance">
-                Our Mission: Every Child's Full Potential
-              </h2>
-              <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                At World Vision International, we believe that every child deserves a chance to fulfill their potential. 
-                We work to protect children from harm, provide them with education and health care, 
-                and help communities break the cycle of poverty.
-              </p>
-              <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                Our approach combines child protection, community development, and emergency relief to create lasting change 
-                in the lives of the world's most vulnerable children and their families.
-              </p>
-              <Button asChild className="mt-6 bg-primary hover:bg-primary/90">
-                <Link href="/what-we-do">
-                  Explore Our Programs
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-            <div className="flex justify-center rounded-lg overflow-hidden">
-              <div className="w-full max-w-md h-96 bg-gradient-to-br from-yellow-100 to-orange-100 flex items-center justify-center">
-                <div className="text-center">
-                  <Heart className="w-24 h-24 text-primary mx-auto mb-4" />
-                  <p className="text-gray-600 font-semibold">Changing the world one child at a time</p>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl font-bold text-gray-900">How to Apply</h2>
+            <p className="mt-4 text-xl text-gray-600">
+              A straightforward process to help you join our global health mission.
+            </p>
+          </div>
+          
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {applicationSteps.map((step) => (
+              <div key={step.number} className="bg-blue-50 rounded-lg p-8 border border-blue-200">
+                <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">
+                  {step.number}
                 </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{step.title}</h3>
+                <p className="text-gray-700">{step.description}</p>
               </div>
-            </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Button asChild size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
+              <Link href="/careers/register">
+                Start Your Application Today
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Focus Areas */}
-      <section className="py-16 lg:py-24">
+      {/* Job Benefits */}
+      <section className="py-16 lg:py-24 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold text-foreground md:text-4xl">Our Focus Areas</h2>
-            <p className="mt-4 text-lg text-gray-700">
-              We focus on key areas that directly impact children's lives and futures, 
-              working to ensure every child has the opportunity to thrive.
+            <h2 className="text-4xl font-bold text-gray-900">What We Offer</h2>
+            <p className="mt-4 text-xl text-gray-600">
+              Competitive benefits and a supportive environment for your professional growth.
             </p>
           </div>
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {focusAreas.map((area) => (
-              <Card key={area.title} className="group overflow-hidden border-0 shadow-lg transition-all hover:shadow-xl hover:-translate-y-1">
-                <div className={`${area.color} p-4`}>
-                  <area.icon className="h-10 w-10 text-white" />
-                </div>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xl">{area.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base leading-relaxed">{area.description}</CardDescription>
-                  <Link 
-                    href={area.href} 
-                    className="mt-4 inline-flex items-center text-sm font-semibold text-primary hover:underline"
-                  >
-                    Learn more <ArrowRight className="ml-1 h-4 w-4" />
-                  </Link>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {jobBenefits.map((benefit) => (
+              <Card key={benefit.label} className="border-0 shadow-md hover:shadow-lg transition-all">
+                <CardContent className="pt-6">
+                  <benefit.icon className="h-10 w-10 text-blue-600 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{benefit.label}</h3>
+                  <p className="text-gray-700">{benefit.description}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
-
-          <div className="mt-10 text-center">
-            <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground bg-transparent">
-              <Link href="/what-we-do">View All Focus Areas</Link>
-            </Button>
-          </div>
         </div>
       </section>
 
-      {/* Latest Stories */}
-      <section className="py-16 lg:py-24 bg-muted/30">
+      {/* Frequently Asked Questions */}
+      <section className="py-16 lg:py-24 bg-white">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
-            <div>
-              <h2 className="text-3xl font-bold text-foreground md:text-4xl">Latest Stories</h2>
-              <p className="mt-2 text-lg text-muted-foreground">
-                News, features, and impact stories from around the world.
-              </p>
-            </div>
-            <Button asChild variant="outline">
-              <Link href="/news">View All Stories</Link>
-            </Button>
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-4xl font-bold text-gray-900">Frequently Asked Questions</h2>
+            <p className="mt-4 text-xl text-gray-600">
+              Find answers to common questions about working at WHO.
+            </p>
           </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {latestStories.map((story) => (
-              <article key={story.slug} className="group overflow-hidden rounded-lg bg-card shadow-md transition-all hover:shadow-xl">
-                <Link href={`/news/${story.slug}`}>
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <Image
-                      src={story.image || "/placeholder.svg"}
-                      alt={story.title}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">
-                        {story.category}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <time className="text-sm text-muted-foreground">{story.date}</time>
-                    <h3 className="mt-2 text-xl font-semibold text-foreground group-hover:text-primary transition-colors text-balance">
-                      {story.title}
-                    </h3>
-                    <p className="mt-2 text-muted-foreground line-clamp-2">{story.excerpt}</p>
-                  </div>
-                </Link>
-              </article>
+          
+          <div className="max-w-3xl mx-auto space-y-6">
+            {[
+              {
+                q: "What qualifications do I need to apply?",
+                a: "Qualifications vary by position. Most roles require relevant education and professional experience. Check the specific job description for detailed requirements.",
+              },
+              {
+                q: "How long does the recruitment process take?",
+                a: "The timeline varies by position, typically ranging from 2-4 months from application to hiring decision, including interviews and assessments.",
+              },
+              {
+                q: "Can I apply for multiple positions?",
+                a: "Yes, you can apply for multiple positions that match your qualifications. Create one profile and apply to as many open positions as you&apos;d like.",
+              },
+              {
+                q: "Is there a language requirement?",
+                a: "Fluency requirements depend on the role and location. Most positions require English proficiency; some may require additional language skills.",
+              },
+              {
+                q: "Do you offer remote work opportunities?",
+                a: "Yes, many positions offer remote or flexible work arrangements. Position details will specify the work location and flexibility options.",
+              },
+            ].map((faq, idx) => (
+              <Card key={idx} className="border-blue-200">
+                <CardHeader>
+                  <CardTitle className="text-lg text-gray-900">{faq.q}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700">{faq.a}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Initiative */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      {/* Final CTA */}
+      <section className="py-16 lg:py-24 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div className="container mx-auto px-4">
-          <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-lg">
-              <Image
-                src="/images/mpi-2025-coverpage-crop.jpg"
-                alt="Child-Centered Community Development"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div>
-              <span className="inline-block rounded-full bg-yellow-100 px-4 py-1 text-sm font-semibold text-primary">
-                Featured Initiative
-              </span>
-              <h2 className="mt-4 text-2xl font-bold text-foreground md:text-3xl text-balance">
-                Child-Centered Community Development
-              </h2>
-              <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                We don&apos;t just give aid—we work alongside communities to create sustainable solutions where children thrive. 
-                Our integrated approach addresses health, education, protection, and economic opportunity with every child&apos;s best interests at heart.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-4">
-                <Button asChild className="bg-primary hover:bg-primary/90">
-                  <Link href="/what-we-do">
-                    Learn Our Approach
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                  <Link href="/resources">View Our Impact</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter CTA */}
-      <section className="py-16 lg:py-24 bg-primary">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-2xl text-center text-white">
-            <h2 className="text-3xl font-bold md:text-4xl">Join Our Community</h2>
-            <p className="mt-4 text-lg text-white/90">
-              Subscribe to our newsletter for the latest news, stories, and updates on our work around the world.
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-4xl font-bold md:text-5xl">Ready to Make a Global Health Impact?</h2>
+            <p className="mt-6 text-lg text-blue-100 leading-relaxed">
+              Explore our current openings and take the first step toward a rewarding career with the World Health Organization. 
+              Your expertise and passion can help us achieve better health for all.
             </p>
-            <form className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 rounded-md border-0 bg-white/10 px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white"
-                required
-              />
-              <Button type="submit" className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 px-8 font-semibold">
-                Subscribe
+            <div className="mt-8 flex flex-wrap gap-4 justify-center">
+              <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold">
+                <Link href="/careers/browse">
+                  View All Jobs
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
               </Button>
-            </form>
-            <p className="mt-4 text-sm text-white/75">
-              By subscribing, you&apos;ll get stories of impact, updates on our programs, and ways you can help change children&apos;s lives.
-            </p>
+              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Link href="/careers/register">Create Your Profile</Link>
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Stories Banner */}
-      <section className="relative py-20 lg:py-32">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/good-stories.png"
-            alt="Stories of children and families transformed by World Vision"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gray-900/70" />
-        </div>
-        <div className="container relative z-10 mx-auto px-4 text-center text-white">
-          <h2 className="text-3xl font-bold md:text-5xl text-balance">Real Stories. Real Lives. Real Change.</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-white/90">
-            Meet the children and families whose lives are being transformed through our programs. These are the stories that inspire us.
-          </p>
-          <Button asChild size="lg" className="mt-8 bg-white text-[#5a7247] hover:bg-white/90">
-            <Link href="/news">
-              Explore Good Stories
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
         </div>
       </section>
     </div>

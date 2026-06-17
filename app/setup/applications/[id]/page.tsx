@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -42,17 +43,55 @@ interface Application {
   current_company: string | null;
   current_title: string | null;
   status: string;
+  application_status: string;
+  job_reference_number: string;
+  applicant_id?: string;
   admin_notes: string | null;
+  notes: string | null;
+  assessment_score: number | null;
+  interview_date: string | null;
+  interview_notes: string | null;
+  shortlist_reason: string | null;
+  rejection_reason: string | null;
   created_at: string;
   jobs: {
     id: string;
     title: string;
     location: string;
+    country?: string;
     department: string | null;
   } | null;
+  applicants?: {
+    applicant_id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
 }
 
+const APPLICATION_STATUSES = [
+  'Submitted',
+  'Under Review',
+  'Assessment Pending',
+  'Interview Pending',
+  'Shortlisted',
+  'Reference Check',
+  'Selected',
+  'Deployment Preparation',
+  'Closed',
+];
+
 const statusColors: Record<string, string> = {
+  Submitted: "bg-gray-100 text-gray-800",
+  'Under Review': "bg-blue-100 text-blue-800",
+  'Assessment Pending': "bg-yellow-100 text-yellow-800",
+  'Interview Pending': "bg-purple-100 text-purple-800",
+  Shortlisted: "bg-green-100 text-green-800",
+  'Reference Check': "bg-orange-100 text-orange-800",
+  Selected: "bg-emerald-100 text-emerald-800",
+  'Deployment Preparation': "bg-cyan-100 text-cyan-800",
+  Closed: "bg-red-100 text-red-800",
+  // Legacy statuses
   pending: "bg-blue-100 text-blue-800",
   reviewing: "bg-yellow-100 text-yellow-800",
   accepted: "bg-green-100 text-green-800",
@@ -66,7 +105,13 @@ export default function ApplicationDetailPage() {
   const [saving, setSaving] = useState(false);
   const [application, setApplication] = useState<Application | null>(null);
   const [status, setStatus] = useState("pending");
+  const [applicationStatus, setApplicationStatus] = useState("Submitted");
   const [adminNotes, setAdminNotes] = useState("");
+  const [assessmentScore, setAssessmentScore] = useState("");
+  const [interviewDate, setInterviewDate] = useState("");
+  const [interviewNotes, setInterviewNotes] = useState("");
+  const [shortlistReason, setShortlistReason] = useState("");
+  const [rejectionReason, setRejectionReason] = useState("");
 
   useEffect(() => {
     async function fetchApplication() {
@@ -94,7 +139,13 @@ export default function ApplicationDetailPage() {
 
       setApplication(data);
       setStatus(data.status);
-      setAdminNotes(data.admin_notes || "");
+      setApplicationStatus(data.application_status || "Submitted");
+      setAdminNotes(data.admin_notes || data.notes || "");
+      setAssessmentScore(data.assessment_score?.toString() || "");
+      setInterviewDate(data.interview_date || "");
+      setInterviewNotes(data.interview_notes || "");
+      setShortlistReason(data.shortlist_reason || "");
+      setRejectionReason(data.rejection_reason || "");
       setLoading(false);
     }
     fetchApplication();
@@ -108,13 +159,22 @@ export default function ApplicationDetailPage() {
       .from("job_applications")
       .update({
         status,
+        application_status: applicationStatus,
         admin_notes: adminNotes,
+        notes: adminNotes,
+        assessment_score: assessmentScore ? parseFloat(assessmentScore) : null,
+        interview_date: interviewDate || null,
+        interview_notes: interviewNotes,
+        shortlist_reason: applicationStatus === 'Shortlisted' ? shortlistReason : null,
+        rejection_reason: applicationStatus === 'Closed' ? rejectionReason : null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", params.id);
 
     if (error) {
       alert("Error updating application: " + error.message);
+    } else {
+      alert("Application updated successfully");
     }
     setSaving(false);
   };
@@ -138,12 +198,21 @@ export default function ApplicationDetailPage() {
           </Button>
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold">{application.full_name}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold">{application.full_name}</h1>
+            {application.applicants?.applicant_id && (
+              <span className="text-xs text-muted-foreground font-mono bg-gray-100 px-2 py-1 rounded">
+                {application.applicants.applicant_id}
+              </span>
+            )}
+          </div>
           <p className="text-muted-foreground">
-            Application for {application.jobs?.title}
+            {application.job_reference_number} • {application.jobs?.title}
           </p>
         </div>
-        <Badge className={`${statusColors[status]} capitalize`}>{status}</Badge>
+        <Badge className={`${statusColors[applicationStatus] || statusColors[status]} capitalize`}>
+          {applicationStatus || status}
+        </Badge>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -327,31 +396,86 @@ export default function ApplicationDetailPage() {
           {/* Status Update */}
           <Card>
             <CardHeader>
-              <CardTitle>Update Status</CardTitle>
+              <CardTitle>Update Status & Notes</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Application Status</Label>
-                <Select value={status} onValueChange={setStatus}>
+                <Select value={applicationStatus} onValueChange={setApplicationStatus}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="reviewing">Reviewing</SelectItem>
-                    <SelectItem value="accepted">Accepted</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
+                    {APPLICATION_STATUSES.map((s) => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
+              {applicationStatus === 'Shortlisted' && (
+                <div className="space-y-2">
+                  <Label>Shortlist Reason</Label>
+                  <Textarea
+                    value={shortlistReason}
+                    onChange={(e) => setShortlistReason(e.target.value)}
+                    placeholder="Why is this candidate shortlisted?"
+                    rows={3}
+                  />
+                </div>
+              )}
+
+              {applicationStatus === 'Closed' && (
+                <div className="space-y-2">
+                  <Label>Rejection Reason</Label>
+                  <Textarea
+                    value={rejectionReason}
+                    onChange={(e) => setRejectionReason(e.target.value)}
+                    placeholder="Reason for closing this application"
+                    rows={3}
+                  />
+                </div>
+              )}
+
               <div className="space-y-2">
-                <Label>Admin Notes</Label>
+                <Label>Assessment Score</Label>
+                <Input
+                  type="number"
+                  placeholder="e.g., 85"
+                  value={assessmentScore}
+                  onChange={(e) => setAssessmentScore(e.target.value)}
+                  min="0"
+                  max="100"
+                  step="0.1"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Interview Date</Label>
+                <Input
+                  type="datetime-local"
+                  value={interviewDate}
+                  onChange={(e) => setInterviewDate(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Interview Notes</Label>
+                <Textarea
+                  value={interviewNotes}
+                  onChange={(e) => setInterviewNotes(e.target.value)}
+                  placeholder="Interview feedback and observations..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>General Notes</Label>
                 <Textarea
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
                   placeholder="Add internal notes about this candidate..."
-                  rows={4}
+                  rows={3}
                 />
               </div>
 
