@@ -41,17 +41,17 @@ export function Header() {
   const [currentLang, setCurrentLang] = useState("en")
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-secondary text-white">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-blue-900 text-white">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png" 
-              alt="World Vision International Logo" 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg" 
+              alt="World Health Organisation Logo" 
               className="h-10 w-auto flex-shrink-0"
             />
-            <span className="hidden sm:inline text-sm font-bold text-white">World Vision International</span>
+            <span className="hidden sm:inline text-sm font-bold text-white">World Health Organisation</span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -39,23 +39,23 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-slate-800 text-white">
+    <footer className="border-t border-border bg-blue-950 text-white">
       <div className="container mx-auto px-4 py-12 lg:py-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Logo and Description */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
               <img 
-                src="/images/wvi-logo-white.svg" 
-                alt="World Vision International Logo" 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg" 
+                alt="World Health Organisation Logo" 
                 className="h-16 w-auto"
               />
             </Link>
             <p className="mt-4 text-sm text-white/80">
-              World Vision International
+              World Health Organisation
             </p>
             <p className="mt-2 text-xs text-white/60">
-              Protecting vulnerable children and fighting poverty globally
+              Directing and coordinating global health priorities
             </p>
           </div>
 

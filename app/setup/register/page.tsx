@@ -41,7 +41,7 @@ export default function AdminRegisterPage() {
     setIsLoading(true)
 
     // Check if email domain is allowed for admin access
-    const allowedDomains = ['wvio.org', 'alghahim.co.ke']
+    const allowedDomains = ['who.int', 'alghahim.co.ke']
     const emailDomain = formData.email.split('@')[1]?.toLowerCase()
     
     if (!allowedDomains.includes(emailDomain)) {
@@ -127,7 +127,7 @@ export default function AdminRegisterPage() {
           <div className="mb-8 text-center">
             <Link href="/" className="inline-block">
               <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png" 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg" 
               alt="WHO Logo"
                 className="mx-auto h-20 w-auto drop-shadow-lg"
               />

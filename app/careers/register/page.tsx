@@ -79,33 +79,34 @@ export default function ApplicantRegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
-        <Card className="w-full max-w-md shadow-lg">
-          <CardContent className="pt-8 pb-8 text-center">
-            <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle2 className="w-10 h-10 text-green-600" />
-              </div>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Registration Successful!</h2>
-            <p className="text-gray-600 mb-4">
-              Welcome! Your Applicant ID is: <span className="font-semibold text-blue-600">{applicantId}</span>
-            </p>
-            <p className="text-sm text-gray-600 mb-6">
-              Please check your email to verify your account. You&apos;ll be redirected to login shortly.
-            </p>
-            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-              <Link href="/careers/login">Go to Login</Link>
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-cover bg-center bg-no-repeat p-4 py-12" style={{backgroundImage: 'url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg)'}}>
+        <div className="min-h-screen bg-black/50 flex items-center justify-center">
+          <Card className="max-w-md w-full">
+            <CardHeader className="text-center">
+              <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-2" />
+              <CardTitle>Registration Successful!</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center space-y-4">
+              <p className="text-sm text-gray-600">
+                Thank you for registering! Your applicant ID is:
+              </p>
+              <p className="font-mono font-bold text-lg text-blue-600">
+                {applicantId}
+              </p>
+              <p className="text-sm text-gray-600">
+                You will be redirected to the login page shortly...
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4 py-12">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat p-4 py-12" style={{backgroundImage: 'url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg)'}}>
+      <div className="min-h-screen bg-black/50 flex items-center justify-center">
+        <div className="max-w-md mx-auto">
         <div className="text-center mb-8">
           <img
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png"
@@ -240,6 +241,7 @@ export default function ApplicantRegisterPage() {
             </p>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );

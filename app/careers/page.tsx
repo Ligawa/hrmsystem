@@ -33,9 +33,9 @@ interface Job {
 }
 
 export const metadata: Metadata = {
-  title: "Careers at World Vision",
+  title: "Careers at World Health Organisation",
   description:
-    "Join World Vision and make a difference. Explore career opportunities to create lasting change in communities worldwide.",
+    "Join WHO and make a global health impact. Explore career opportunities to improve health outcomes worldwide.",
 };
 
 const benefits = [
