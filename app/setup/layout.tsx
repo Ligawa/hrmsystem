@@ -47,7 +47,7 @@ export default function SetupLayout({
           <div className="flex h-16 items-center border-b px-6">
             <Link href="/setup" className="flex items-center gap-2">
               <img
-                src="/images/unedf-logo.jpg"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png"
                 alt="UNEDF Logo"
                 className="h-8 w-auto"
               />

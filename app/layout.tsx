@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   description: 'World Vision International works globally to promote sustainable economic development, reduce poverty and inequality, and build resilient economies for a better future.',
   keywords: ['World Vision International', 'WVI', 'international development', 'sustainable development', 'poverty reduction', 'global development', 'humanitarian'],
   icons: {
-    icon: '/images/wvi-logo.svg',
-    shortcut: '/images/wvi-logo.svg',
-    apple: '/images/wvi-logo.svg',
+    icon: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20FAv%20Icon-3GW8trrW6xCuRYBOBiLUYMU5Qdvm98.jpg',
+    shortcut: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20FAv%20Icon-3GW8trrW6xCuRYBOBiLUYMU5Qdvm98.jpg',
+    apple: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20FAv%20Icon-3GW8trrW6xCuRYBOBiLUYMU5Qdvm98.jpg',
   },
   openGraph: {
     title: 'World Vision International | WVI',
@@ -30,10 +30,10 @@ export const metadata: Metadata = {
     siteName: 'World Vision International',
     images: [
       {
-        url: '/images/wvi-logo.svg',
+        url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-0o6k8pOMH06DnuLiYYgcUVTBSUN7hD.jpg',
         width: 1200,
         height: 630,
-        alt: 'World Vision International',
+        alt: 'World Health Organization',
       }
     ],
   },
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'World Vision International | WVI',
     description: 'Promoting sustainable economic development and reducing poverty worldwide.',
-    images: ['/images/wvi-logo.svg'],
+    images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-0o6k8pOMH06DnuLiYYgcUVTBSUN7hD.jpg'],
   },
     generator: 'v0.app'
 }
