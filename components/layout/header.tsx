@@ -19,12 +19,8 @@ import {
 
 const navigation = [
   { name: "About", href: "/about" },
-  { name: "What We Do", href: "/what-we-do" },
-  { name: "Issues", href: "/issues" },
-  { name: "Countries", href: "/countries" },
-  { name: "Resources", href: "/resources" },
-  { name: "News", href: "/news" },
   { name: "Careers", href: "/careers" },
+  { name: "Resources", href: "/resources" },
 ]
 
 const languages = [
@@ -47,11 +43,10 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
             <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg" 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg" 
               alt="World Health Organisation Logo" 
-              className="h-10 w-auto flex-shrink-0"
+              className="h-12 w-auto flex-shrink-0"
             />
-            <span className="hidden sm:inline text-sm font-bold text-white">World Health Organisation</span>
           </Link>
 
           {/* Desktop Navigation */}

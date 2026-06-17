@@ -75,9 +75,9 @@ function LoginContent() {
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg"
               alt="WHO Logo"
-              className="h-16 w-16 mx-auto mb-4"
+              className="h-20 w-auto mx-auto mb-4"
             />
           <h1 className="text-3xl font-bold text-gray-900">Applicant Portal</h1>
           <p className="text-gray-600 mt-2">Sign in to your account</p>

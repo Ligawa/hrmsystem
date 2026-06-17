@@ -1,8 +1,10 @@
 import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ["application/pdf"];
+const MAX_FILE_SIZE_LARGE = 10 * 1024 * 1024; // 10MB for documents
+const MAX_FILE_SIZE_SMALL = 5 * 1024 * 1024; // 5MB for images
+const ALLOWED_DOCUMENT_TYPES = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -17,18 +19,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
+    // Determine if it's an image or document
+    const isImage = ALLOWED_IMAGE_TYPES.includes(file.type);
+    const isDocument = ALLOWED_DOCUMENT_TYPES.includes(file.type);
+
+    if (!isImage && !isDocument) {
       return NextResponse.json(
-        { error: "Only PDF files are allowed" },
+        { error: "File type not allowed. Please upload PDF, DOC, DOCX, JPG, PNG, or GIF" },
         { status: 400 }
       );
     }
 
-    // Validate file size
-    if (file.size > MAX_FILE_SIZE) {
+    // Validate file size based on type
+    const maxSize = isImage ? MAX_FILE_SIZE_SMALL : MAX_FILE_SIZE_LARGE;
+    if (file.size > maxSize) {
       return NextResponse.json(
-        { error: `File size must be less than ${MAX_FILE_SIZE / 1024 / 1024}MB` },
+        { error: `File size must be less than ${maxSize / 1024 / 1024}MB` },
         { status: 400 }
       );
     }
@@ -36,13 +42,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Generate unique filename
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(2, 8);
-    const filename = `resume-${timestamp}-${randomString}.pdf`;
+    const extension = file.name.split('.').pop() || (isImage ? 'jpg' : 'pdf');
+    const filename = `${timestamp}-${randomString}.${extension}`;
 
     // Upload to Vercel Blob
     const blob = await put(filename, file, {
       access: "public",
-      contentType: "application/pdf",
-      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
     return NextResponse.json(
@@ -52,7 +57,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         downloadUrl: blob.downloadUrl,
         pathname: blob.pathname,
         contentType: blob.contentType,
-        contentDisposition: blob.contentDisposition,
         filename,
         size: file.size,
       },

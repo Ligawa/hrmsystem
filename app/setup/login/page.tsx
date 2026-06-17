@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
         <div className="mb-8 text-center">
           <Link href="/" className="inline-block">
             <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20logo%20transaparent-s8tFTJQHbsixX7kvCoojO0zQUpjsmV.png" 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg" 
               alt="WHO Logo" 
               className="mx-auto h-20 w-auto drop-shadow-lg"
             />

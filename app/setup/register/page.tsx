@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, AlertCircle, CheckCircle2, Shield } from "lucide-react"
+import { FileUpload } from "@/components/file-upload"
 
 export default function AdminRegisterPage() {
   const [formData, setFormData] = useState({
@@ -22,6 +23,8 @@ export default function AdminRegisterPage() {
     confirmPassword: "",
     department: "",
     reason: "",
+    profilePictureUrl: "",
+    identificationDocUrl: "",
   })
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -127,7 +130,7 @@ export default function AdminRegisterPage() {
           <div className="mb-8 text-center">
             <Link href="/" className="inline-block">
               <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg" 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg" 
               alt="WHO Logo"
                 className="mx-auto h-20 w-auto drop-shadow-lg"
               />
@@ -290,6 +293,31 @@ export default function AdminRegisterPage() {
                   required
                   disabled={isLoading}
                 />
+              </div>
+
+              <div className="border-t pt-6">
+                <h3 className="font-semibold text-gray-900 mb-4">Additional Documents</h3>
+                <p className="text-sm text-gray-600 mb-4">Upload the following documents to complete your profile setup:</p>
+                
+                <div className="space-y-4">
+                  <FileUpload
+                    label="Profile Picture"
+                    accept="image/*"
+                    maxSize={5}
+                    acceptedFormats={['JPG', 'PNG', 'GIF']}
+                    helperText="Upload a professional profile photo. Max 5MB."
+                    onFileUpload={(url) => setFormData(prev => ({ ...prev, profilePictureUrl: url }))}
+                  />
+                  
+                  <FileUpload
+                    label="Identification Document"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    maxSize={10}
+                    acceptedFormats={['PDF', 'JPG', 'PNG']}
+                    helperText="Upload a copy of your ID. Max 10MB."
+                    onFileUpload={(url) => setFormData(prev => ({ ...prev, identificationDocUrl: url }))}
+                  />
+                </div>
               </div>
               
               <Button type="submit" className="w-full" disabled={isLoading}>
