@@ -12,12 +12,12 @@ interface DocumentSubmission {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ token: string }> }
+  { params }: { params: Promise<{ applicationToken: string }> }
 ) {
   try {
-    const { token } = await params;
+    const { applicationToken } = await params;
 
-    if (!token) {
+    if (!applicationToken) {
       return NextResponse.json(
         { error: 'Invalid application token' },
         { status: 400 }
@@ -64,7 +64,7 @@ export async function POST(
     const { data: application, error: appError } = await supabase
       .from('job_applications')
       .select('id, applicant_name, applicant_email')
-      .eq('application_token', token)
+      .eq('application_token', applicationToken)
       .single();
 
     if (appError || !application) {
@@ -145,12 +145,12 @@ export async function POST(
 // GET endpoint to retrieve submitted documents
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ token: string }> }
+  { params }: { params: Promise<{ applicationToken: string }> }
 ) {
   try {
-    const { token } = await params;
+    const { applicationToken } = await params;
 
-    if (!token) {
+    if (!applicationToken) {
       return NextResponse.json(
         { error: 'Invalid application token' },
         { status: 400 }
@@ -163,7 +163,7 @@ export async function GET(
     const { data: application, error: appError } = await supabase
       .from('job_applications')
       .select('id')
-      .eq('application_token', token)
+      .eq('application_token', applicationToken)
       .single();
 
     if (appError || !application) {

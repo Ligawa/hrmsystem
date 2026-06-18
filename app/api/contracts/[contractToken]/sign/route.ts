@@ -3,14 +3,14 @@ import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ token: string }> }
+  { params }: { params: Promise<{ contractToken: string }> }
 ) {
   try {
-    const { token } = await params
+    const { contractToken } = await params
     const body = await request.json()
     const { signerName, signatureType, signatureData } = body
 
-    if (!token || !signerName || !signatureType || !signatureData) {
+    if (!contractToken || !signerName || !signatureType || !signatureData) {
       return NextResponse.json(
         { error: 'Missing required signing data' },
         { status: 400 }
@@ -22,7 +22,7 @@ export async function POST(
     const { data: contract, error: contractError } = await supabase
       .from('employment_contracts')
       .select('*')
-      .eq('contract_token', token)
+      .eq('contract_token', contractToken)
       .single()
 
     if (contractError || !contract) {
