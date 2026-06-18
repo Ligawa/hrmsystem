@@ -50,11 +50,22 @@ export function FileUpload({
         return;
       }
 
-      // Validate file type
-      if (accept !== '*' && !file.type.match(accept.replace(/\*/g, '.*'))) {
-        setError(`File type not accepted. Please upload ${acceptedFormats.join(', ')}`);
-        setUploading(false);
-        return;
+      // Validate file type based on extension and MIME type
+      if (accept !== '*') {
+        const fileExtension = '.' + (file.name.split('.').pop() || '').toLowerCase();
+        const acceptedExtensions = accept.split(',').map(ext => ext.trim());
+        const isValidExtension = acceptedExtensions.some(ext => 
+          fileExtension === ext || 
+          file.type.startsWith(ext.replace(/\*/g, '')) ||
+          (ext === '.jpg' && (fileExtension === '.jpg' || fileExtension === '.jpeg' || file.type === 'image/jpeg')) ||
+          (ext === '.jpeg' && (fileExtension === '.jpeg' || fileExtension === '.jpg' || file.type === 'image/jpeg'))
+        );
+        
+        if (!isValidExtension) {
+          setError(`File type not accepted. Please upload ${acceptedFormats.join(', ')}`);
+          setUploading(false);
+          return;
+        }
       }
 
       // Upload to Vercel Blob via FormData
@@ -68,10 +79,13 @@ export function FileUpload({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Upload failed');
+        const errorMsg = errorData.error || `Upload failed with status ${response.status}`;
+        console.error('[v0] Upload failed:', { status: response.status, error: errorMsg, file: file.name, type: file.type });
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
+      console.log('[v0] File uploaded successfully:', { url: data.url, filename: data.filename });
 
       setUploadedFile({
         name: file.name,

@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MAX_FILE_SIZE_LARGE = 10 * 1024 * 1024; // 10MB for documents
 const MAX_FILE_SIZE_SMALL = 5 * 1024 * 1024; // 5MB for images
-const ALLOWED_DOCUMENT_TYPES = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+const ALLOWED_DOCUMENT_TYPES = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -24,8 +24,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const isDocument = ALLOWED_DOCUMENT_TYPES.includes(file.type);
 
     if (!isImage && !isDocument) {
+      console.log(`[v0] Invalid file type: ${file.type}, name: ${file.name}`);
       return NextResponse.json(
-        { error: "File type not allowed. Please upload PDF, DOC, DOCX, JPG, PNG, or GIF" },
+        { error: `File type not allowed (${file.type}). Please upload PDF, DOC, DOCX, JPG, JPEG, PNG, or GIF` },
         { status: 400 }
       );
     }
