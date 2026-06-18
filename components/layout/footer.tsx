@@ -13,11 +13,11 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { name: "Facebook", href: "https://facebook.com/worldvision", icon: Facebook },
-  { name: "Twitter", href: "https://twitter.com/worldvision", icon: Twitter },
-  { name: "Instagram", href: "https://instagram.com/worldvision", icon: Instagram },
-  { name: "LinkedIn", href: "https://linkedin.com/company/world-vision", icon: Linkedin },
-  { name: "YouTube", href: "https://youtube.com/worldvision", icon: Youtube },
+  { name: "Facebook", href: "https://facebook.com/who", icon: Facebook },
+  { name: "Twitter", href: "https://twitter.com/WHO", icon: Twitter },
+  { name: "Instagram", href: "https://instagram.com/who", icon: Instagram },
+  { name: "LinkedIn", href: "https://linkedin.com/company/world-health-organization", icon: Linkedin },
+  { name: "YouTube", href: "https://youtube.com/WHO", icon: Youtube },
 ]
 
 export function Footer() {
