@@ -1,16 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase admin client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabaseAdmin = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : null;
+// Helper function to initialize Supabase - deferred to request time
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return null;
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Initialize Supabase at request time
+    const supabaseAdmin = getSupabaseAdmin();
+    
     // Check if Supabase is configured
     if (!supabaseAdmin) {
       console.error('[v0] Supabase not configured');

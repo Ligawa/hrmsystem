@@ -2,17 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { generateApplicantId } from '@/lib/utils/applicant-id-generator';
 
-// Initialize Supabase admin client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabaseAdmin = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : null;
+// Helper function to initialize Supabase - deferred to request time
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    console.error('[v0] Supabase env vars not configured:', {
+      url: supabaseUrl ? 'SET' : 'NOT SET',
+      key: supabaseServiceKey ? 'SET' : 'NOT SET',
+    });
+    return null;
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
 
 export async function POST(request: NextRequest) {
   try {
     console.log('[v0] Registration request received');
+    
+    // Initialize Supabase at request time
+    const supabaseAdmin = getSupabaseAdmin();
     
     // Check if Supabase is configured
     if (!supabaseAdmin) {
