@@ -95,10 +95,24 @@ export async function POST(request: NextRequest) {
 
     if (applicantError || !applicant) {
       console.error('[v0] Applicant creation error:', applicantError);
+      console.error('[v0] Applicant error details:', {
+        code: applicantError?.code,
+        message: applicantError?.message,
+        details: applicantError?.details,
+        hint: applicantError?.hint,
+      });
       // Delete the auth user if applicant creation fails
-      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      try {
+        await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      } catch (deleteError) {
+        console.error('[v0] Failed to delete auth user:', deleteError);
+      }
       return NextResponse.json(
-        { error: 'Registration failed', message: 'Failed to create applicant profile' },
+        { 
+          error: 'Registration failed', 
+          message: applicantError?.message || 'Failed to create applicant profile',
+          details: applicantError?.details || applicantError?.hint || 'Check database schema and constraints',
+        },
         { status: 400 }
       );
     }
