@@ -84,47 +84,45 @@ export default function ApplicantRegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-cover bg-center bg-no-repeat p-4 py-12" style={{backgroundImage: 'url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg)'}}>
-        <div className="min-h-screen bg-black/50 flex items-center justify-center">
-          <Card className="max-w-md w-full">
-            <CardHeader className="text-center">
-              <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-2" />
-              <CardTitle>Registration Successful!</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-sm text-gray-600">
-                Thank you for registering! Your applicant ID is:
-              </p>
-              <p className="font-mono font-bold text-lg text-blue-600">
-                {applicantId}
-              </p>
-              <p className="text-sm text-gray-600">
-                You will be redirected to the login page shortly...
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 to-blue-700 p-4 py-12 flex items-center justify-center">
+        <Card className="max-w-md w-full">
+          <CardHeader className="text-center">
+            <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-2" />
+            <CardTitle>Registration Successful!</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-sm text-gray-600">
+              Thank you for registering! Your applicant ID is:
+            </p>
+            <p className="font-mono font-bold text-lg text-blue-600">
+              {applicantId}
+            </p>
+            <p className="text-sm text-gray-600">
+              You will be redirected to the login page shortly...
+            </p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat p-4 py-12" style={{backgroundImage: 'url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg)'}}>
-      <div className="min-h-screen bg-black/50 flex items-center justify-center">
-        <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-blue-700 p-4 py-12">
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="max-w-2xl w-full">
         <div className="text-center mb-8">
           <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo%20Who-DLc16w1mVMIh5V1wglqTNECvigTNsg.png"
             alt="WHO Logo"
-            className="h-20 w-auto mx-auto mb-4"
+            className="h-16 w-auto mx-auto mb-4"
           />
-          <h1 className="text-3xl font-bold text-gray-900">Join WHO</h1>
-          <p className="text-gray-600 mt-2">Create your applicant profile</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-white">Join WHO</h1>
+          <p className="text-blue-100 mt-2">Create your applicant account and start your career journey</p>
         </div>
 
-        <Card className="shadow-lg">
-          <CardHeader className="pb-4">
-            <CardTitle>Create Account</CardTitle>
+        <Card className="shadow-2xl border-0 bg-white">
+          <CardHeader className="pb-4 bg-gradient-to-r from-blue-50 to-blue-100 border-b">
+            <CardTitle className="text-2xl">Create Your Account</CardTitle>
             <CardDescription>
               Fill in your information to get started with your WHO application
             </CardDescription>

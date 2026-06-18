@@ -70,24 +70,23 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat p-4 py-12" style={{backgroundImage: 'url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Who%20GLOGAL-MMrhxYsSocOGgUS9nFz4sW2a7FyJDM.jpg)'}}>
-      <div className="min-h-screen bg-black/50 flex items-center justify-center">
-        <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-blue-700 p-4 py-12 flex items-center justify-center">
+        <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo%20Who-DLc16w1mVMIh5V1wglqTNECvigTNsg.png"
               alt="WHO Logo"
-              className="h-20 w-auto mx-auto mb-4"
+              className="h-16 w-auto mx-auto mb-4"
             />
-          <h1 className="text-3xl font-bold text-gray-900">Applicant Portal</h1>
-          <p className="text-gray-600 mt-2">Sign in to your account</p>
+          <h1 className="text-3xl font-bold text-white">Applicant Portal</h1>
+          <p className="text-blue-100 mt-2">Sign in to your account and manage your applications</p>
         </div>
 
-        <Card className="shadow-lg">
-          <CardHeader className="pb-4">
-            <CardTitle>Sign In</CardTitle>
+        <Card className="shadow-2xl border-0 bg-white">
+          <CardHeader className="pb-4 bg-gradient-to-r from-blue-50 to-blue-100 border-b">
+            <CardTitle className="text-2xl">Sign In</CardTitle>
             <CardDescription>
-              Access your application and profile
+              Access your applications and profile
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -216,7 +215,6 @@ function LoginContent() {
           </CardContent>
         </Card>
       </div>
-    </div>
     </div>
   );
 }
