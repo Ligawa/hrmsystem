@@ -13,11 +13,11 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { name: "Facebook", href: "https://facebook.com/worldvision", icon: Facebook },
-  { name: "Twitter", href: "https://twitter.com/worldvision", icon: Twitter },
-  { name: "Instagram", href: "https://instagram.com/worldvision", icon: Instagram },
-  { name: "LinkedIn", href: "https://linkedin.com/company/world-vision", icon: Linkedin },
-  { name: "YouTube", href: "https://youtube.com/worldvision", icon: Youtube },
+  { name: "Facebook", href: "https://facebook.com/who", icon: Facebook },
+  { name: "Twitter", href: "https://twitter.com/WHO", icon: Twitter },
+  { name: "Instagram", href: "https://instagram.com/who", icon: Instagram },
+  { name: "LinkedIn", href: "https://linkedin.com/company/world-health-organization", icon: Linkedin },
+  { name: "YouTube", href: "https://youtube.com/WHO", icon: Youtube },
 ]
 
 export function Footer() {
@@ -29,13 +29,13 @@ export function Footer() {
           <div>
             <Link href="/" className="inline-block">
               <img 
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg" 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo%20whooo-feJiikPpm9ZP02MTPmTToRaTRdw6bJ.png" 
                 alt="World Health Organisation Logo" 
-                className="h-20 w-auto"
+                className="h-16 w-auto"
               />
             </Link>
             <p className="mt-4 text-sm text-white/80">
-              World Health Organisation
+              Directing and coordinating authority for health within the United Nations system
             </p>
           </div>
 
@@ -92,7 +92,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 text-center text-sm text-white/60">
-          <p>© {new Date().getFullYear()} World Vision International (WVI)</p>
+          <p>© {new Date().getFullYear()} World Health Organization (WHO)</p>
         </div>
       </div>
     </footer>

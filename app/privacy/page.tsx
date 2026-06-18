@@ -3,8 +3,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Privacy Policy - UNEDP",
-  description: "Privacy policy for UN Economic Development Programme",
+  title: "Privacy Policy - WHO",
+  description: "Privacy policy for World Health Organization",
 };
 
 export default function PrivacyPage() {
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-semibold text-gray-900">1. Introduction</h2>
               <p className="text-gray-700">
-                The UN Economic Development Programme (UNEDP) respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, and protect your information when you visit our website and use our services.
+                The World Health Organization (WHO) respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, and protect your information when you visit our website and use our recruitment services.
               </p>
             </section>
 
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
                 <li>Personal identification information (name, email address, phone number)</li>
                 <li>Information about your employment and education</li>
                 <li>Technical information about your device and browsing activity</li>
-                <li>Information provided through forms and applications</li>
+                <li>Information provided through application forms</li>
               </ul>
             </section>
 
@@ -42,10 +42,10 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-semibold text-gray-900">3. How We Use Your Information</h2>
               <p className="text-gray-700">Your information is used to:</p>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
-                <li>Process employment applications and contracts</li>
-                <li>Communicate with you about our services</li>
-                <li>Improve our website and services</li>
-                <li>Comply with legal obligations</li>
+                <li>Process employment applications and recruitment</li>
+                <li>Communicate with you about opportunities</li>
+                <li>Improve our recruitment platform and services</li>
+                <li>Comply with legal and regulatory obligations</li>
               </ul>
             </section>
 
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-semibold text-gray-900">6. Contact Us</h2>
               <p className="text-gray-700">
-                If you have questions about this Privacy Policy or our privacy practices, please contact us at privacy@unedp.org
+                If you have questions about this Privacy Policy or our privacy practices, please contact us at privacy@who.int
               </p>
             </section>
 

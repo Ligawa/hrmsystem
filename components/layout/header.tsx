@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Search, Menu, X, ChevronDown, Globe } from "lucide-react"
+import { Search, Menu, X, ChevronDown, Globe, LogIn, UserPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -20,7 +20,7 @@ import {
 const navigation = [
   { name: "About", href: "/about" },
   { name: "Careers", href: "/careers" },
-  { name: "Resources", href: "/resources" },
+  { name: "Browse Jobs", href: "/careers/browse" },
 ]
 
 const languages = [
@@ -41,12 +41,13 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between lg:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity flex-shrink-0">
             <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHO%20logo%20full-9cnF9bVMNlZ8JGZXBp4fdUCiI4lrIV.jpg" 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo%20Who-DLc16w1mVMIh5V1wglqTNECvigTNsg.png" 
               alt="World Health Organisation Logo" 
-              className="h-12 w-auto flex-shrink-0"
+              className="h-14 w-auto"
             />
+            <span className="hidden sm:inline text-xl font-bold text-white">WHO</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -63,7 +64,7 @@ export function Header() {
           </nav>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {/* Search */}
             {searchOpen ? (
               <div className="hidden items-center gap-2 lg:flex">
@@ -95,13 +96,27 @@ export function Header() {
               </Button>
             )}
 
+            {/* Auth Buttons */}
+            <div className="hidden lg:flex items-center gap-2">
+              <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                <Link href="/careers/login" className="flex items-center gap-1">
+                  <LogIn className="h-4 w-4" />
+                  <span>Login</span>
+                </Link>
+              </Button>
+              <Button asChild size="sm" className="bg-white text-blue-900 hover:bg-gray-100 font-semibold">
+                <Link href="/careers/register" className="flex items-center gap-1">
+                  <UserPlus className="h-4 w-4" />
+                  <span>Sign Up</span>
+                </Link>
+              </Button>
+            </div>
+
             {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hidden gap-1 lg:flex text-white hover:bg-white/20">
+                <Button variant="ghost" size="icon" className="hidden gap-1 lg:flex text-white hover:bg-white/20">
                   <Globe className="h-4 w-4" />
-                  <span className="uppercase">{currentLang}</span>
-                  <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -149,6 +164,16 @@ export function Header() {
                       </SheetClose>
                     ))}
                   </nav>
+
+                  {/* Mobile Auth Buttons */}
+                  <div className="border-t pt-4 flex gap-2">
+                    <Button asChild variant="outline" className="flex-1">
+                      <Link href="/careers/login">Login</Link>
+                    </Button>
+                    <Button asChild className="flex-1 bg-blue-600 hover:bg-blue-700">
+                      <Link href="/careers/register">Sign Up</Link>
+                    </Button>
+                  </div>
 
                   {/* Mobile Language */}
                   <div className="border-t pt-4">
