@@ -228,15 +228,15 @@ export default function ApplicantRegisterPage() {
               </div>
 
               <div className="border-t pt-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Application Documents</h3>
-                <p className="text-sm text-gray-600 mb-4">Upload the following documents to complete your application:</p>
+                <h3 className="font-semibold text-gray-900 mb-4">Application Documents (Optional)</h3>
+                <p className="text-sm text-gray-600 mb-4">Upload documents to strengthen your application. You can add these later from your dashboard:</p>
                 
                 <div className="space-y-4">
                   <FileUpload
                     label="Profile Picture"
-                    accept="image/*"
+                    accept=".jpg,.jpeg,.png,.gif"
                     maxSize={5}
-                    acceptedFormats={['JPG', 'PNG', 'GIF']}
+                    acceptedFormats={['JPG', 'JPEG', 'PNG', 'GIF']}
                     helperText="Upload a professional profile photo. Max 5MB."
                     onFileUpload={(url) => setFormData(prev => ({ ...prev, profilePictureUrl: url }))}
                   />
@@ -263,7 +263,7 @@ export default function ApplicantRegisterPage() {
                     label="Identification Document"
                     accept=".pdf,.jpg,.jpeg,.png"
                     maxSize={10}
-                    acceptedFormats={['PDF', 'JPG', 'PNG']}
+                    acceptedFormats={['PDF', 'JPG', 'JPEG', 'PNG']}
                     helperText="Upload a copy of your ID. Max 10MB."
                     onFileUpload={(url) => setFormData(prev => ({ ...prev, identificationDocUrl: url }))}
                   />
