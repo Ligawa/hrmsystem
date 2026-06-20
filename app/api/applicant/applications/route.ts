@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
       .select(`
         id,
         job_id,
-        application_status,
+        status,
         submission_date,
         cover_letter
       `)
