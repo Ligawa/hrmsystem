@@ -264,34 +264,66 @@ const emailTemplates: Record<EmailType, (data: any) => { subject: string; html: 
 };
 
 /**
+ * Send email via Resend API
+ */
+async function sendViaResend(to: string, subject: string, html: string): Promise<boolean> {
+  const resendApiKey = process.env.RESEND_API_KEY;
+
+  if (!resendApiKey) {
+    // Fallback to console logging if Resend is not configured
+    console.warn('[EMAIL_SERVICE] Resend API key not configured. Logging email instead:');
+    console.log('[EMAIL_LOG]', { to, subject });
+    return true; // Return true to not break the flow in development
+  }
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: 'noreply@careers.who.int',
+        to,
+        subject,
+        html,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('[EMAIL_SERVICE] Resend API error:', error);
+      return false;
+    }
+
+    const result = await response.json();
+    console.log('[EMAIL_SERVICE] Email sent successfully:', result.id);
+    return true;
+  } catch (error) {
+    console.error('[EMAIL_SERVICE] Failed to send email via Resend:', error);
+    return false;
+  }
+}
+
+/**
  * Send email (integration point for email service)
- * In production, this would use a service like SendGrid, AWS SES, or Resend
  */
 export async function sendEmail(emailData: EmailData): Promise<boolean> {
   try {
     const template = emailTemplates[emailData.type];
 
     if (!template) {
-      console.error(`[v0] Unknown email type: ${emailData.type}`);
+      console.error(`[EMAIL_SERVICE] Unknown email type: ${emailData.type}`);
       return false;
     }
 
     const { subject, html } = template(emailData.data);
 
-    // TODO: Integrate with actual email service (SendGrid, AWS SES, Resend, etc.)
-    // For now, we'll just log it
-    console.log('[v0] Email would be sent:', {
-      to: emailData.to,
-      subject,
-      type: emailData.type,
-    });
-
-    // Placeholder - in production, call your email service API here
-    // Example: await sendgrid.send({ to: emailData.to, subject, html });
-
-    return true;
+    // Send via Resend (with fallback to console logging)
+    return await sendViaResend(emailData.to, subject, html);
   } catch (error) {
-    console.error('[v0] Error sending email:', error);
+    console.error('[EMAIL_SERVICE] Error in sendEmail:', error);
     return false;
   }
 }

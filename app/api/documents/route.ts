@@ -2,10 +2,19 @@ import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { blobStorage } from '@/lib/utils/blob-storage'
 import { evaluationNotificationService } from '@/lib/services/evaluation-notification-service'
+import { createSafeErrorResponse, handleSupabaseError, handleBlobError, logError } from '@/lib/utils/error-handler'
 
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
+    
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again later.' },
+        { status: 503 }
+      )
+    }
+    
     const formData = await request.formData()
 
     const applicationId = formData.get('applicationId') as string
@@ -23,21 +32,21 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        createSafeErrorResponse('auth', 401, 'POST /api/documents: No authenticated user'),
         { status: 401 }
       )
     }
 
     // Verify applicant owns this application
-    const { data: application } = await supabase
+    const { data: application, error: appError } = await supabase
       .from('job_applications')
       .select('id, email, full_name')
       .eq('id', applicationId)
       .single()
 
-    if (!application || application.email !== user.email) {
+    if (appError || !application || application.email !== user.email) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        createSafeErrorResponse('authorization', 403, 'POST /api/documents: Unauthorized access', appError),
         { status: 403 }
       )
     }
@@ -52,13 +61,9 @@ export async function POST(request: NextRequest) {
         `documents/${applicationId}`
       )
       blobUrl = uploadResult.url
-      console.log('[v0] Blob upload successful:', blobUrl)
     } catch (blobError) {
-      console.error('[v0] Blob upload failed:', blobError)
-      return NextResponse.json(
-        { error: 'Failed to upload file to storage' },
-        { status: 500 }
-      )
+      const errorResponse = handleBlobError(blobError, 'POST /api/documents: Blob upload failed')
+      return NextResponse.json(errorResponse, { status: errorResponse.status })
     }
 
     // Store document metadata in database
@@ -76,11 +81,8 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (dbError) {
-      console.error('[v0] Database error:', dbError)
-      return NextResponse.json(
-        { error: `Failed to save document: ${dbError.message}` },
-        { status: 500 }
-      )
+      const errorResponse = handleSupabaseError(dbError, 'POST /api/documents: Database insert failed')
+      return NextResponse.json(errorResponse, { status: errorResponse.status })
     }
 
     // Send notification to admins
@@ -108,32 +110,51 @@ export async function POST(request: NextRequest) {
       message: 'Document uploaded successfully'
     })
   } catch (error) {
-    console.error('[v0] Document upload error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const errorResponse = createSafeErrorResponse('service', 500, 'POST /api/documents: Uncaught exception', error)
+    return NextResponse.json(errorResponse, { status: errorResponse.status })
   }
 }
 
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
+    
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again later.' },
+        { status: 503 }
+      )
+    }
+    
     const { searchParams } = new URL(request.url)
     const applicationId = searchParams.get('applicationId')
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        createSafeErrorResponse('auth', 401, 'GET /api/documents: No authenticated user'),
         { status: 401 }
       )
     }
 
     if (!applicationId) {
       return NextResponse.json(
-        { error: 'Application ID required' },
+        createSafeErrorResponse('validation', 400, 'GET /api/documents: Missing applicationId'),
         { status: 400 }
+      )
+    }
+
+    // Verify applicant owns this application before fetching documents
+    const { data: application, error: appError } = await supabase
+      .from('job_applications')
+      .select('id, email')
+      .eq('id', applicationId)
+      .single()
+
+    if (appError || !application || application.email !== user.email) {
+      return NextResponse.json(
+        createSafeErrorResponse('authorization', 403, 'GET /api/documents: Unauthorized access', appError),
+        { status: 403 }
       )
     }
 
@@ -144,18 +165,13 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
 
     if (error) {
-      return NextResponse.json(
-        { error: 'Failed to fetch documents' },
-        { status: 500 }
-      )
+      const errorResponse = handleSupabaseError(error, 'GET /api/documents: Query failed')
+      return NextResponse.json(errorResponse, { status: errorResponse.status })
     }
 
     return NextResponse.json({ documents })
   } catch (error) {
-    console.error('[v0] Fetch documents error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const errorResponse = createSafeErrorResponse('service', 500, 'GET /api/documents: Uncaught exception', error)
+    return NextResponse.json(errorResponse, { status: errorResponse.status })
   }
 }
