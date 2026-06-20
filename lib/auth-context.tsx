@@ -29,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        // Check localStorage for persisted session
         const applicantId = localStorage.getItem('applicant_id');
         const userEmail = localStorage.getItem('user_email');
         const userFirstName = localStorage.getItem('user_first_name');
@@ -36,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userId = localStorage.getItem('user_id');
 
         if (applicantId && userEmail && userId) {
+          console.log('[v0] Restoring session for user:', applicantId);
           setUser({
             id: userId,
             email: userEmail,
