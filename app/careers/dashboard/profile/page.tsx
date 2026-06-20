@@ -10,11 +10,14 @@ import { useAuth } from '@/lib/auth-context';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, isLoggedIn } = useAuth();
+  const { user, isLoggedIn, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState<any>(null);
 
   useEffect(() => {
+    // Wait for auth to finish loading before checking login state
+    if (authLoading) return;
+
     if (!isLoggedIn) {
       router.push('/careers/login');
       return;
@@ -36,7 +39,7 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, [isLoggedIn, user, router]);
+  }, [authLoading, isLoggedIn, user, router]);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}

@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { loginApplicant } from '@/lib/services/applicant-auth-service';
 import { AlertCircle } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
 
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loginMethod, setLoginMethod] = useState<'email' | 'applicant-id'>('email');
@@ -31,38 +32,26 @@ function LoginContent() {
     setLoading(true);
 
     try {
-      let result;
-
       if (loginMethod === 'email') {
         if (!formData.email || !formData.password) {
           setError('Please enter your email and password');
           setLoading(false);
           return;
         }
-
-        result = await loginApplicant({
-          email: formData.email,
-          password: formData.password,
-        });
       } else {
         if (!formData.applicantId || !formData.email || !formData.password) {
           setError('Please enter your applicant ID, email, and password');
           setLoading(false);
           return;
         }
-
-        result = await loginApplicant({
-          email: formData.email,
-          password: formData.password,
-        });
       }
 
-      if (result.success) {
-        router.push('/careers/dashboard');
-      } else {
-        setError(result.message || 'Login failed');
-      }
+      // Use the AuthContext login method
+      await login(formData.email, formData.password);
+      console.log('[v0] Login successful, redirecting to dashboard');
+      router.push('/careers/dashboard');
     } catch (err) {
+      console.log('[v0] Login failed:', err);
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
       setLoading(false);

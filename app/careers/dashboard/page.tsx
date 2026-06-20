@@ -25,7 +25,7 @@ const applicationStats = [
 
 export default function ApplicantDashboardPage() {
   const router = useRouter();
-  const { user, isLoggedIn, logout } = useAuth();
+  const { user, isLoggedIn, isLoading: authLoading, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState<any>(null);
@@ -37,6 +37,9 @@ export default function ApplicantDashboardPage() {
   });
 
   useEffect(() => {
+    // Wait for auth to finish loading from localStorage
+    if (authLoading) return;
+
     if (!isLoggedIn) {
       router.push('/careers/login');
       return;
@@ -73,7 +76,7 @@ export default function ApplicantDashboardPage() {
     };
 
     fetchData();
-  }, [isLoggedIn, user, router]);
+  }, [authLoading, isLoggedIn, user, router]);
 
   return (
     <div className="min-h-screen bg-gray-50">
