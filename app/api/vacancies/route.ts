@@ -8,18 +8,23 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
+    
+    if (!supabase) {
+      return NextResponse.json({ error: 'Supabase not initialized' }, { status: 500 });
+    }
+
     const searchParams = request.nextUrl.searchParams;
     
     const country = searchParams.get('country');
     const department = searchParams.get('department');
     const dutyStation = searchParams.get('duty_station');
     const contractType = searchParams.get('contract_type');
-    const isActive = searchParams.get('active') !== 'false';
+    const status = searchParams.get('status') || 'open';
 
     let query = supabase
       .from('jobs')
       .select('*')
-      .eq('is_active', isActive)
+      .eq('status', status)
       .order('created_at', { ascending: false });
 
     if (country) query = query.eq('country', country);
