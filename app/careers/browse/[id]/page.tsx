@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Calendar, Briefcase, DollarSign, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@/lib/auth-context';
 
 interface Job {
   id: string;
@@ -36,6 +37,7 @@ export default function JobDetailPage() {
   const params = useParams();
   const router = useRouter();
   const jobId = params.id as string;
+  const { user: authUser, isLoggedIn, isLoading: authLoading } = useAuth();
 
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,8 +52,20 @@ export default function JobDetailPage() {
 
   useEffect(() => {
     fetchJobDetails();
-    fetchApplicantProfile();
   }, [jobId]);
+
+  // Use auth context instead of checking Supabase directly
+  useEffect(() => {
+    if (!authLoading && isLoggedIn && authUser?.applicantId) {
+      setApplicantProfile({
+        id: authUser.id,
+        email: authUser.email,
+        first_name: authUser.firstName,
+        last_name: authUser.lastName,
+        applicant_id: authUser.applicantId,
+      });
+    }
+  }, [isLoggedIn, authUser, authLoading]);
 
   async function fetchJobDetails() {
     try {
@@ -68,33 +82,15 @@ export default function JobDetailPage() {
     }
   }
 
-  async function fetchApplicantProfile() {
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        const { data } = await supabase
-          .from('applicants')
-          .select('*')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (data) {
-          setApplicantProfile(data);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch applicant profile:', error);
-    }
-  }
-
   async function handleSubmitApplication() {
-    if (!applicantProfile) {
+    if (!isLoggedIn || !applicantProfile) {
       setError('Please log in to apply');
       router.push('/careers/login');
+      return;
+    }
+
+    if (!formData.cover_letter.trim()) {
+      setError('Please write a cover letter');
       return;
     }
 
@@ -112,7 +108,6 @@ export default function JobDetailPage() {
           cover_letter: formData.cover_letter,
           full_name: `${applicantProfile.first_name} ${applicantProfile.last_name}`,
           email: applicantProfile.email,
-          phone: applicantProfile.phone,
         }),
       });
 
@@ -342,10 +337,16 @@ export default function JobDetailPage() {
                   </div>
                 )}
 
-                {!applicantProfile && (
+                {authLoading && (
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+                    Loading your profile...
+                  </div>
+                )}
+
+                {!authLoading && !isLoggedIn && (
                   <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm">
                     <p className="text-blue-900 mb-3">
-                      You need to be logged in to apply for this position.
+                      You need to be logged in to apply for this position. Your session will persist so you can apply without logging in again.
                     </p>
                     <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 mb-2">
                       <Link href="/careers/login">Log In</Link>
@@ -356,8 +357,12 @@ export default function JobDetailPage() {
                   </div>
                 )}
 
-                {applicantProfile && (
+                {!authLoading && isLoggedIn && applicantProfile && (
                   <>
+                    <div className="p-2 bg-green-50 border border-green-200 rounded text-sm text-green-700">
+                      You are logged in as {applicantProfile.first_name}
+                    </div>
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Name
@@ -378,7 +383,7 @@ export default function JobDetailPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Cover Letter *
+                        Cover Letter <span className="text-red-500">*</span>
                       </label>
                       <Textarea
                         placeholder="Tell us why you're a great fit for this role..."
@@ -392,7 +397,7 @@ export default function JobDetailPage() {
 
                     <Button
                       onClick={handleSubmitApplication}
-                      disabled={submitting || !formData.cover_letter}
+                      disabled={submitting || !formData.cover_letter.trim()}
                       className="w-full bg-blue-600 hover:bg-blue-700"
                     >
                       {submitting ? 'Submitting...' : 'Submit Application'}
