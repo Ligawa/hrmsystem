@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (status) {
-      query = query.eq('application_status', status);
+      query = query.eq('status', status);
     }
 
     const { data, error } = await query;
@@ -68,7 +68,6 @@ export async function POST(request: NextRequest) {
     const {
       applicant_id,
       job_id,
-      job_reference_number,
       cover_letter,
       resume_url,
       full_name,
@@ -76,18 +75,34 @@ export async function POST(request: NextRequest) {
       phone,
     } = body;
 
-    if (!applicant_id || !job_id || !job_reference_number) {
+    if (!applicant_id || !job_id) {
       return NextResponse.json(
-        { error: 'Applicant ID, Job ID, and Job Reference Number are required' },
+        { error: 'Applicant ID and Job ID are required' },
         { status: 400 }
       );
     }
+
+    // Get the applicant UUID from the applicant_id string
+    const { data: applicants, error: appError } = await supabase
+      .from('applicants')
+      .select('id')
+      .eq('applicant_id', applicant_id)
+      .single();
+
+    if (appError || !applicants) {
+      return NextResponse.json(
+        { error: 'Applicant not found' },
+        { status: 404 }
+      );
+    }
+
+    const applicantUUID = applicants.id;
 
     // Check if applicant already applied for this job
     const { data: existingApp } = await supabase
       .from('job_applications')
       .select('id')
-      .eq('applicant_id', applicant_id)
+      .eq('applicant_id', applicantUUID)
       .eq('job_id', job_id)
       .single();
 
@@ -102,16 +117,15 @@ export async function POST(request: NextRequest) {
       .from('job_applications')
       .insert([
         {
-          applicant_id,
+          applicant_id: applicantUUID,
           job_id,
-          job_reference_number,
           cover_letter,
           resume_url,
           full_name,
           email,
           phone,
-          application_status: 'Submitted',
           status: 'pending',
+          submission_date: new Date().toISOString(),
         },
       ])
       .select()

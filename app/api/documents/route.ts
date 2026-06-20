@@ -31,11 +31,11 @@ export async function POST(request: NextRequest) {
     // Verify applicant owns this application
     const { data: application } = await supabase
       .from('job_applications')
-      .select('id, applicant_email, full_name')
+      .select('id, email, full_name')
       .eq('id', applicationId)
       .single()
 
-    if (!application || application.applicant_email !== user.email) {
+    if (!application || application.email !== user.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 403 }
@@ -52,9 +52,13 @@ export async function POST(request: NextRequest) {
         `documents/${applicationId}`
       )
       blobUrl = uploadResult.url
+      console.log('[v0] Blob upload successful:', blobUrl)
     } catch (blobError) {
       console.error('[v0] Blob upload failed:', blobError)
-      // Continue with database storage if blob fails (graceful degradation)
+      return NextResponse.json(
+        { error: 'Failed to upload file to storage' },
+        { status: 500 }
+      )
     }
 
     // Store document metadata in database
@@ -63,7 +67,7 @@ export async function POST(request: NextRequest) {
       .insert({
         application_id: applicationId,
         document_type: documentType,
-        document_url: blobUrl || `documents/${applicationId}/${file.name}`,
+        document_url: blobUrl,
         file_name: file.name,
         file_size: file.size,
         upload_status: 'pending'
@@ -72,8 +76,9 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (dbError) {
+      console.error('[v0] Database error:', dbError)
       return NextResponse.json(
-        { error: 'Failed to save document' },
+        { error: `Failed to save document: ${dbError.message}` },
         { status: 500 }
       )
     }
