@@ -54,40 +54,17 @@ export default function JobDetailPage() {
     fetchJobDetails();
   }, [jobId]);
 
-  // Use auth context to fetch applicant details from database
+  // Use auth context to set applicant details directly
   useEffect(() => {
-    if (!authLoading && isLoggedIn && authUser?.applicantId) {
-      fetchApplicantDetails();
+    if (!authLoading && isLoggedIn && authUser) {
+      setApplicantProfile({
+        applicant_id: authUser.applicantId,
+        email: authUser.email,
+        first_name: authUser.firstName,
+        last_name: authUser.lastName,
+      });
     }
   }, [isLoggedIn, authUser, authLoading]);
-
-  async function fetchApplicantDetails() {
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('applicants')
-        .select('id, email, first_name, last_name, applicant_id')
-        .eq('applicant_id', authUser?.applicantId)
-        .single();
-
-      if (error) {
-        console.error('[v0] Failed to fetch applicant details:', error);
-        return;
-      }
-
-      if (data) {
-        setApplicantProfile({
-          id: data.id, // Use the actual applicant UUID from database
-          email: data.email,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          applicant_id: data.applicant_id,
-        });
-      }
-    } catch (error) {
-      console.error('[v0] Error fetching applicant:', error);
-    }
-  }
 
   async function fetchJobDetails() {
     try {
@@ -124,7 +101,7 @@ export default function JobDetailPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          applicant_id: applicantProfile.id,
+          applicant_id: applicantProfile.applicant_id,
           job_id: job?.id,
           job_reference_number: job?.job_reference_number,
           cover_letter: formData.cover_letter,
@@ -257,7 +234,7 @@ export default function JobDetailPage() {
                     <div>
                       <p className="text-xs text-gray-500 uppercase">Closing Date</p>
                       <p className="text-sm font-medium text-gray-900">
-                        {new Date(job.closing_date).toLocaleDateString()}
+                        {job.closing_date ? new Date(job.closing_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                       </p>
                     </div>
                   </div>

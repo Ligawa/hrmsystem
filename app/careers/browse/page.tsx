@@ -46,7 +46,7 @@ export default function JobBoardPage() {
 
   async function fetchVacancies() {
     try {
-      const response = await fetch('/api/vacancies?active=true');
+      const response = await fetch('/api/vacancies?status=open');
       const data = await response.json();
       setVacancies(data.vacancies || []);
     } catch (error) {
