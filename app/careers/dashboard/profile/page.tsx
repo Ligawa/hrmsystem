@@ -1,11 +1,42 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const { user, isLoggedIn } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [profileData, setProfileData] = useState<any>(null);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push('/careers/login');
+      return;
+    }
+
+    const fetchProfile = async () => {
+      try {
+        if (!user) return;
+        const res = await fetch(`/api/applicant/profile?applicantId=${user.applicantId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setProfileData(data);
+        }
+      } catch (error) {
+        console.error('[v0] Failed to fetch profile:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [isLoggedIn, user, router]);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -21,67 +52,116 @@ export default function ProfilePage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid gap-6">
-          {/* Basic Information */}
+        {isLoading ? (
           <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                  <input type="text" placeholder="John" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                  <input type="text" placeholder="Doe" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Professional Summary</label>
-                  <textarea placeholder="Tell us about yourself..." rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
-                </div>
-              </div>
-              <Button className="mt-6 bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+            <CardContent className="p-8 text-center">
+              <p className="text-gray-600">Loading profile...</p>
             </CardContent>
           </Card>
+        ) : (
+          <div className="grid gap-6">
+            {/* Basic Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Basic Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Applicant ID</label>
+                    <p className="text-gray-900">{profileData?.applicant_id}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <p className="text-gray-900">{profileData?.email}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                    <p className="text-gray-900">{profileData?.first_name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                    <p className="text-gray-900">{profileData?.last_name || 'N/A'}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Professional Summary</label>
+                    <p className="text-gray-900">{profileData?.summary || 'No summary provided'}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Professional Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Professional Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Current Job Title</label>
-                  <input type="text" placeholder="Health Officer" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Years of Experience</label>
-                  <input type="number" placeholder="5" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-                </div>
-              </div>
-              <Button className="mt-6 bg-blue-600 hover:bg-blue-700">Save Changes</Button>
-            </CardContent>
-          </Card>
+            {/* Professional Details */}
+            {profileData?.professionalDetails && Object.keys(profileData.professionalDetails).length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Professional Details</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Current Job Title</label>
+                      <p className="text-gray-900">{profileData.professionalDetails.current_job_title || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Years of Experience</label>
+                      <p className="text-gray-900">{profileData.professionalDetails.years_of_experience || 'N/A'}</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Current Organization</label>
+                      <p className="text-gray-900">{profileData.professionalDetails.current_organization || 'N/A'}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Additional Sections */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Education & Work Experience</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-6">Manage your education history and work experience</p>
-              <Button asChild variant="outline">
-                <Link href="/careers/dashboard/profile/education">Edit Education</Link>
-              </Button>
-              <Button asChild variant="outline" className="ml-3">
-                <Link href="/careers/dashboard/profile/experience">Edit Work Experience</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Education & Work Experience */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Education</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {profileData?.education && profileData.education.length > 0 ? (
+                    <div className="space-y-3">
+                      {profileData.education.map((edu: any) => (
+                        <div key={edu.id} className="p-3 bg-gray-50 rounded-lg">
+                          <p className="font-medium text-gray-900">{edu.field_of_study}</p>
+                          <p className="text-sm text-gray-600">{edu.degree_level}</p>
+                          <p className="text-sm text-gray-600">{edu.institution_name}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-600">No education records yet</p>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Work Experience</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {profileData?.workExperience && profileData.workExperience.length > 0 ? (
+                    <div className="space-y-3">
+                      {profileData.workExperience.map((exp: any) => (
+                        <div key={exp.id} className="p-3 bg-gray-50 rounded-lg">
+                          <p className="font-medium text-gray-900">{exp.job_title}</p>
+                          <p className="text-sm text-gray-600">{exp.organization}</p>
+                          <p className="text-sm text-gray-600">{exp.employment_type}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-600">No work experience yet</p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
