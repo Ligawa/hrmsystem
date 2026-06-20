@@ -67,23 +67,61 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create auth user
+    // Create auth user - try admin.createUser first, fall back to signUp if needed
     console.log('[v0] Creating auth user for:', email);
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true, // Auto-confirm email for applicants
-    });
+    let authData;
+    let authError;
+    
+    try {
+      // First, try using admin.createUser with email confirmation
+      const result = await supabaseAdmin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true, // Auto-confirm email for applicants
+        user_metadata: {
+          first_name: firstName,
+          last_name: lastName,
+        },
+      });
+      authData = result.data;
+      authError = result.error;
+    } catch (err) {
+      console.error('[v0] Admin createUser threw exception:', err);
+      // If admin.createUser fails with database error, it might be a server-side issue
+      // Return detailed error for debugging
+      return NextResponse.json(
+        { 
+          error: 'Registration failed', 
+          message: 'Unable to create user account. Please try again later.',
+          details: err instanceof Error ? err.message : 'Unknown error'
+        },
+        { status: 503 }
+      );
+    }
 
-    if (authError || !authData.user) {
+    if (authError) {
       console.error('[v0] Auth error:', authError);
+      console.error('[v0] Auth error details:', {
+        status: authError?.status,
+        code: authError?.code,
+        message: authError?.message,
+      });
       return NextResponse.json(
         { error: 'Registration failed', message: authError?.message || 'Failed to create user account' },
         { status: 400 }
       );
     }
 
-    console.log('[v0] Auth user created:', authData.user.id);
+    if (!authData?.user?.id) {
+      console.error('[v0] No user ID returned from auth creation');
+      return NextResponse.json(
+        { error: 'Registration failed', message: 'Failed to create user account - no user ID returned' },
+        { status: 400 }
+      );
+    }
+
+    const userId = authData.user.id;
+    console.log('[v0] Auth user created:', userId);
 
     // Generate unique applicant ID
     const applicantId = generateApplicantId();
@@ -98,7 +136,7 @@ export async function POST(request: NextRequest) {
         last_name: lastName,
         email,
         phone: phone || null,
-        auth_user_id: authData.user.id,
+        auth_user_id: userId,
         status: 'active',
       })
       .select()
@@ -114,7 +152,8 @@ export async function POST(request: NextRequest) {
       });
       // Delete the auth user if applicant creation fails
       try {
-        await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+        console.log('[v0] Cleaning up - deleting auth user:', userId);
+        await supabaseAdmin.auth.admin.deleteUser(userId);
       } catch (deleteError) {
         console.error('[v0] Failed to delete auth user:', deleteError);
       }
