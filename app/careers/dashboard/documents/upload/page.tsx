@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -27,8 +28,10 @@ interface Document {
 }
 
 export default function DocumentsUploadPage() {
+  const router = useRouter()
   const params = useParams()
   const applicationId = params.id as string
+  const { isLoggedIn, isLoading: authLoading } = useAuth()
   
   const [documents, setDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
@@ -39,8 +42,16 @@ export default function DocumentsUploadPage() {
   const [success, setSuccess] = useState('')
 
   useEffect(() => {
-    fetchDocuments()
-  }, [applicationId])
+    // Check authentication
+    if (!authLoading && !isLoggedIn) {
+      router.push('/careers/login')
+      return
+    }
+    
+    if (!authLoading && isLoggedIn) {
+      fetchDocuments()
+    }
+  }, [applicationId, isLoggedIn, authLoading])
 
   const fetchDocuments = async () => {
     try {
@@ -130,7 +141,7 @@ export default function DocumentsUploadPage() {
     }
   }
 
-  if (loading) {
+  if (authLoading || loading || !isLoggedIn) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-blue-600" />

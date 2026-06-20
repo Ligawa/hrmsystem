@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ applications: data || [] });
   } catch (error) {
-    const errorResponse = createSafeErrorResponse('service', 500, 'GET /api/applications: Uncaught exception', error);
+    const errorResponse = createSafeErrorResponse('service', 500, 'GET /api/applications: Uncaught exception', error || new Error('Unknown error'));
     return NextResponse.json(errorResponse, { status: errorResponse.status });
   }
 }
@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ application: data }, { status: 201 });
   } catch (error) {
-    const errorResponse = createSafeErrorResponse('service', 500, 'POST /api/applications: Uncaught exception', error);
+    const errorResponse = createSafeErrorResponse('service', 500, 'POST /api/applications: Uncaught exception', error || new Error('Unknown error'));
     return NextResponse.json(errorResponse, { status: errorResponse.status });
   }
 }

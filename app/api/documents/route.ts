@@ -31,10 +31,8 @@ export async function POST(request: NextRequest) {
     // Get current user
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
-      return NextResponse.json(
-        createSafeErrorResponse('auth', 401, 'POST /api/documents: No authenticated user'),
-        { status: 401 }
-      )
+      const errorResponse = createSafeErrorResponse('auth', 401, 'POST /api/documents: No authenticated user', new Error('No authenticated user'))
+      return NextResponse.json(errorResponse, { status: 401 })
     }
 
     // Verify applicant owns this application
@@ -45,10 +43,8 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (appError || !application || application.email !== user.email) {
-      return NextResponse.json(
-        createSafeErrorResponse('authorization', 403, 'POST /api/documents: Unauthorized access', appError),
-        { status: 403 }
-      )
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'POST /api/documents: Unauthorized access', appError || new Error('Unauthorized'))
+      return NextResponse.json(errorResponse, { status: 403 })
     }
 
     // Upload file to Blob storage
@@ -110,7 +106,7 @@ export async function POST(request: NextRequest) {
       message: 'Document uploaded successfully'
     })
   } catch (error) {
-    const errorResponse = createSafeErrorResponse('service', 500, 'POST /api/documents: Uncaught exception', error)
+    const errorResponse = createSafeErrorResponse('service', 500, 'POST /api/documents: Uncaught exception', error || new Error('Unknown error'))
     return NextResponse.json(errorResponse, { status: errorResponse.status })
   }
 }
@@ -131,17 +127,13 @@ export async function GET(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
-      return NextResponse.json(
-        createSafeErrorResponse('auth', 401, 'GET /api/documents: No authenticated user'),
-        { status: 401 }
-      )
+      const errorResponse = createSafeErrorResponse('auth', 401, 'GET /api/documents: No authenticated user', new Error('No authenticated user'))
+      return NextResponse.json(errorResponse, { status: 401 })
     }
 
     if (!applicationId) {
-      return NextResponse.json(
-        createSafeErrorResponse('validation', 400, 'GET /api/documents: Missing applicationId'),
-        { status: 400 }
-      )
+      const errorResponse = createSafeErrorResponse('validation', 400, 'GET /api/documents: Missing applicationId', new Error('Missing applicationId'))
+      return NextResponse.json(errorResponse, { status: 400 })
     }
 
     // Verify applicant owns this application before fetching documents
@@ -152,10 +144,8 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (appError || !application || application.email !== user.email) {
-      return NextResponse.json(
-        createSafeErrorResponse('authorization', 403, 'GET /api/documents: Unauthorized access', appError),
-        { status: 403 }
-      )
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'GET /api/documents: Unauthorized access', appError || new Error('Unauthorized'))
+      return NextResponse.json(errorResponse, { status: 403 })
     }
 
     const { data: documents, error } = await supabase
@@ -171,7 +161,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ documents })
   } catch (error) {
-    const errorResponse = createSafeErrorResponse('service', 500, 'GET /api/documents: Uncaught exception', error)
+    const errorResponse = createSafeErrorResponse('service', 500, 'GET /api/documents: Uncaught exception', error || new Error('Unknown error'))
     return NextResponse.json(errorResponse, { status: errorResponse.status })
   }
 }
