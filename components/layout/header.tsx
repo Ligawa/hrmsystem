@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Search, Menu, X, ChevronDown, Globe, LogIn, UserPlus } from "lucide-react"
+import { Search, Menu, X, ChevronDown, Globe, LogIn, UserPlus, LogOut, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -16,6 +16,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet"
+import { useAuth } from "@/lib/auth-context"
 
 const navigation = [
   { name: "About", href: "/about" },
@@ -35,6 +36,13 @@ const languages = [
 export function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [currentLang, setCurrentLang] = useState("en")
+  const { user, isLoggedIn, logout } = useAuth()
+
+  const handleLogout = async () => {
+    await logout()
+    // Redirect to home page
+    window.location.href = '/'
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-blue-900 text-white">
@@ -98,18 +106,43 @@ export function Header() {
 
             {/* Auth Buttons */}
             <div className="hidden lg:flex items-center gap-2">
-              <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                <Link href="/careers/login" className="flex items-center gap-1">
-                  <LogIn className="h-4 w-4" />
-                  <span>Login</span>
-                </Link>
-              </Button>
-              <Button asChild size="sm" className="bg-white text-blue-900 hover:bg-gray-100 font-semibold">
-                <Link href="/careers/register" className="flex items-center gap-1">
-                  <UserPlus className="h-4 w-4" />
-                  <span>Sign Up</span>
-                </Link>
-              </Button>
+              {isLoggedIn && user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      <span>{user.firstName} {user.lastName}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href="/careers/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/careers/dashboard/profile">My Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      <span>Logout</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                    <Link href="/careers/login" className="flex items-center gap-1">
+                      <LogIn className="h-4 w-4" />
+                      <span>Login</span>
+                    </Link>
+                  </Button>
+                  <Button asChild size="sm" className="bg-white text-blue-900 hover:bg-gray-100 font-semibold">
+                    <Link href="/careers/register" className="flex items-center gap-1">
+                      <UserPlus className="h-4 w-4" />
+                      <span>Sign Up</span>
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Language Switcher */}
@@ -167,12 +200,25 @@ export function Header() {
 
                   {/* Mobile Auth Buttons */}
                   <div className="border-t pt-4 flex gap-2">
-                    <Button asChild variant="outline" className="flex-1">
-                      <Link href="/careers/login">Login</Link>
-                    </Button>
-                    <Button asChild className="flex-1 bg-blue-600 hover:bg-blue-700">
-                      <Link href="/careers/register">Sign Up</Link>
-                    </Button>
+                    {isLoggedIn && user ? (
+                      <>
+                        <Button asChild variant="outline" className="flex-1">
+                          <Link href="/careers/dashboard">Dashboard</Link>
+                        </Button>
+                        <Button onClick={handleLogout} className="flex-1 bg-red-600 hover:bg-red-700">
+                          Logout
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button asChild variant="outline" className="flex-1">
+                          <Link href="/careers/login">Login</Link>
+                        </Button>
+                        <Button asChild className="flex-1 bg-blue-600 hover:bg-blue-700">
+                          <Link href="/careers/register">Sign Up</Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
 
                   {/* Mobile Language */}

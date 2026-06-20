@@ -5,6 +5,7 @@ import { Source_Sans_3 } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { AuthProvider } from '@/lib/auth-context'
 
 const sourceSans = Source_Sans_3({ 
   subsets: ["latin"],
@@ -74,9 +75,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${sourceSans.className} antialiased`}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   )

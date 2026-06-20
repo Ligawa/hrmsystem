@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Briefcase, FileText, CheckCircle2, Clock, ArrowRight, LogOut, Menu, X, BarChart3, Bell, Settings } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
 
 const navigationItems = [
   { icon: BarChart3, label: 'Overview', href: '/careers/dashboard' },
@@ -22,7 +24,56 @@ const applicationStats = [
 ];
 
 export default function ApplicantDashboardPage() {
+  const router = useRouter();
+  const { user, isLoggedIn, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [profileData, setProfileData] = useState<any>(null);
+  const [stats, setStats] = useState({
+    totalApplications: 0,
+    underReview: 0,
+    interviews: 0,
+    offers: 0,
+  });
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push('/careers/login');
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        if (!user) return;
+
+        // Fetch profile data
+        const profileRes = await fetch(`/api/applicant/profile?applicantId=${user.applicantId}`);
+        if (profileRes.ok) {
+          const profile = await profileRes.json();
+          setProfileData(profile);
+        }
+
+        // Fetch applications to calculate stats
+        const appsRes = await fetch(`/api/applicant/applications?applicantId=${user.applicantId}`);
+        if (appsRes.ok) {
+          const data = await appsRes.json();
+          const apps = data.applications || [];
+          setStats({
+            totalApplications: apps.length,
+            underReview: apps.filter((a: any) => a.status === 'under_review').length,
+            interviews: apps.filter((a: any) => a.status === 'interview').length,
+            offers: apps.filter((a: any) => a.status === 'offered').length,
+          });
+        }
+      } catch (error) {
+        console.error('[v0] Failed to fetch dashboard data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [isLoggedIn, user, router]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -74,11 +125,16 @@ export default function ApplicantDashboardPage() {
           </nav>
 
           <div className="border-t border-gray-200 mt-6 pt-6">
-            <Button asChild variant="outline" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 font-medium">
-              <Link href="/careers/login">
-                <LogOut className="w-4 h-4 mr-2 flex-shrink-0" />
-                Sign Out
-              </Link>
+            <Button 
+              onClick={async () => {
+                await logout();
+                router.push('/');
+              }}
+              variant="outline" 
+              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 font-medium"
+            >
+              <LogOut className="w-4 h-4 mr-2 flex-shrink-0" />
+              Sign Out
             </Button>
           </div>
         </aside>
@@ -88,13 +144,20 @@ export default function ApplicantDashboardPage() {
           <div className="w-full max-w-full">
             {/* Welcome Section */}
             <div className="mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Welcome back, Sarah Chen</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+                Welcome back, {isLoading ? 'Loading...' : `${user?.firstName} ${user?.lastName}`}
+              </h2>
               <p className="text-gray-600 text-sm md:text-base">You&apos;re making great progress on your WHO applications</p>
             </div>
 
             {/* Stats */}
             <div className="grid gap-4 sm:gap-6 grid-cols-2 md:grid-cols-4 mb-8">
-              {applicationStats.map((stat) => {
+              {[
+                { label: 'Total Applications', value: stats.totalApplications.toString(), icon: Briefcase, color: 'bg-blue-500', lightBg: 'bg-blue-50' },
+                { label: 'Under Review', value: stats.underReview.toString(), icon: Clock, color: 'bg-yellow-500', lightBg: 'bg-yellow-50' },
+                { label: 'Interviews', value: stats.interviews.toString(), icon: CheckCircle2, color: 'bg-purple-500', lightBg: 'bg-purple-50' },
+                { label: 'Offers', value: stats.offers.toString(), icon: CheckCircle2, color: 'bg-green-500', lightBg: 'bg-green-50' },
+              ].map((stat) => {
                 const Icon = stat.icon;
                 return (
                   <Card key={stat.label} className="border-0 shadow-sm hover:shadow-md transition-shadow">
@@ -103,7 +166,7 @@ export default function ApplicantDashboardPage() {
                         <Icon className={`w-6 h-6 ${stat.color.replace('bg-', 'text-')}`} />
                       </div>
                       <p className="text-xs md:text-sm text-gray-600 mb-1">{stat.label}</p>
-                      <p className="text-2xl md:text-3xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl md:text-3xl font-bold text-gray-900">{isLoading ? '-' : stat.value}</p>
                     </CardContent>
                   </Card>
                 );
