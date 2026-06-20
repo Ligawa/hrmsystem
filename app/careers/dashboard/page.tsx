@@ -29,6 +29,8 @@ export default function ApplicantDashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState<any>(null);
+  const [recentApplications, setRecentApplications] = useState<any[]>([]);
+  const [pendingAssessments, setPendingAssessments] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalApplications: 0,
     underReview: 0,
@@ -67,6 +69,20 @@ export default function ApplicantDashboardPage() {
             interviews: apps.filter((a: any) => a.status === 'interview').length,
             offers: apps.filter((a: any) => a.status === 'offered').length,
           });
+        }
+
+        // Fetch recent applications
+        const recentRes = await fetch(`/api/applicant/recent-applications?applicantId=${user.applicantId}&limit=3`);
+        if (recentRes.ok) {
+          const data = await recentRes.json();
+          setRecentApplications(data.applications || []);
+        }
+
+        // Fetch pending assessments
+        const assessmentsRes = await fetch(`/api/applicant/pending-assessments?applicantId=${user.applicantId}`);
+        if (assessmentsRes.ok) {
+          const data = await assessmentsRes.json();
+          setPendingAssessments(data.assessments || []);
         }
       } catch (error) {
         console.error('[v0] Failed to fetch dashboard data:', error);
@@ -235,50 +251,49 @@ export default function ApplicantDashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {[
-                      {
-                        position: 'Regional Health Officer - Europe',
-                        location: 'Geneva, Switzerland',
-                        department: 'Health Emergencies',
-                        status: 'interview',
-                        statusLabel: 'Interview Scheduled',
-                        date: '2 days ago',
-                      },
-                      {
-                        position: 'Disease Surveillance Specialist',
-                        location: 'Bangkok, Thailand',
-                        department: 'Disease Surveillance',
-                        status: 'under_review',
-                        statusLabel: 'Under Review',
-                        date: '1 week ago',
-                      },
-                      {
-                        position: 'Public Health Advisor - Africa',
-                        location: 'Nairobi, Kenya',
-                        department: 'Public Health',
-                        status: 'submitted',
-                        statusLabel: 'Application Submitted',
-                        date: '2 weeks ago',
-                      },
-                    ].map((app, idx) => (
-                      <Link key={idx} href="/careers/dashboard/applications" className="block p-3 md:p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors border border-gray-200 hover:border-blue-200">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-gray-900 text-sm md:text-base truncate">{app.position}</p>
-                            <p className="text-xs md:text-sm text-gray-600 mt-0.5">{app.location} • {app.date}</p>
-                          </div>
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 ${
-                            app.status === 'interview'
-                              ? 'bg-purple-100 text-purple-800'
-                              : app.status === 'under_review'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-blue-100 text-blue-800'
-                          }`}>
-                            {app.statusLabel}
-                          </span>
-                        </div>
-                      </Link>
-                    ))}
+                    {recentApplications.length === 0 ? (
+                      <p className="text-gray-600 text-sm py-4 text-center">No recent applications yet</p>
+                    ) : (
+                      recentApplications.map((app, idx) => {
+                        const getStatusLabel = (status: string) => {
+                          const statusMap: Record<string, string> = {
+                            'submitted': 'Submitted',
+                            'under_review': 'Under Review',
+                            'assessment_pending': 'Assessment Pending',
+                            'interview': 'Interview Scheduled',
+                            'shortlisted': 'Shortlisted',
+                            'offered': 'Offer Extended',
+                            'accepted': 'Accepted',
+                          };
+                          return statusMap[status] || status;
+                        };
+
+                        const getStatusColor = (status: string) => {
+                          if (status === 'interview') return 'bg-purple-100 text-purple-800';
+                          if (status === 'under_review' || status === 'assessment_pending') return 'bg-yellow-100 text-yellow-800';
+                          if (status === 'offered' || status === 'accepted') return 'bg-green-100 text-green-800';
+                          return 'bg-blue-100 text-blue-800';
+                        };
+
+                        const submissionDate = new Date(app.submissionDate);
+                        const daysAgo = Math.floor((Date.now() - submissionDate.getTime()) / (1000 * 60 * 60 * 24));
+                        const dateLabel = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo} days ago`;
+
+                        return (
+                          <Link key={idx} href="/careers/dashboard/applications" className="block p-3 md:p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors border border-gray-200 hover:border-blue-200">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-gray-900 text-sm md:text-base truncate">{app.jobTitle}</p>
+                                <p className="text-xs md:text-sm text-gray-600 mt-0.5">{app.location} • {dateLabel}</p>
+                              </div>
+                              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 ${getStatusColor(app.status)}`}>
+                                {getStatusLabel(app.status)}
+                              </span>
+                            </div>
+                          </Link>
+                        );
+                      })
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -311,7 +326,11 @@ export default function ApplicantDashboardPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900">Pending Assessments</h3>
-                      <p className="text-sm text-gray-600 mt-1">1 assessment pending - Complete to advance</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {pendingAssessments.length === 0 
+                          ? 'No pending assessments' 
+                          : `${pendingAssessments.length} assessment${pendingAssessments.length !== 1 ? 's' : ''} pending - Complete to advance`}
+                      </p>
                       <Button asChild variant="link" className="mt-2 p-0 h-auto text-blue-600 hover:text-blue-700 font-medium">
                         <Link href="/careers/dashboard/interviews" className="inline-flex items-center gap-1">View Schedule <ArrowRight className="w-4 h-4" /></Link>
                       </Button>
