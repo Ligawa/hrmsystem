@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
       .select(`
         id,
         job_id,
-        application_status,
+        status,
         submission_date,
         cover_letter
       `)
@@ -64,19 +64,14 @@ export async function GET(request: NextRequest) {
       throw error;
     }
 
-    // Fetch job details for each application
-    const applicationsWithDetails = await Promise.all(
-      (applications || []).map(async (app) => {
-        // For now, return basic info since jobs table structure may vary
-        return {
-          id: app.id,
-          jobId: app.job_id,
-          status: app.application_status,
-          submissionDate: app.submission_date,
-          coverLetter: app.cover_letter,
-        };
-      })
-    );
+    // Format applications response
+    const applicationsWithDetails = (applications || []).map((app) => ({
+      id: app.id,
+      jobId: app.job_id,
+      status: app.status,
+      submissionDate: app.submission_date,
+      coverLetter: app.cover_letter,
+    }));
 
     return NextResponse.json({
       applications: applicationsWithDetails,

@@ -54,18 +54,40 @@ export default function JobDetailPage() {
     fetchJobDetails();
   }, [jobId]);
 
-  // Use auth context instead of checking Supabase directly
+  // Use auth context to fetch applicant details from database
   useEffect(() => {
     if (!authLoading && isLoggedIn && authUser?.applicantId) {
-      setApplicantProfile({
-        id: authUser.id,
-        email: authUser.email,
-        first_name: authUser.firstName,
-        last_name: authUser.lastName,
-        applicant_id: authUser.applicantId,
-      });
+      fetchApplicantDetails();
     }
   }, [isLoggedIn, authUser, authLoading]);
+
+  async function fetchApplicantDetails() {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from('applicants')
+        .select('id, email, first_name, last_name, applicant_id')
+        .eq('applicant_id', authUser?.applicantId)
+        .single();
+
+      if (error) {
+        console.error('[v0] Failed to fetch applicant details:', error);
+        return;
+      }
+
+      if (data) {
+        setApplicantProfile({
+          id: data.id, // Use the actual applicant UUID from database
+          email: data.email,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          applicant_id: data.applicant_id,
+        });
+      }
+    } catch (error) {
+      console.error('[v0] Error fetching applicant:', error);
+    }
+  }
 
   async function fetchJobDetails() {
     try {
