@@ -20,30 +20,30 @@ export async function POST(request: NextRequest) {
     const applicationId = formData.get('applicationId') as string
     const documentType = formData.get('documentType') as string
     const file = formData.get('file') as File
+    const applicantId = formData.get('applicantId') as string
 
-    if (!applicationId || !documentType || !file) {
+    if (!applicationId || !documentType || !file || !applicantId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    // Get current user
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      const errorResponse = createSafeErrorResponse('auth', 401, 'POST /api/documents: No authenticated user', new Error('No authenticated user'))
-      return NextResponse.json(errorResponse, { status: 401 })
-    }
-
     // Verify applicant owns this application
     const { data: application, error: appError } = await supabase
       .from('job_applications')
-      .select('id, email, full_name')
+      .select('id, applicant_id')
       .eq('id', applicationId)
       .single()
 
-    if (appError || !application || application.email !== user.email) {
-      const errorResponse = createSafeErrorResponse('authorization', 403, 'POST /api/documents: Unauthorized access', appError || new Error('Unauthorized'))
+    if (appError || !application) {
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'POST /api/documents: Application not found', appError || new Error('Application not found'))
+      return NextResponse.json(errorResponse, { status: 403 })
+    }
+
+    // Verify the applicant ID matches (custom auth check)
+    if (application.applicant_id !== applicantId) {
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'POST /api/documents: Unauthorized access', new Error('Applicant mismatch'))
       return NextResponse.json(errorResponse, { status: 403 })
     }
 
@@ -124,27 +124,28 @@ export async function GET(request: NextRequest) {
     
     const { searchParams } = new URL(request.url)
     const applicationId = searchParams.get('applicationId')
+    const applicantId = searchParams.get('applicantId')
 
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      const errorResponse = createSafeErrorResponse('auth', 401, 'GET /api/documents: No authenticated user', new Error('No authenticated user'))
-      return NextResponse.json(errorResponse, { status: 401 })
-    }
-
-    if (!applicationId) {
-      const errorResponse = createSafeErrorResponse('validation', 400, 'GET /api/documents: Missing applicationId', new Error('Missing applicationId'))
+    if (!applicationId || !applicantId) {
+      const errorResponse = createSafeErrorResponse('validation', 400, 'GET /api/documents: Missing required params', new Error('Missing applicationId or applicantId'))
       return NextResponse.json(errorResponse, { status: 400 })
     }
 
     // Verify applicant owns this application before fetching documents
     const { data: application, error: appError } = await supabase
       .from('job_applications')
-      .select('id, email')
+      .select('id, applicant_id')
       .eq('id', applicationId)
       .single()
 
-    if (appError || !application || application.email !== user.email) {
-      const errorResponse = createSafeErrorResponse('authorization', 403, 'GET /api/documents: Unauthorized access', appError || new Error('Unauthorized'))
+    if (appError || !application) {
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'GET /api/documents: Application not found', appError || new Error('Application not found'))
+      return NextResponse.json(errorResponse, { status: 403 })
+    }
+
+    // Verify the applicant ID matches (custom auth check)
+    if (application.applicant_id !== applicantId) {
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'GET /api/documents: Unauthorized access', new Error('Applicant mismatch'))
       return NextResponse.json(errorResponse, { status: 403 })
     }
 

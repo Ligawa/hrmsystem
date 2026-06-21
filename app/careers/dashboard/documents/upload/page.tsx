@@ -55,7 +55,14 @@ export default function DocumentsUploadPage() {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch(`/api/documents?applicationId=${applicationId}`)
+      const applicantId = localStorage.getItem('applicant_id')
+      if (!applicantId) {
+        setError('Authentication required. Please log in again.')
+        setLoading(false)
+        return
+      }
+      
+      const response = await fetch(`/api/documents?applicationId=${applicationId}&applicantId=${applicantId}`)
       const data = await response.json()
       setDocuments(data.documents || [])
     } catch (err) {
@@ -106,6 +113,12 @@ export default function DocumentsUploadPage() {
       formData.append('file', file)
       formData.append('applicationId', applicationId)
       formData.append('documentType', selectedType)
+      
+      // Include applicant ID for authentication (since we use custom auth)
+      const applicantId = localStorage.getItem('applicant_id')
+      if (applicantId) {
+        formData.append('applicantId', applicantId)
+      }
 
       const response = await fetch('/api/documents', {
         method: 'POST',
