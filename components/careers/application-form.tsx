@@ -3,7 +3,6 @@
 import React from "react"
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -74,15 +73,17 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
         }
       }
 
-      const supabase = createClient();
-
       // Calculate submission deadline (3 days from now)
       const deadline = new Date();
       deadline.setDate(deadline.getDate() + 3);
 
-      const { data: insertedData, error: insertError } = await supabase
-        .from("job_applications")
-        .insert({
+      // Call the application submit API endpoint instead of directly using Supabase client
+      const submitResponse = await fetch('/api/applications/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           job_id: jobId,
           full_name: formData.full_name,
           email: formData.email,
@@ -91,14 +92,16 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
           resume_url: resumeUrl,
           status: "pending",
           submission_deadline: deadline.toISOString(),
-        })
-        .select();
+        }),
+      });
 
-      if (insertError || !insertedData || insertedData.length === 0) {
-        throw new Error(insertError?.message || "Failed to create application");
+      if (!submitResponse.ok) {
+        const errorData = await submitResponse.json();
+        throw new Error(errorData.error || "Failed to create application");
       }
 
-      const applicationId = insertedData[0].id;
+      const submitData = await submitResponse.json();
+      const applicationId = submitData.id || submitData.applicationId;
       
       // Generate secure application token for tracking portal
       const tokenResponse = await fetch('/api/applications/token', {
