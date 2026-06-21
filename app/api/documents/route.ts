@@ -1,12 +1,23 @@
-import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 import { blobStorage } from '@/lib/utils/blob-storage'
 import { evaluationNotificationService } from '@/lib/services/evaluation-notification-service'
 import { createSafeErrorResponse, handleSupabaseError, handleBlobError, logError } from '@/lib/utils/error-handler'
 
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return null
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey)
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = getSupabaseAdmin()
     
     if (!supabase) {
       return NextResponse.json(
@@ -32,17 +43,34 @@ export async function POST(request: NextRequest) {
     // Verify applicant owns this application
     const { data: application, error: appError } = await supabase
       .from('job_applications')
-      .select('id, applicant_id')
+      .select('id, applicant_id, full_name')
       .eq('id', applicationId)
       .single()
 
-    if (appError || !application) {
-      const errorResponse = createSafeErrorResponse('authorization', 403, 'POST /api/documents: Application not found', appError || new Error('Application not found'))
+    if (appError) {
+      console.error('[v0] Database query error:', {
+        message: appError.message,
+        code: appError.code,
+        details: appError.details,
+        hint: appError.hint,
+        applicationId
+      })
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'POST /api/documents: Unable to verify application', new Error(appError.message || 'Database error'))
       return NextResponse.json(errorResponse, { status: 403 })
+    }
+
+    if (!application) {
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'POST /api/documents: Application not found', new Error('Application not found'))
+      return NextResponse.json(errorResponse, { status: 404 })
     }
 
     // Verify the applicant ID matches (custom auth check)
     if (application.applicant_id !== applicantId) {
+      console.warn('[v0] Applicant ID mismatch:', {
+        expected: application.applicant_id,
+        provided: applicantId,
+        applicationId
+      })
       const errorResponse = createSafeErrorResponse('authorization', 403, 'POST /api/documents: Unauthorized access', new Error('Applicant mismatch'))
       return NextResponse.json(errorResponse, { status: 403 })
     }
@@ -113,7 +141,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = getSupabaseAdmin()
     
     if (!supabase) {
       return NextResponse.json(
@@ -134,17 +162,34 @@ export async function GET(request: NextRequest) {
     // Verify applicant owns this application before fetching documents
     const { data: application, error: appError } = await supabase
       .from('job_applications')
-      .select('id, applicant_id')
+      .select('id, applicant_id, full_name')
       .eq('id', applicationId)
       .single()
 
-    if (appError || !application) {
-      const errorResponse = createSafeErrorResponse('authorization', 403, 'GET /api/documents: Application not found', appError || new Error('Application not found'))
+    if (appError) {
+      console.error('[v0] GET documents query error:', {
+        message: appError.message,
+        code: appError.code,
+        details: appError.details,
+        hint: appError.hint,
+        applicationId
+      })
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'GET /api/documents: Unable to verify application', new Error(appError.message || 'Database error'))
       return NextResponse.json(errorResponse, { status: 403 })
+    }
+
+    if (!application) {
+      const errorResponse = createSafeErrorResponse('authorization', 403, 'GET /api/documents: Application not found', new Error('Application not found'))
+      return NextResponse.json(errorResponse, { status: 404 })
     }
 
     // Verify the applicant ID matches (custom auth check)
     if (application.applicant_id !== applicantId) {
+      console.warn('[v0] GET applicant ID mismatch:', {
+        expected: application.applicant_id,
+        provided: applicantId,
+        applicationId
+      })
       const errorResponse = createSafeErrorResponse('authorization', 403, 'GET /api/documents: Unauthorized access', new Error('Applicant mismatch'))
       return NextResponse.json(errorResponse, { status: 403 })
     }
