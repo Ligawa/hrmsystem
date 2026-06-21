@@ -198,6 +198,7 @@ export async function POST(request: NextRequest) {
           job_id,
           cover_letter: cover_letter || null,
           resume_url: resume_url || null,
+          phone: phone || null,
           application_status: 'submitted',
           submission_date: new Date().toISOString(),
         },
