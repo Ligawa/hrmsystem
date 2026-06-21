@@ -7,11 +7,20 @@ ADD COLUMN IF NOT EXISTS resume_url TEXT,
 ADD COLUMN IF NOT EXISTS phone TEXT;
 
 -- Add unique constraint to prevent duplicate applications per email+job combination
--- This ensures the same email cannot apply twice for the same job
-ALTER TABLE job_applications
-ADD CONSTRAINT IF NOT EXISTS unique_email_job_application 
-UNIQUE (job_id, email) 
-WHERE email IS NOT NULL;
+-- Using DO block because PostgreSQL doesn't support IF NOT EXISTS for constraints
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint 
+    WHERE conname = 'unique_email_job_application' 
+    AND conrelid = 'job_applications'::regclass
+  ) THEN
+    ALTER TABLE job_applications
+    ADD CONSTRAINT unique_email_job_application 
+    UNIQUE (job_id, email) 
+    WHERE email IS NOT NULL;
+  END IF;
+END $$;
 
 -- Add index for faster lookups by job_id
 CREATE INDEX IF NOT EXISTS idx_applications_job_status 
