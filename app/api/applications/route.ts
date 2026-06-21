@@ -185,8 +185,24 @@ export async function POST(request: NextRequest) {
           }
         } else {
           applicantUUID = newApplicant.id;
+          console.log('[v0] Created new external applicant:', { 
+            applicantUUID, 
+            email, 
+            firstName, 
+            lastName 
+          });
         }
       }
+    }
+
+    console.log('[v0] Attempting to create application with applicantUUID:', applicantUUID);
+
+    // Verify the applicant was created (failsafe check)
+    if (!applicantUUID) {
+      return NextResponse.json(
+        { error: 'Failed to create or retrieve applicant record' },
+        { status: 500 }
+      );
     }
 
     // Now create the job application
@@ -197,8 +213,6 @@ export async function POST(request: NextRequest) {
           applicant_id: applicantUUID,
           job_id,
           cover_letter: cover_letter || null,
-          resume_url: resume_url || null,
-          phone: phone || null,
           application_status: 'submitted',
           submission_date: new Date().toISOString(),
         },

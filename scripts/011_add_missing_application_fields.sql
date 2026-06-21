@@ -1,47 +1,47 @@
--- Migration: Add missing fields to job_applications table
--- Purpose: Support external applicant submissions with contact info and resume URL
+-- Migration: Fix job_applications table for external applicant submissions
+-- Purpose: Ensure proper schema and prevent foreign key constraint violations
 
--- Add missing columns to job_applications table
-ALTER TABLE job_applications
-ADD COLUMN IF NOT EXISTS resume_url TEXT,
-ADD COLUMN IF NOT EXISTS phone TEXT;
+-- IMPORTANT: job_applications uses 'application_status' NOT 'status'
+-- The table already has all required columns from the schema definition
 
--- Add unique constraint to prevent duplicate applications per email+job combination
--- Using DO block because PostgreSQL doesn't support IF NOT EXISTS for constraints
+-- Add index for faster lookups by job_id and application_status if not exists
+CREATE INDEX IF NOT EXISTS idx_applications_job_status 
+ON job_applications(job_id, application_status);
+
+-- Add index for applicant_id lookups if not exists
+CREATE INDEX IF NOT EXISTS idx_applications_applicant_id 
+ON job_applications(applicant_id);
+
+-- Create unique constraint to prevent duplicate applications 
+-- (applicant can only apply for same job once)
 DO $$ 
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_constraint 
-    WHERE conname = 'unique_email_job_application' 
+    WHERE conname = 'unique_applicant_job_application' 
     AND conrelid = 'job_applications'::regclass
   ) THEN
     ALTER TABLE job_applications
-    ADD CONSTRAINT unique_email_job_application 
-    UNIQUE (job_id, email) 
-    WHERE email IS NOT NULL;
+    ADD CONSTRAINT unique_applicant_job_application 
+    UNIQUE (applicant_id, job_id);
   END IF;
 END $$;
 
--- Add index for faster lookups by job_id
-CREATE INDEX IF NOT EXISTS idx_applications_job_status 
-ON job_applications(job_id, application_status);
+-- Create a diagnostic view to check for orphaned applications
+-- (applications with applicant_id that don't exist in applicants table)
+CREATE OR REPLACE VIEW orphaned_applications AS
+SELECT 
+  ja.id as application_id,
+  ja.applicant_id,
+  ja.job_id,
+  ja.application_status,
+  ja.submission_date
+FROM job_applications ja
+LEFT JOIN applicants a ON ja.applicant_id = a.id
+WHERE a.id IS NULL;
 
--- Add index for email lookups
-CREATE INDEX IF NOT EXISTS idx_applications_email 
-ON job_applications(email);
+-- If there are orphaned applications, they need to be deleted or fixed
+-- Run this to see them: SELECT * FROM orphaned_applications;
 
--- Verify the schema is correct
--- The job_applications table should now have these columns:
--- - id (UUID, primary key)
--- - applicant_id (UUID, foreign key to applicants.id)
--- - job_id (UUID)
--- - application_status (TEXT)
--- - cover_letter (TEXT)
--- - resume_url (TEXT) -- newly added
--- - phone (TEXT) -- newly added
--- - initial_screening_date (TIMESTAMP)
--- - initial_screening_result (TEXT)
--- - initial_screener_id (UUID)
--- - submission_date (TIMESTAMP)
--- - updated_at (TIMESTAMP)
--- - application_token (TEXT, unique)
+-- Grant permissions for views
+GRANT SELECT ON orphaned_applications TO anon, authenticated;
