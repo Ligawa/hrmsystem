@@ -34,13 +34,33 @@ export function logError(
   error: unknown,
   details?: Record<string, any>
 ): void {
-  const errorMessage = error instanceof Error ? error.message : String(error)
-  const errorStack = error instanceof Error ? error.stack : undefined
+  let errorMessage = ''
+  let errorStack = ''
+  let errorDetails: Record<string, any> | undefined = undefined
+
+  if (error instanceof Error) {
+    errorMessage = error.message
+    errorStack = error.stack || ''
+    // Check if error has additional properties (Supabase errors)
+    if ('code' in error) {
+      errorDetails = {
+        code: (error as any).code,
+        hint: (error as any).hint,
+        details: (error as any).details,
+      }
+    }
+  } else if (typeof error === 'object' && error !== null) {
+    // Handle object errors (like Supabase error objects)
+    errorMessage = (error as any).message || JSON.stringify(error)
+    errorDetails = error as Record<string, any>
+  } else {
+    errorMessage = String(error)
+  }
 
   console.error(`[BACKEND_ERROR] ${context}`, {
     message: errorMessage,
     stack: errorStack,
-    details,
+    details: errorDetails || details,
     timestamp: new Date().toISOString(),
   })
 }

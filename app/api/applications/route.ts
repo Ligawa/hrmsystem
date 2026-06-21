@@ -76,56 +76,144 @@ export async function POST(request: NextRequest) {
       phone,
     } = body;
 
-    if (!applicant_id || !job_id) {
+    if (!job_id || !email || !full_name) {
       return NextResponse.json(
-        { error: 'Applicant ID and Job ID are required' },
+        { error: 'Job ID, email, and full name are required' },
         { status: 400 }
       );
     }
 
-    // Get the applicant UUID from the applicant_id string
-    const { data: applicants, error: appError } = await supabase
-      .from('applicants')
-      .select('id')
-      .eq('applicant_id', applicant_id)
-      .single();
+    // Extract first and last name from full_name
+    const nameParts = full_name.trim().split(/\s+/);
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ') || 'Applicant';
 
-    if (appError || !applicants) {
+    let applicantUUID = null;
+
+    // If applicant_id is provided, validate they exist
+    if (applicant_id) {
+      const { data: applicants, error: appError } = await supabase
+        .from('applicants')
+        .select('id')
+        .eq('applicant_id', applicant_id)
+        .single();
+
+      if (appError || !applicants) {
+        return NextResponse.json(
+          { error: 'Applicant not found' },
+          { status: 404 }
+        );
+      }
+
+      applicantUUID = applicants.id;
+
+      // Check if applicant already applied for this job
+      const { data: existingApp } = await supabase
+        .from('job_applications')
+        .select('id')
+        .eq('applicant_id', applicantUUID)
+        .eq('job_id', job_id)
+        .single();
+
+      if (existingApp) {
+        return NextResponse.json(
+          { error: 'You have already applied for this position' },
+          { status: 409 }
+        );
+      }
+    } else {
+      // External applicant - check if already exists by email
+      const { data: existingApplicant } = await supabase
+        .from('applicants')
+        .select('id')
+        .eq('email', email)
+        .single();
+
+      if (existingApplicant) {
+        applicantUUID = existingApplicant.id;
+
+        // Check if this applicant already applied for this job
+        const { data: existingApp } = await supabase
+          .from('job_applications')
+          .select('id')
+          .eq('applicant_id', applicantUUID)
+          .eq('job_id', job_id)
+          .single();
+
+        if (existingApp) {
+          return NextResponse.json(
+            { error: 'You have already applied for this position' },
+            { status: 409 }
+          );
+        }
+      } else {
+        // Create new external applicant record
+        const { data: newApplicant, error: createError } = await supabase
+          .from('applicants')
+          .insert([
+            {
+              applicant_id: `EXT-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
+              first_name: firstName,
+              last_name: lastName,
+              email,
+              phone: phone || null,
+              status: 'active',
+            },
+          ])
+          .select('id')
+          .single();
+
+        if (createError || !newApplicant) {
+          // Check if it's a duplicate email issue
+          if (createError?.message?.includes('duplicate') || createError?.message?.includes('unique')) {
+            // Try to get the existing applicant again
+            const { data: existingApplicant2 } = await supabase
+              .from('applicants')
+              .select('id')
+              .eq('email', email)
+              .single();
+
+            if (existingApplicant2) {
+              applicantUUID = existingApplicant2.id;
+            } else {
+              const errorResponse = handleSupabaseError(createError, 'POST /api/applications: Failed to create applicant');
+              return NextResponse.json(errorResponse, { status: errorResponse.status });
+            }
+          } else {
+            const errorResponse = handleSupabaseError(createError, 'POST /api/applications: Failed to create applicant');
+            return NextResponse.json(errorResponse, { status: errorResponse.status });
+          }
+        } else {
+          applicantUUID = newApplicant.id;
+          console.log('[v0] Created new external applicant:', { 
+            applicantUUID, 
+            email, 
+            firstName, 
+            lastName 
+          });
+        }
+      }
+    }
+
+    console.log('[v0] Attempting to create application with applicantUUID:', applicantUUID);
+
+    // Verify the applicant was created (failsafe check)
+    if (!applicantUUID) {
       return NextResponse.json(
-        { error: 'Applicant not found' },
-        { status: 404 }
+        { error: 'Failed to create or retrieve applicant record' },
+        { status: 500 }
       );
     }
 
-    const applicantUUID = applicants.id;
-
-    // Check if applicant already applied for this job
-    const { data: existingApp } = await supabase
-      .from('job_applications')
-      .select('id')
-      .eq('applicant_id', applicantUUID)
-      .eq('job_id', job_id)
-      .single();
-
-    if (existingApp) {
-      return NextResponse.json(
-        { error: 'You have already applied for this position' },
-        { status: 400 }
-      );
-    }
-
+    // Now create the job application
     const { data, error } = await supabase
       .from('job_applications')
       .insert([
         {
           applicant_id: applicantUUID,
           job_id,
-          cover_letter,
-          resume_url,
-          full_name,
-          email,
-          phone,
-          status: 'pending',
+          cover_letter: cover_letter || null,
+          application_status: 'submitted',
           submission_date: new Date().toISOString(),
         },
       ])

@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceRoleClient } from '@/lib/supabase/server';
 
 /**
  * POST /api/applications/submit
- * Handles secure submission of applicant documents
+ * Handles secure submission of job applications
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, videoLink, documents } = body;
+    const { job_id, full_name, email, phone, cover_letter, resume_url, status, submission_deadline } = body;
 
     // Validation
-    if (!email || !videoLink || !documents || documents.length === 0) {
+    if (!job_id || !full_name || !email) {
       return NextResponse.json(
         {
-          error: 'Missing required fields: email, videoLink, and at least one document',
+          error: 'Missing required fields: job_id, full_name, and email',
         },
         { status: 400 }
       );
@@ -26,8 +26,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
-    // Initialize Supabase
-    const supabase = await createClient();
+    // Initialize Supabase with service role
+    const supabase = await createServiceRoleClient();
     if (!supabase) {
       console.error('[v0] Supabase client not available');
       return NextResponse.json(
@@ -36,33 +36,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check for duplicate submissions
-    const { data: existingSubmission } = await supabase
-      .from('application_submissions')
-      .select('id')
-      .eq('email', email)
-      .single();
-
-    if (existingSubmission) {
-      return NextResponse.json(
-        {
-          error: 'Application already submitted with this email. Please contact HR if you need to resubmit.',
-        },
-        { status: 409 }
-      );
-    }
-
-    // Create submission record in Supabase
+    // Create job application record in Supabase
     const submittedAt = new Date().toISOString();
-    const { data: submission, error: submitError } = await supabase
-      .from('application_submissions')
+    const { data: application, error: submitError } = await supabase
+      .from('job_applications')
       .insert([
         {
+          job_id,
+          full_name,
           email,
-          video_link: videoLink,
-          documents: documents,
-          submitted_at: submittedAt,
-          status: 'submitted',
+          phone: phone || null,
+          cover_letter: cover_letter || null,
+          resume_url: resume_url || null,
+          status: status || 'pending',
+          submission_deadline: submission_deadline || null,
+          applied_at: submittedAt,
         },
       ])
       .select()
@@ -71,15 +59,16 @@ export async function POST(request: NextRequest) {
     if (submitError) {
       console.error('[v0] Supabase insert error:', submitError);
       return NextResponse.json(
-        { error: 'Failed to save submission. Please try again.' },
+        { error: 'Failed to save application. Please try again.' },
         { status: 500 }
       );
     }
 
     console.log('[v0] Application submitted:', {
       email,
-      documentCount: documents.length,
-      submissionId: submission.id,
+      full_name,
+      job_id,
+      applicationId: application.id,
       timestamp: submittedAt,
     });
 
@@ -87,7 +76,8 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         message: 'Application submitted successfully',
-        submissionId: submission.id,
+        id: application.id,
+        applicationId: application.id,
         submittedAt: submittedAt,
       },
       { status: 201 }
@@ -113,7 +103,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = await createClient();
+    const supabase = await createServiceRoleClient();
     if (!supabase) {
       return NextResponse.json(
         { error: 'Database service temporarily unavailable' },
@@ -121,30 +111,30 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { data: submissions, error } = await supabase
-      .from('application_submissions')
+    const { data: applications, error } = await supabase
+      .from('job_applications')
       .select('*')
-      .order('submitted_at', { ascending: false });
+      .order('applied_at', { ascending: false });
 
     if (error) {
       console.error('[v0] Supabase fetch error:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch submissions' },
+        { error: 'Failed to fetch applications' },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
       {
-        submissions: submissions || [],
-        totalSubmissions: submissions?.length || 0,
+        applications: applications || [],
+        totalApplications: applications?.length || 0,
       },
       { status: 200 }
     );
   } catch (error) {
     console.error('[v0] GET error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch submissions' },
+      { error: 'Failed to fetch applications' },
       { status: 500 }
     );
   }
