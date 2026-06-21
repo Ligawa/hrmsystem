@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -27,8 +28,8 @@ interface Document {
 }
 
 export default function DocumentsUploadPage() {
-  const params = useParams()
-  const applicationId = params.id as string
+  const router = useRouter()
+  const { isLoggedIn, isLoading: authLoading } = useAuth()
   
   const [documents, setDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
@@ -39,12 +40,27 @@ export default function DocumentsUploadPage() {
   const [success, setSuccess] = useState('')
 
   useEffect(() => {
-    fetchDocuments()
-  }, [applicationId])
+    // Check authentication
+    if (!authLoading && !isLoggedIn) {
+      router.push('/careers/login')
+      return
+    }
+    
+    if (!authLoading && isLoggedIn) {
+      fetchDocuments()
+    }
+  }, [isLoggedIn, authLoading])
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch(`/api/documents?applicationId=${applicationId}`)
+      const applicantId = localStorage.getItem('applicant_id')
+      if (!applicantId) {
+        setError('Authentication required. Please log in again.')
+        setLoading(false)
+        return
+      }
+      
+      const response = await fetch(`/api/documents?applicantId=${applicantId}`)
       const data = await response.json()
       setDocuments(data.documents || [])
     } catch (err) {
@@ -93,8 +109,16 @@ export default function DocumentsUploadPage() {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('applicationId', applicationId)
       formData.append('documentType', selectedType)
+      
+      // Include applicant ID for authentication
+      const applicantId = localStorage.getItem('applicant_id')
+      if (!applicantId) {
+        setError('Authentication required. Please log in again.')
+        setUploading(false)
+        return
+      }
+      formData.append('applicantId', applicantId)
 
       const response = await fetch('/api/documents', {
         method: 'POST',
@@ -130,7 +154,7 @@ export default function DocumentsUploadPage() {
     }
   }
 
-  if (loading) {
+  if (authLoading || loading || !isLoggedIn) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-blue-600" />

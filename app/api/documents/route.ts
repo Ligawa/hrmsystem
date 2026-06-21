@@ -1,44 +1,55 @@
-import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 import { blobStorage } from '@/lib/utils/blob-storage'
 import { evaluationNotificationService } from '@/lib/services/evaluation-notification-service'
+import { handleBlobError } from '@/lib/utils/error-handler'
+
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return null
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey)
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = getSupabaseAdmin()
+    
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Service unavailable' },
+        { status: 503 }
+      )
+    }
+    
     const formData = await request.formData()
 
-    const applicationId = formData.get('applicationId') as string
     const documentType = formData.get('documentType') as string
     const file = formData.get('file') as File
+    const applicantId = formData.get('applicantId') as string
 
-    if (!applicationId || !documentType || !file) {
+    if (!documentType || !file || !applicantId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    // Get current user
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+    // Get applicant by applicant_id (public ID)
+    const { data: applicant, error: appError } = await supabase
+      .from('applicants')
+      .select('id')
+      .eq('applicant_id', applicantId)
+      .maybeSingle()
 
-    // Verify applicant owns this application
-    const { data: application } = await supabase
-      .from('job_applications')
-      .select('id, email, full_name')
-      .eq('id', applicationId)
-      .single()
-
-    if (!application || application.email !== user.email) {
+    if (appError || !applicant) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 403 }
+        { error: 'Applicant not found' },
+        { status: 404 }
       )
     }
 
@@ -46,42 +57,40 @@ export async function POST(request: NextRequest) {
     let blobUrl = ''
     try {
       const bytes = await file.arrayBuffer()
+      console.log('[v0] Uploading file:', { fileName: file.name, fileSize: file.size })
       const uploadResult = await blobStorage.uploadFile(
         file.name,
         bytes,
-        `documents/${applicationId}`
+        `documents/${applicantId}`
       )
       blobUrl = uploadResult.url
-      console.log('[v0] Blob upload successful:', blobUrl)
+      console.log('[v0] File uploaded:', { url: blobUrl })
     } catch (blobError) {
-      console.error('[v0] Blob upload failed:', blobError)
-      return NextResponse.json(
-        { error: 'Failed to upload file to storage' },
-        { status: 500 }
-      )
+      console.error('[v0] Blob upload error:', blobError)
+      const errorResponse = handleBlobError(blobError, 'POST /api/documents: Blob upload failed')
+      return NextResponse.json(errorResponse, { status: errorResponse.status })
     }
 
     // Store document metadata in database
+    console.log('[v0] Inserting document:', { applicantId: applicant.id, documentType })
     const { data: document, error: dbError } = await supabase
-      .from('application_documents')
+      .from('applicant_documents')
       .insert({
-        application_id: applicationId,
+        applicant_id: applicant.id,
         document_type: documentType,
         document_url: blobUrl,
         file_name: file.name,
-        file_size: file.size,
-        upload_status: 'pending'
+        file_size: file.size
       })
       .select()
       .single()
 
     if (dbError) {
-      console.error('[v0] Database error:', dbError)
-      return NextResponse.json(
-        { error: `Failed to save document: ${dbError.message}` },
-        { status: 500 }
-      )
+      console.error('[v0] Database insert error:', dbError)
+      throw dbError
     }
+    
+    console.log('[v0] Document inserted:', { documentId: document?.id })
 
     // Send notification to admins
     try {
@@ -94,7 +103,7 @@ export async function POST(request: NextRequest) {
       if (admins && admins.length > 0) {
         await evaluationNotificationService.sendDocumentUploadedNotificationToAdmin(
           admins[0].email,
-          application.full_name || 'Applicant',
+          'Applicant',
           documentType
         )
       }
@@ -104,8 +113,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      document,
-      message: 'Document uploaded successfully'
+      document
     })
   } catch (error) {
     console.error('[v0] Document upload error:', error)
@@ -118,41 +126,54 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    const { searchParams } = new URL(request.url)
-    const applicationId = searchParams.get('applicationId')
-
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
+    const supabase = getSupabaseAdmin()
+    
+    if (!supabase) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: 'Service temporarily unavailable. Please try again later.' },
+        { status: 503 }
       )
     }
+    
+    const { searchParams } = new URL(request.url)
+    const applicantId = searchParams.get('applicantId')
 
-    if (!applicationId) {
+    if (!applicantId) {
       return NextResponse.json(
-        { error: 'Application ID required' },
+        { error: 'Missing applicantId' },
         { status: 400 }
       )
     }
 
-    const { data: documents, error } = await supabase
-      .from('application_documents')
-      .select('*')
-      .eq('application_id', applicationId)
-      .order('created_at', { ascending: false })
+    // Get applicant by applicant_id (public ID)
+    const { data: applicant, error: appError } = await supabase
+      .from('applicants')
+      .select('id')
+      .eq('applicant_id', applicantId)
+      .maybeSingle()
 
-    if (error) {
+    if (appError || !applicant) {
       return NextResponse.json(
-        { error: 'Failed to fetch documents' },
-        { status: 500 }
+        { error: 'Applicant not found' },
+        { status: 404 }
       )
     }
 
-    return NextResponse.json({ documents })
+    const { data: documents, error } = await supabase
+      .from('applicant_documents')
+      .select('*')
+      .eq('applicant_id', applicant.id)
+      .order('uploaded_at', { ascending: false })
+
+    if (error) {
+      throw error
+    }
+
+    return NextResponse.json({
+      documents: documents || []
+    })
   } catch (error) {
-    console.error('[v0] Fetch documents error:', error)
+    console.error('[v0] Documents fetch error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { sendApplicationSubmittedEmail } from '@/lib/services/application-notification-service';
+import { createSafeErrorResponse, handleSupabaseError, logError } from '@/lib/utils/error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,15 +49,14 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query;
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      const errorResponse = handleSupabaseError(error, 'GET /api/applications: Query failed');
+      return NextResponse.json(errorResponse, { status: errorResponse.status });
     }
 
     return NextResponse.json({ applications: data || [] });
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to fetch applications' },
-      { status: 500 }
-    );
+    const errorResponse = createSafeErrorResponse('service', 500, 'GET /api/applications: Uncaught exception', error || new Error('Unknown error'));
+    return NextResponse.json(errorResponse, { status: errorResponse.status });
   }
 }
 
@@ -132,14 +133,40 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      const errorResponse = handleSupabaseError(error, 'POST /api/applications: Insert failed');
+      return NextResponse.json(errorResponse, { status: errorResponse.status });
+    }
+
+    // Send confirmation email to applicant (non-blocking - don't wait)
+    try {
+      const jobData = await supabase
+        .from('jobs')
+        .select('title')
+        .eq('id', job_id)
+        .single();
+
+      if (!jobData.error && jobData.data) {
+        // Fire and forget - don't wait for email
+        sendApplicationSubmittedEmail({
+          applicantName: full_name,
+          applicantEmail: email,
+          position: jobData.data.title,
+          applicationId: data.id,
+        }).catch((err) => {
+          logError('Failed to send application submitted email', err, {
+            applicantEmail: email,
+            applicationId: data.id,
+          });
+        });
+      }
+    } catch (emailError) {
+      // Log but don't fail the application submission
+      logError('Error sending application email', emailError, { email });
     }
 
     return NextResponse.json({ application: data }, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to submit application' },
-      { status: 500 }
-    );
+    const errorResponse = createSafeErrorResponse('service', 500, 'POST /api/applications: Uncaught exception', error || new Error('Unknown error'));
+    return NextResponse.json(errorResponse, { status: errorResponse.status });
   }
 }
