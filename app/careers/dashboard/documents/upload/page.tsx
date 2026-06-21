@@ -29,8 +29,6 @@ interface Document {
 
 export default function DocumentsUploadPage() {
   const router = useRouter()
-  const params = useParams()
-  const applicationId = params.id as string
   const { isLoggedIn, isLoading: authLoading } = useAuth()
   
   const [documents, setDocuments] = useState<Document[]>([])
@@ -51,7 +49,7 @@ export default function DocumentsUploadPage() {
     if (!authLoading && isLoggedIn) {
       fetchDocuments()
     }
-  }, [applicationId, isLoggedIn, authLoading])
+  }, [isLoggedIn, authLoading])
 
   const fetchDocuments = async () => {
     try {
@@ -62,7 +60,7 @@ export default function DocumentsUploadPage() {
         return
       }
       
-      const response = await fetch(`/api/documents?applicationId=${applicationId}&applicantId=${applicantId}`)
+      const response = await fetch(`/api/documents?applicantId=${applicantId}`)
       const data = await response.json()
       setDocuments(data.documents || [])
     } catch (err) {
@@ -111,14 +109,16 @@ export default function DocumentsUploadPage() {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('applicationId', applicationId)
       formData.append('documentType', selectedType)
       
-      // Include applicant ID for authentication (since we use custom auth)
+      // Include applicant ID for authentication
       const applicantId = localStorage.getItem('applicant_id')
-      if (applicantId) {
-        formData.append('applicantId', applicantId)
+      if (!applicantId) {
+        setError('Authentication required. Please log in again.')
+        setUploading(false)
+        return
       }
+      formData.append('applicantId', applicantId)
 
       const response = await fetch('/api/documents', {
         method: 'POST',
