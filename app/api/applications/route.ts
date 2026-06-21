@@ -76,55 +76,58 @@ export async function POST(request: NextRequest) {
       phone,
     } = body;
 
-    if (!applicant_id || !job_id) {
+    if (!job_id || !email) {
       return NextResponse.json(
-        { error: 'Applicant ID and Job ID are required' },
+        { error: 'Job ID and email are required' },
         { status: 400 }
       );
     }
 
-    // Get the applicant UUID from the applicant_id string
-    const { data: applicants, error: appError } = await supabase
-      .from('applicants')
-      .select('id')
-      .eq('applicant_id', applicant_id)
-      .single();
+    // If applicant_id is provided, validate they exist
+    let applicantUUID = null;
+    if (applicant_id) {
+      const { data: applicants, error: appError } = await supabase
+        .from('applicants')
+        .select('id')
+        .eq('applicant_id', applicant_id)
+        .single();
 
-    if (appError || !applicants) {
-      return NextResponse.json(
-        { error: 'Applicant not found' },
-        { status: 404 }
-      );
-    }
+      if (appError || !applicants) {
+        return NextResponse.json(
+          { error: 'Applicant not found' },
+          { status: 404 }
+        );
+      }
 
-    const applicantUUID = applicants.id;
+      applicantUUID = applicants.id;
 
-    // Check if applicant already applied for this job
-    const { data: existingApp } = await supabase
-      .from('job_applications')
-      .select('id')
-      .eq('applicant_id', applicantUUID)
-      .eq('job_id', job_id)
-      .single();
+      // Check if applicant already applied for this job
+      const { data: existingApp } = await supabase
+        .from('job_applications')
+        .select('id')
+        .eq('applicant_id', applicantUUID)
+        .eq('job_id', job_id)
+        .single();
 
-    if (existingApp) {
-      return NextResponse.json(
-        { error: 'You have already applied for this position' },
-        { status: 400 }
-      );
+      if (existingApp) {
+        return NextResponse.json(
+          { error: 'You have already applied for this position' },
+          { status: 409 }
+        );
+      }
     }
 
     const { data, error } = await supabase
       .from('job_applications')
       .insert([
         {
-          applicant_id: applicantUUID,
+          applicant_id: applicantUUID || null,
           job_id,
-          cover_letter,
-          resume_url,
+          cover_letter: cover_letter || null,
+          resume_url: resume_url || null,
           full_name,
           email,
-          phone,
+          phone: phone || null,
           status: 'pending',
           submission_date: new Date().toISOString(),
         },

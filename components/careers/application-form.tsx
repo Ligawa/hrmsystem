@@ -77,8 +77,8 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
       const deadline = new Date();
       deadline.setDate(deadline.getDate() + 3);
 
-      // Call the application submit API endpoint instead of directly using Supabase client
-      const submitResponse = await fetch('/api/applications/submit', {
+      // Call the application submit API endpoint
+      const submitResponse = await fetch('/api/applications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,8 +90,7 @@ export function ApplicationForm({ jobId, jobTitle }: ApplicationFormProps) {
           phone: formData.phone || null,
           cover_letter: formData.cover_letter || null,
           resume_url: resumeUrl,
-          status: "pending",
-          submission_deadline: deadline.toISOString(),
+          applicant_id: undefined, // Will be handled by API for anonymous applications
         }),
       });
 
