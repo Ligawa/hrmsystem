@@ -15,7 +15,21 @@ export async function GET(request: NextRequest) {
 
     const supabase = await createServiceRoleClient();
 
-    // Fetch pending assessments for the applicant
+    // First, get the applicant's UUID from their public applicant_id
+    const { data: applicant, error: applicantError } = await supabase
+      .from('applicants')
+      .select('id')
+      .eq('applicant_id', applicantId)
+      .maybeSingle();
+
+    if (applicantError || !applicant) {
+      return NextResponse.json(
+        { error: 'Applicant not found' },
+        { status: 404 }
+      );
+    }
+
+    // Fetch pending assessments for the applicant using their UUID
     // Join with job_applications to get assessment info linked to applications
     const { data: assessments, error } = await supabase
       .from('job_applications')
@@ -29,7 +43,7 @@ export async function GET(request: NextRequest) {
           job_reference_number
         )
       `)
-      .eq('applicant_id', applicantId)
+      .eq('applicant_id', applicant.id)
       .in('status', ['Assessment Pending', 'assessment_pending', 'under_review'])
       .order('submission_date', { ascending: false });
 
